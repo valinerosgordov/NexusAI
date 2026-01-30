@@ -1,0 +1,129 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Application Info -->
+    <system:String x:Key="App_Title">Nexus AI</system:String>
+    <system:String x:Key="App_Version">v4.0-mvp</system:String>
+    <system:String x:Key="App_Tagline">Connect Your Knowledge with AI</system:String>
+
+    <!-- STATUS MESSAGES -->
+    <system:String x:Key="Status_Ready">Ready</system:String>
+    <system:String x:Key="Status_LoadingPdf">Loading PDF...</system:String>
+    <system:String x:Key="Status_LoadingObsidian">Loading Obsidian notes...</system:String>
+    <system:String x:Key="Status_Thinking">AI is thinking...</system:String>
+    <system:String x:Key="Status_LoadedSuccess">✅ Loaded: {0}</system:String>
+    <system:String x:Key="Status_ExportedSuccess">✅ Exported to: {0}</system:String>
+    <system:String x:Key="Status_ResponseReceived">✅ Response received</system:String>
+    <system:String x:Key="Status_SourcesCleared">✅ All sources cleared</system:String>
+    <system:String x:Key="Status_SourceRemoved">Removed: {0}</system:String>
+
+    <!-- ERROR MESSAGES -->
+    <system:String x:Key="Error_VaultPathEmpty">Please enter Obsidian vault path</system:String>
+    <system:String x:Key="Error_PdfLoadFailed">Failed to load PDF: {0}</system:String>
+    <system:String x:Key="Error_ObsidianLoadFailed">Failed to load vault: {0}</system:String>
+    <system:String x:Key="Error_ExportFailed">Export failed: {0}</system:String>
+    <system:String x:Key="Error_ResponseFailed">Failed to get response: {0}</system:String>
+    <system:String x:Key="Error_Unexpected">Unexpected error: {0}</system:String>
+    <system:String x:Key="Error_NoApiKey">⚠️ API Key required</system:String>
+    <system:String x:Key="Error_NoSources">⚠️ No sources loaded</system:String>
+    <system:String x:Key="Error_NoQuestion">⚠️ Enter a question</system:String>
+
+    <!-- CONTEXT WARNINGS -->
+    <system:String x:Key="Warning_ContextLimitReached">⚠️ Context limit reached! Using {0:N0} / {1:N0} tokens. Some sources were excluded.</system:String>
+    <system:String x:Key="Warning_ContextHighUsage">⚠️ High context usage: {0:N0} / {1:N0} tokens ({2:F1}%). Consider reducing sources.</system:String>
+    <system:String x:Key="Info_ContextUsage">ℹ️ Context usage: {0:N0} / {1:N0} tokens ({2:F1}%).</system:String>
+
+    <!-- TOP BAR -->
+    <system:String x:Key="TopBar_ApiKeyPlaceholder">Enter Gemini API Key...</system:String>
+
+    <!-- SIDEBAR -->
+    <system:String x:Key="Sidebar_Title">Sources</system:String>
+    <system:String x:Key="Sidebar_SourcesCount">{0} file(s)</system:String>
+    <system:String x:Key="Sidebar_EmptyState_Title">Drop your knowledge here</system:String>
+    <system:String x:Key="Sidebar_EmptyState_Subtitle">PDF or MD files</system:String>
+    <system:String x:Key="Sidebar_DragDrop_Message">📁 Drop to Analyze</system:String>
+
+    <!-- BUTTONS -->
+    <system:String x:Key="Button_AddPdf">Add PDF</system:String>
+    <system:String x:Key="Button_SyncVault">Sync Vault</system:String>
+    <system:String x:Key="Button_Send">Send</system:String>
+    <system:String x:Key="Button_ExportToObsidian">Send to Obsidian</system:String>
+    <system:String x:Key="Button_ClearChat">Clear Chat</system:String>
+    <system:String x:Key="Button_GenerateFAQ">FAQ</system:String>
+    <system:String x:Key="Button_GenerateStudyGuide">Study Guide</system:String>
+    <system:String x:Key="Button_GeneratePodcast">Podcast</system:String>
+    <system:String x:Key="Button_GenerateDeepDive">Deep Dive</system:String>
+
+    <!-- TABS -->
+    <system:String x:Key="Tab_Chat">💬 Chat</system:String>
+    <system:String x:Key="Tab_Artifacts">🎨 Artifacts</system:String>
+
+    <!-- CHAT AREA -->
+    <system:String x:Key="Chat_InputPlaceholder">Ask a question...</system:String>
+    <system:String x:Key="Chat_WelcomeTitle">Welcome to Nexus AI</system:String>
+    <system:String x:Key="Chat_WelcomeMessage">Load your documents and start asking questions. I'll analyze them and provide insights with citations.</system:String>
+    <system:String x:Key="Chat_ThinkingIndicator">AI is thinking...</system:String>
+    <system:String x:Key="Chat_FollowUpTitle">💡 Follow-up questions:</system:String>
+
+    <!-- ARTIFACTS PANEL -->
+    <system:String x:Key="Artifacts_Title">Studio</system:String>
+    <system:String x:Key="Artifacts_Subtitle">Generate structured content</system:String>
+    <system:String x:Key="Artifacts_EmptyState">No artifacts yet. Generate one using the buttons above.</system:String>
+    <system:String x:Key="Artifacts_GeneratedAt">Generated: {0:HH:mm}</system:String>
+    <system:String x:Key="Artifacts_SourceCount">{0} source(s)</system:String>
+
+    <!-- TOOLTIPS -->
+    <system:String x:Key="Tooltip_AddPdf">Add a PDF document to your knowledge base</system:String>
+    <system:String x:Key="Tooltip_SyncVault">Sync Markdown notes from Obsidian vault</system:String>
+    <system:String x:Key="Tooltip_Send">Send message (Ctrl+Enter)</system:String>
+    <system:String x:Key="Tooltip_FAQ">Generate Frequently Asked Questions</system:String>
+    <system:String x:Key="Tooltip_StudyGuide">Generate a comprehensive Study Guide</system:String>
+    <system:String x:Key="Tooltip_Podcast">Generate a 2-person Podcast Script</system:String>
+    <system:String x:Key="Tooltip_ExportArtifact">Export artifact to Obsidian vault</system:String>
+    <system:String x:Key="Tooltip_SourceActive">This source is included in AI context</system:String>
+    <system:String x:Key="Tooltip_SourceInactive">This source is excluded from AI context</system:String>
+    <system:String x:Key="Tooltip_RemoveSource">Remove this source</system:String>
+
+    <!-- WINDOW CONTROLS -->
+    <system:String x:Key="Window_Minimize">Minimize</system:String>
+    <system:String x:Key="Window_Maximize">Maximize</system:String>
+    <system:String x:Key="Window_Close">Close</system:String>
+
+    <!-- CONFIRMATION DIALOGS -->
+    <system:String x:Key="Confirm_ClearSources">Clear all sources?</system:String>
+    <system:String x:Key="Confirm_ClearChat">Clear chat history?</system:String>
+    <system:String x:Key="Confirm_Title">Confirm</system:String>
+
+    <!-- FILE PICKER DIALOGS -->
+    <system:String x:Key="FilePicker_PdfFilter">PDF Files (*.pdf)|*.pdf</system:String>
+    <system:String x:Key="FilePicker_PdfTitle">Select PDF Document</system:String>
+    <system:String x:Key="FilePicker_ObsidianTitle">Select Obsidian Vault Folder</system:String>
+
+    <!-- ARTIFACT TYPES -->
+    <system:String x:Key="Artifact_FAQ">Frequently Asked Questions</system:String>
+    <system:String x:Key="Artifact_StudyGuide">Study Guide</system:String>
+    <system:String x:Key="Artifact_PodcastScript">Podcast Script</system:String>
+    <system:String x:Key="Artifact_DeepDive">Deep Dive Analysis</system:String>
+
+    <!-- OBSIDIAN INTEGRATION -->
+    <system:String x:Key="Obsidian_VaultPathLabel">Vault Path:</system:String>
+    <system:String x:Key="Obsidian_SubfolderLabel">Subfolder (optional):</system:String>
+    <system:String x:Key="Obsidian_NotesLoaded">✅ Loaded {0} notes from {1}</system:String>
+    <system:String x:Key="Obsidian_ExportSuccess">✅ Exported to: {0}</system:String>
+
+    <!-- TIME FORMATS -->
+    <system:String x:Key="Time_LoadedAt">Loaded {0:HH:mm}</system:String>
+    <system:String x:Key="Time_GeneratedAt">Generated {0:HH:mm}</system:String>
+
+    <!-- SOURCE TYPES -->
+    <system:String x:Key="SourceType_PDF">PDF Document</system:String>
+    <system:String x:Key="SourceType_ObsidianNote">Obsidian Note</system:String>
+
+    <!-- ACCESSIBILITY -->
+    <system:String x:Key="Accessibility_SourceChecked">Source included in context</system:String>
+    <system:String x:Key="Accessibility_SourceUnchecked">Source excluded from context</system:String>
+    <system:String x:Key="Accessibility_ChatMessage">Chat message from {0}</system:String>
+    <system:String x:Key="Accessibility_AIOrbActive">AI is generating response</system:String>
+
+</ResourceDictionary>
