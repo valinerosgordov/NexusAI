@@ -29,8 +29,8 @@
     <SolidColorBrush x:Key="HoverGlowBrush" Color="{StaticResource HoverGlow}"/>
 
     <!-- Typography: встроенный Roboto из Resources/Fonts -->
-    <FontFamily x:Key="PrimaryFont">pack://application:,,,/PersonalNBV;component/Resources/Fonts/Roboto-Regular.ttf#Roboto</FontFamily>
-    <FontFamily x:Key="FallbackFont">pack://application:,,,/PersonalNBV;component/Resources/Fonts/Roboto-Regular.ttf#Roboto</FontFamily>
+    <FontFamily x:Key="PrimaryFont">pack://application:,,,/NexusAI;component/Resources/Fonts/Roboto-Regular.ttf#Roboto</FontFamily>
+    <FontFamily x:Key="FallbackFont">pack://application:,,,/NexusAI;component/Resources/Fonts/Roboto-Regular.ttf#Roboto</FontFamily>
 
     <Style x:Key="H1Text" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource PrimaryFont}"/>

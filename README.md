@@ -48,8 +48,8 @@
 
 1. **Clone**  
    ```bash
-   git clone https://github.com/your-username/PersonalNBV.git
-   cd PersonalNBV
+   git clone https://github.com/your-username/NexusAI.git
+   cd NexusAI
    ```
 
 2. **Build**  
@@ -62,7 +62,7 @@
    ```bash
    dotnet run
    ```
-   Or open `PersonalNBV.sln` in Visual Studio and run.
+   Or open `NexusAI.sln` in Visual Studio and run.
 
 4. **Configure**
    - Enter your **Gemini API key** in the header (🔑 API Key).
@@ -79,7 +79,7 @@
 ## 📁 Project structure
 
 ```
-PersonalNBV/
+NexusAI/
 ├── Application/          # Services, interfaces
 ├── Domain/               # Models, Result
 ├── Infrastructure/        # Gemini, PDF, Obsidian

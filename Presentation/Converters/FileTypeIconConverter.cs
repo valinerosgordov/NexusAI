@@ -1,12 +1,9 @@
 using System.Globalization;
 using System.Windows.Data;
-using PersonalNBV.Domain.Models;
+using NexusAI.Domain.Models;
 
-namespace PersonalNBV.Presentation.Converters;
+namespace NexusAI.Presentation.Converters;
 
-/// <summary>
-/// Converts SourceType to appropriate file icon
-/// </summary>
 public sealed class FileTypeIconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -15,12 +12,11 @@ public sealed class FileTypeIconConverter : IValueConverter
         {
             return sourceType switch
             {
-                SourceType.Pdf => "📄",              // FileText icon (PDF)
-                SourceType.ObsidianNote => "📝",    // PenLine icon (MD)
+                SourceType.Pdf => "📄",
+                SourceType.ObsidianNote => "📝",
                 _ => "📁"
             };
         }
-        
         return "📁";
     }
 

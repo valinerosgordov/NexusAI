@@ -1,9 +1,9 @@
-using PersonalNBV.Application.Interfaces;
-using PersonalNBV.Domain;
-using PersonalNBV.Domain.Models;
+using NexusAI.Application.Interfaces;
+using NexusAI.Domain;
+using NexusAI.Domain.Models;
 using System.Text;
 
-namespace PersonalNBV.Application.Services;
+namespace NexusAI.Application.Services;
 
 public sealed class KnowledgeHubService
 {
@@ -163,10 +163,9 @@ public sealed class KnowledgeHubService
 
     private static string CreateDeepDivePrompt(SourceDocument[] sources)
     {
-        var sourceNames = string.Join(", ", sources.Select(s => $"[{s.Name}]"));
-        
+        var names = string.Join(", ", sources.Select(s => $"[{s.Name}]"));
         return $"""
-            Generate a comprehensive "Deep Dive" analysis of the provided sources: {sourceNames}.
+            Generate a comprehensive "Deep Dive" analysis of the provided sources: {names}.
             
             Your analysis should include:
             
@@ -251,12 +250,11 @@ public sealed class KnowledgeHubService
 
     private static string CreateArtifactPrompt(ArtifactType type, SourceDocument[] sources)
     {
-        var sourceNames = string.Join(", ", sources.Select(s => $"[{s.Name}]"));
-        
+        var names = string.Join(", ", sources.Select(s => $"[{s.Name}]"));
         return type switch
         {
             ArtifactType.FAQ => $"""
-                Generate a comprehensive FAQ (Frequently Asked Questions) document based on the provided sources: {sourceNames}.
+                Generate a comprehensive FAQ (Frequently Asked Questions) document based on the provided sources: {names}.
                 
                 Create 10-15 questions and detailed answers covering:
                 - Key concepts and definitions
@@ -273,7 +271,7 @@ public sealed class KnowledgeHubService
                 """,
 
             ArtifactType.StudyGuide => $"""
-                Generate a comprehensive Study Guide based on the provided sources: {sourceNames}.
+                Generate a comprehensive Study Guide based on the provided sources: {names}.
                 
                 Include:
                 1. **Learning Objectives**: What should a student know after studying this material?
@@ -288,7 +286,7 @@ public sealed class KnowledgeHubService
                 """,
 
             ArtifactType.PodcastScript => $"""
-                Generate an engaging 2-person Podcast Script based on the provided sources: {sourceNames}.
+                Generate an engaging 2-person Podcast Script based on the provided sources: {names}.
                 
                 Format:
                 **Host:** [Enthusiastic introduction and topic overview]
@@ -308,7 +306,7 @@ public sealed class KnowledgeHubService
                 """,
 
             ArtifactType.NotebookGuide => $"""
-                Generate a "Notebook Guide" (Путеводитель по блокноту) based on the provided sources: {sourceNames}.
+                Generate a "Notebook Guide" (Путеводитель по блокноту) based on the provided sources: {names}.
                 Output ONE Markdown document with exactly these three sections. Use ONLY information from the sources.
                 
                 ## 1. Краткий обзор (Summary)
@@ -327,13 +325,13 @@ public sealed class KnowledgeHubService
                 """,
 
             ArtifactType.Summary => $"""
-                Generate a concise Summary of the provided sources: {sourceNames}.
+                Generate a concise Summary of the provided sources: {names}.
                 Include: main idea, key points, and conclusions. Use only information from the sources. Cite with [source_name].
                 Format in clear Markdown (2-4 paragraphs).
                 """,
 
             ArtifactType.Outline => $"""
-                Generate an Outline (оглавление) and key terms glossary for the provided sources: {sourceNames}.
+                Generate an Outline (оглавление) and key terms glossary for the provided sources: {names}.
                 Part 1: Hierarchical outline of main topics and subtopics. Part 2: Glossary of important terms with brief definitions.
                 Use only information from the sources. Cite with [source_name]. Format in Markdown.
                 """,
@@ -353,37 +351,31 @@ public sealed class KnowledgeHubService
         _ => "Deep Dive Analysis"
     };
 
+    // склейка контекста под лимит токенов
     private string AggregateContext(SourceDocument[] sources)
     {
         var sb = new StringBuilder();
-        var totalChars = 0;
-        var includedSourceCount = 0;
+        int totalChars = 0;
+        int added = 0;
         WasLastContextTruncated = false;
 
         foreach (var source in sources)
         {
             var header = $"=== SOURCE: [{source.Name}] ===\n";
-            var footer = "\n\n";
-            var sourceContent = $"{header}{source.Content}{footer}";
-            var sourceLength = sourceContent.Length;
-
-            // Check if adding this source would exceed the limit
-            if (totalChars + sourceLength > MaxContextChars)
+            var block = $"{header}{source.Content}\n\n";
+            if (totalChars + block.Length > MaxContextChars)
             {
                 WasLastContextTruncated = true;
-                break; // Stop adding sources
+                break;
             }
-
-            sb.Append(sourceContent);
-            totalChars += sourceLength;
-            includedSourceCount++;
+            sb.Append(block);
+            totalChars += block.Length;
+            added++;
         }
 
-        // Add truncation notice if applicable
         if (WasLastContextTruncated)
         {
-            var remaining = sources.Length - includedSourceCount;
-            sb.AppendLine($"\n⚠️ Context truncated. {remaining} source(s) omitted due to token limit.");
+            sb.AppendLine($"\n⚠️ Context truncated. {sources.Length - added} source(s) omitted due to token limit.");
         }
 
         LastContextTokenCount = totalChars / CharsPerToken;
@@ -410,6 +402,6 @@ public sealed class KnowledgeHubService
             return $"ℹ️ Context usage: {LastContextTokenCount:N0} / {MaxInputTokens:N0} tokens ({utilizationPercent:F1}%).";
         }
 
-        return null; // Within safe limits
+        return null;
     }
 }

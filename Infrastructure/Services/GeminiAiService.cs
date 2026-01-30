@@ -1,12 +1,13 @@
-using PersonalNBV.Application.Interfaces;
-using PersonalNBV.Domain;
-using PersonalNBV.Domain.Models;
+using NexusAI.Application.Interfaces;
+using NexusAI.Domain;
+using NexusAI.Domain.Models;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 
-namespace PersonalNBV.Infrastructure.Services;
+namespace NexusAI.Infrastructure.Services;
 
+// вызовы Gemini API
 public sealed class GeminiAiService : IAiService
 {
     private readonly HttpClient _httpClient;
@@ -39,10 +40,10 @@ public sealed class GeminiAiService : IAiService
             if (string.IsNullOrWhiteSpace(question))
                 return Result.Failure<AiResponse>("Question cannot be empty");
 
-            var requestBody = CreateRequestBody(question, context);
+            var body = CreateRequestBody(question, context);
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/{ModelName}:generateContent?key={_apiKeyHolder.ApiKey}";
 
-            var response = await _httpClient.PostAsJsonAsync(url, requestBody, cancellationToken)
+            var response = await _httpClient.PostAsJsonAsync(url, body, cancellationToken)
                 .ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -116,24 +117,18 @@ public sealed class GeminiAiService : IAiService
 
     private static string[] ExtractSourceCitations(string content)
     {
-        var citations = new List<string>();
-        var startIndex = 0;
-
-        while ((startIndex = content.IndexOf('[', startIndex)) != -1)
+        var list = new List<string>();
+        int idx = 0;
+        while ((idx = content.IndexOf('[', idx)) != -1)
         {
-            var endIndex = content.IndexOf(']', startIndex);
-            if (endIndex == -1) break;
-
-            var citation = content.Substring(startIndex + 1, endIndex - startIndex - 1);
-            if (!string.IsNullOrWhiteSpace(citation) && !citations.Contains(citation))
-            {
-                citations.Add(citation);
-            }
-
-            startIndex = endIndex + 1;
+            var end = content.IndexOf(']', idx);
+            if (end == -1) break;
+            var cit = content.Substring(idx + 1, end - idx - 1);
+            if (!string.IsNullOrWhiteSpace(cit) && !list.Contains(cit))
+                list.Add(cit);
+            idx = end + 1;
         }
-
-        return citations.ToArray();
+        return list.ToArray();
     }
 
     private sealed record GeminiResponse(

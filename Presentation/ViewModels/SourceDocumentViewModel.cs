@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using PersonalNBV.Domain.Models;
+using NexusAI.Domain.Models;
 
-namespace PersonalNBV.Presentation.ViewModels;
+namespace NexusAI.Presentation.ViewModels;
 
 public sealed partial class SourceDocumentViewModel : ObservableObject
 {

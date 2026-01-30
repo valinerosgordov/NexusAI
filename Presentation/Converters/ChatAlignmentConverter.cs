@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace PersonalNBV.Presentation.Converters;
+namespace NexusAI.Presentation.Converters;
 
 /// <summary>
 /// Converts IsUser (bool) to HorizontalAlignment: Right for user, Left for AI.

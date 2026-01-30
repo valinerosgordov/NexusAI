@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace PersonalNBV.Presentation.Converters;
+namespace NexusAI.Presentation.Converters;
 
 public sealed class InverseBoolConverter : IValueConverter
 {

@@ -1,15 +1,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PersonalNBV.Application.Services;
-using PersonalNBV.Domain;
-using PersonalNBV.Domain.Models;
-using PersonalNBV.Infrastructure;
+using NexusAI.Application.Services;
+using NexusAI.Domain;
+using NexusAI.Domain.Models;
+using NexusAI.Infrastructure;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using Microsoft.Win32;
 
-namespace PersonalNBV.Presentation.ViewModels;
+namespace NexusAI.Presentation.ViewModels;
 
 public sealed partial class MainViewModel : ObservableObject
 {
@@ -65,28 +65,23 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task AddPdfAsync()
     {
-        var dialog = new OpenFileDialog
+        OpenFileDialog dialog = new OpenFileDialog
         {
             Filter = "PDF Files (*.pdf)|*.pdf",
             Title = "Select PDF Document"
         };
-
         if (dialog.ShowDialog() != true)
             return;
 
         IsBusy = true;
         StatusMessage = "Loading PDF...";
-
         try
         {
             var result = await _knowledgeHub.AddPdfAsync(dialog.FileName);
-
             if (result.IsSuccess)
             {
                 Sources.Add(new SourceDocumentViewModel(result.Value));
                 StatusMessage = $"✅ Loaded: {result.Value.Name}";
-                
-                // Check context warning
                 CheckContextLimits();
             }
             else
@@ -134,8 +129,6 @@ public sealed partial class MainViewModel : ObservableObject
                 }
                 var location = subfolder is null ? "vault" : $"'{subfolder}'";
                 StatusMessage = $"✅ Loaded {result.Value} notes from {location}";
-                
-                // Check context warning
                 CheckContextLimits();
             }
             else
@@ -199,10 +192,7 @@ public sealed partial class MainViewModel : ObservableObject
             if (result.IsSuccess)
             {
                 RefreshChatHistory();
-                
-                // Generate follow-up questions
                 await GenerateFollowUpQuestionsInternalAsync(UserQuestion, result.Value.Content);
-                
                 UserQuestion = string.Empty;
                 StatusMessage = "Response received";
             }
@@ -404,8 +394,7 @@ public sealed partial class MainViewModel : ObservableObject
         }
         catch
         {
-            // Silently fail - follow-up questions are optional
-            FollowUpQuestions = [];
+            FollowUpQuestions = []; // follow-up не критично
         }
     }
 
@@ -415,7 +404,7 @@ public sealed partial class MainViewModel : ObservableObject
         if (!string.IsNullOrWhiteSpace(question))
         {
             UserQuestion = question;
-            FollowUpQuestions = []; // Clear suggestions
+            FollowUpQuestions = [];
         }
     }
 
@@ -424,8 +413,7 @@ public sealed partial class MainViewModel : ObservableObject
         StatusMessage = $"❌ {message}";
         ErrorMessage = message;
         IsErrorVisible = true;
-        
-        // Auto-hide after 8 seconds
+        // скрыть через 8 сек
         Task.Delay(8000).ContinueWith(_ =>
         {
             IsErrorVisible = false;
@@ -443,13 +431,9 @@ public sealed partial class MainViewModel : ObservableObject
 
     public void HighlightSourceByName(string sourceName)
     {
-        // Clear all highlights
         foreach (var source in Sources)
-        {
             source.ClearHighlight();
-        }
 
-        // Highlight matching source
         var matchingSource = Sources.FirstOrDefault(s => 
             s.Name.Equals(sourceName, StringComparison.OrdinalIgnoreCase));
 
@@ -525,7 +509,6 @@ public sealed partial class MainViewModel : ObservableObject
 
     private static void ApplyTheme(bool isDark)
     {
-        // Update BundledTheme in App.xaml resources
         var app = System.Windows.Application.Current;
         if (app?.Resources.MergedDictionaries.FirstOrDefault(
             d => d is MaterialDesignThemes.Wpf.BundledTheme) is MaterialDesignThemes.Wpf.BundledTheme bundledTheme)
@@ -562,7 +545,6 @@ public sealed partial class MainViewModel : ObservableObject
                 }
                 else if (extension == ".md")
                 {
-                    // Load single markdown file
                     var result = await LoadMarkdownFileAsync(filePath);
                     if (result.IsSuccess)
                     {

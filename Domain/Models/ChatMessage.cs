@@ -1,4 +1,4 @@
-namespace PersonalNBV.Domain.Models;
+namespace NexusAI.Domain.Models;
 
 public record ChatMessage(
     ChatMessageId Id,

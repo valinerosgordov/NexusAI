@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace PersonalNBV.Presentation.Converters;
+namespace NexusAI.Presentation.Converters;
 
 /// <summary>
 /// Returns Visible when value is null, Collapsed when non-null (opposite of NullToVisibilityConverter).

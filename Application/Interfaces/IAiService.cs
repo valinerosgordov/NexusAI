@@ -1,7 +1,7 @@
-using PersonalNBV.Domain;
-using PersonalNBV.Domain.Models;
+using NexusAI.Domain;
+using NexusAI.Domain.Models;
 
-namespace PersonalNBV.Application.Interfaces;
+namespace NexusAI.Application.Interfaces;
 
 public interface IAiService
 {

@@ -1,10 +1,10 @@
-using PersonalNBV.Application.Interfaces;
-using PersonalNBV.Domain;
-using PersonalNBV.Domain.Models;
+using NexusAI.Application.Interfaces;
+using NexusAI.Domain;
+using NexusAI.Domain.Models;
 using System.IO;
 using System.Text;
 
-namespace PersonalNBV.Infrastructure.Services;
+namespace NexusAI.Infrastructure.Services;
 
 public sealed class ObsidianService : IObsidianService
 {
@@ -69,6 +69,7 @@ public sealed class ObsidianService : IObsidianService
             if (!Directory.Exists(vaultPath))
                 return Result.Failure<string>($"Vault path does not exist: {vaultPath}");
 
+            // всё в папку AI_Notebook внутри vault
             var aiNotebookPath = Path.Combine(vaultPath, "AI_Notebook");
             Directory.CreateDirectory(aiNotebookPath);
 

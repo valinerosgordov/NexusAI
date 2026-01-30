@@ -1,19 +1,17 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using PersonalNBV.Application.Interfaces;
-using PersonalNBV.Application.Services;
-using PersonalNBV.Infrastructure.Services;
-using PersonalNBV.Presentation.ViewModels;
+using NexusAI.Application.Interfaces;
+using NexusAI.Application.Services;
+using NexusAI.Infrastructure.Services;
+using NexusAI.Presentation.ViewModels;
 
-namespace PersonalNBV.Infrastructure;
+namespace NexusAI.Infrastructure;
 
 public static class DependencyInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        // Infrastructure
         services.AddHttpClient();
-        
         services.AddSingleton<ApiKeyHolder>();
         
         services.AddSingleton<IAiService>(sp =>
@@ -27,11 +25,7 @@ public static class DependencyInjection
 
         services.AddSingleton<IPdfParsingService, PdfParsingService>();
         services.AddSingleton<IObsidianService, ObsidianService>();
-
-        // Application
         services.AddSingleton<KnowledgeHubService>();
-
-        // ViewModels
         services.AddSingleton<MainViewModel>();
 
         return services;

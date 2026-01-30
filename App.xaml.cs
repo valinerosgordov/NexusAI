@@ -1,9 +1,9 @@
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using PersonalNBV.Infrastructure;
-using PersonalNBV.Presentation.ViewModels;
+using NexusAI.Infrastructure;
+using NexusAI.Presentation.ViewModels;
 
-namespace PersonalNBV;
+namespace NexusAI;
 
 public partial class App : System.Windows.Application
 {
@@ -12,11 +12,9 @@ public partial class App : System.Windows.Application
     private void OnStartup(object sender, StartupEventArgs e)
     {
         var services = new ServiceCollection();
-        
         services.AddApplicationServices();
-        
         _serviceProvider = services.BuildServiceProvider();
-        
+
         var mainWindow = new MainWindow
         {
             DataContext = _serviceProvider.GetRequiredService<MainViewModel>()

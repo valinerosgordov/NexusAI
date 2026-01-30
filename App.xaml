@@ -1,8 +1,8 @@
-<Application x:Class="PersonalNBV.App"
+<Application x:Class="NexusAI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PersonalNBV"
-             xmlns:converters="clr-namespace:PersonalNBV.Presentation.Converters"
+             xmlns:local="clr-namespace:NexusAI"
+             xmlns:converters="clr-namespace:NexusAI.Presentation.Converters"
              Startup="OnStartup">
     <Application.Resources>
         <ResourceDictionary>

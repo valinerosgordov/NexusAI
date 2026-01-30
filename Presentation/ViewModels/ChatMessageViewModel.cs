@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using PersonalNBV.Domain.Models;
+using NexusAI.Domain.Models;
 
-namespace PersonalNBV.Presentation.ViewModels;
+namespace NexusAI.Presentation.ViewModels;
 
 public sealed partial class ChatMessageViewModel : ObservableObject
 {
@@ -12,6 +12,7 @@ public sealed partial class ChatMessageViewModel : ObservableObject
     public string TimeDisplay => Message.Timestamp.ToLocalTime().ToString("HH:mm:ss");
     public bool IsUser => Role == MessageRole.User;
     public bool IsAssistant => Role == MessageRole.Assistant;
+
     public string? Citations => Message.SourceCitations is { Length: > 0 }
         ? $"Sources: {string.Join(", ", Message.SourceCitations)}"
         : null;

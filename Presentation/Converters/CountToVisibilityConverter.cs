@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace PersonalNBV.Presentation.Converters;
+namespace NexusAI.Presentation.Converters;
 
 /// <summary>
 /// Converts count (int) to Visibility. Parameter "Inverted" = Visible when count is 0.

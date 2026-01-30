@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Personal NBV will be documented in this file.
+All notable changes to NexusAI will be documented in this file.
 
 ## [2.0.0] - 2024-01-30
 

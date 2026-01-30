@@ -1,5 +1,6 @@
-namespace PersonalNBV.Domain;
+namespace NexusAI.Domain;
 
+// railway-style result, без null
 public readonly record struct Result<T>
 {
     private readonly T? _value;

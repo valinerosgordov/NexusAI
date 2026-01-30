@@ -7,7 +7,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace PersonalNBV.Presentation.Converters;
+namespace NexusAI.Presentation.Converters;
 
 public sealed partial class CitationClickableConverter : IValueConverter
 {
@@ -33,21 +33,19 @@ public sealed partial class CitationClickableConverter : IValueConverter
 
         foreach (Match match in matches)
         {
-            // Add text before citation
             if (match.Index > lastIndex)
             {
                 textBlock.Inlines.Add(new Run(text.Substring(lastIndex, match.Index - lastIndex)));
             }
 
-            // Add clickable citation as hyperlink
             var sourceName = match.Groups[1].Value;
             var hyperlink = new Hyperlink(new Run(match.Value))
             {
                 Foreground = CitationBrush,
                 FontWeight = FontWeights.SemiBold,
                 ToolTip = $"Click to highlight: {sourceName}",
-                TextDecorations = null, // No underline by default
-                Tag = sourceName // Store source name for click handler
+                TextDecorations = null,
+                Tag = sourceName
             };
 
             hyperlink.MouseEnter += (s, e) => hyperlink.TextDecorations = TextDecorations.Underline;
@@ -64,7 +62,6 @@ public sealed partial class CitationClickableConverter : IValueConverter
             lastIndex = match.Index + match.Length;
         }
 
-        // Add remaining text
         if (lastIndex < text.Length)
         {
             textBlock.Inlines.Add(new Run(text.Substring(lastIndex)));
@@ -75,7 +72,6 @@ public sealed partial class CitationClickableConverter : IValueConverter
 
     private static void OnCitationClicked(string sourceName)
     {
-        // Find MainWindow and trigger source highlight
         var mainWindow = System.Windows.Application.Current.MainWindow;
         if (mainWindow?.DataContext is Presentation.ViewModels.MainViewModel viewModel)
         {

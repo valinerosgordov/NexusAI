@@ -1,16 +1,17 @@
-using PersonalNBV.Application.Interfaces;
-using PersonalNBV.Domain;
-using PersonalNBV.Domain.Models;
+using NexusAI.Application.Interfaces;
+using NexusAI.Domain;
+using NexusAI.Domain.Models;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using System.IO;
 using System.Text;
 
-namespace PersonalNBV.Infrastructure.Services;
+namespace NexusAI.Infrastructure.Services;
 
 public sealed class PdfParsingService : IPdfParsingService
 {
+    // iText 7 — извлечение текста по страницам
     public async Task<Result<SourceDocument>> ParsePdfAsync(string filePath, CancellationToken cancellationToken = default)
     {
         try

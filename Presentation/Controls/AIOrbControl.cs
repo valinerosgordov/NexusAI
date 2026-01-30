@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Media.Animation;
 
-namespace PersonalNBV.Presentation.Controls;
+namespace NexusAI.Presentation.Controls;
 
 /// <summary>
 /// AI Orb - Premium thinking indicator with pulsing animation

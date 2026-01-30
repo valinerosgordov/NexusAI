@@ -3,9 +3,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using PersonalNBV.Presentation.ViewModels;
+using NexusAI.Presentation.ViewModels;
 
-namespace PersonalNBV;
+namespace NexusAI;
 
 public partial class MainWindow : Window
 {
@@ -13,8 +13,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Loaded += MainWindow_Loaded;
-        
-        // Enable window dragging
         MouseDown += (s, e) =>
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -90,8 +88,6 @@ public partial class MainWindow : Window
         {
             hideTab.Visibility = Visibility.Collapsed;
             showTab.Visibility = Visibility.Visible;
-            
-            // Fade in new tab
             var fadeIn = new DoubleAnimation
             {
                 From = 0,
@@ -175,8 +171,6 @@ public partial class MainWindow : Window
         if (DragDropOverlay != null)
         {
             DragDropOverlay.Visibility = Visibility.Visible;
-            
-            // Fade in animation
             var fadeIn = new DoubleAnimation
             {
                 From = 0,
