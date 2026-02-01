@@ -18,6 +18,6 @@ public readonly record struct SourceDocumentId(Guid Value)
 
 public enum SourceType
 {
-    Pdf,
+    Document,
     ObsidianNote
 }

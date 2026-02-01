@@ -14,11 +14,12 @@ public sealed class GeminiAiService : IAiService
     private readonly ApiKeyHolder _apiKeyHolder;
     private const string ModelName = "gemini-2.0-flash";
     private const string SystemPrompt = """
-        You are a Grounded Research Assistant. You MUST follow these rules:
-        1. Answer ONLY using information from the CONTEXT (source documents) provided below. Do not use general knowledge or the internet.
-        2. If the answer is not in the provided documents, say clearly: "Этой информации нет в загруженных источниках" (or "This information is not in the provided sources") and do not invent an answer.
-        3. For every factual claim, cite the source in square brackets: [source_name]. Use the exact document name from the context.
-        4. Be accurate and concise. Prefer citing specific passages when possible.
+        You are NexusAI, an expert research assistant. Answer strictly based on the provided Context.
+        RULES:
+        1. GROUNDING: Derive answers ONLY from the context.
+        2. CITATIONS: Cite sources using [Filename] format at the end of statements.
+        3. HONESTY: If information is missing, state "I cannot find this in the documents."
+        4. FORMATTING: Use Markdown.
         """;
 
     public GeminiAiService(HttpClient httpClient, ApiKeyHolder apiKeyHolder)
@@ -32,6 +33,15 @@ public sealed class GeminiAiService : IAiService
         string context,
         CancellationToken cancellationToken = default)
     {
+        return await AskQuestionWithImagesAsync(question, context, null, cancellationToken);
+    }
+
+    public async Task<Result<AiResponse>> AskQuestionWithImagesAsync(
+        string question,
+        string context,
+        string[]? base64Images = null,
+        CancellationToken cancellationToken = default)
+    {
         try
         {
             if (string.IsNullOrWhiteSpace(_apiKeyHolder.ApiKey))
@@ -40,7 +50,7 @@ public sealed class GeminiAiService : IAiService
             if (string.IsNullOrWhiteSpace(question))
                 return Result.Failure<AiResponse>("Question cannot be empty");
 
-            var body = CreateRequestBody(question, context);
+            var body = CreateRequestBody(question, context, base64Images);
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/{ModelName}:generateContent?key={_apiKeyHolder.ApiKey}";
 
             var response = await _httpClient.PostAsJsonAsync(url, body, cancellationToken)
@@ -84,30 +94,52 @@ public sealed class GeminiAiService : IAiService
         }
     }
 
-    private static object CreateRequestBody(string question, string context)
+    private static object CreateRequestBody(string question, string context, string[]? base64Images = null)
     {
-        var fullPrompt = $"""
-            {SystemPrompt}
+        var fullPrompt = string.IsNullOrWhiteSpace(context)
+            ? question
+            : $"""
+              CONTEXT:
+              {context}
 
-            CONTEXT (Source Documents):
-            {context}
+              USER QUESTION:
+              {question}
+              """;
 
-            USER QUESTION:
-            {question}
-            """;
+        var parts = new List<object> { new { text = fullPrompt } };
+
+        // Add images if provided
+        if (base64Images is not null && base64Images.Length > 0)
+        {
+            foreach (var imageData in base64Images)
+            {
+                parts.Add(new
+                {
+                    inlineData = new
+                    {
+                        mimeType = "image/jpeg", // or detect from base64
+                        data = imageData
+                    }
+                });
+            }
+        }
 
         return new
         {
+            systemInstruction = new
+            {
+                parts = new[] { new { text = SystemPrompt } }
+            },
             contents = new[]
             {
                 new
                 {
-                    parts = new[] { new { text = fullPrompt } }
+                    parts = parts.ToArray()
                 }
             },
             generationConfig = new
             {
-                temperature = 0.2,
+                temperature = 0.3,
                 topK = 40,
                 topP = 0.95,
                 maxOutputTokens = 2048

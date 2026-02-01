@@ -1,6 +1,7 @@
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain;
 using NexusAI.Domain.Models;
+using NexusAI.Infrastructure.Services;
 using System.Text;
 
 namespace NexusAI.Application.Services;
@@ -9,9 +10,9 @@ public sealed class KnowledgeHubService
 {
     private readonly List<SourceDocument> _sources = [];
     private readonly List<ChatMessage> _chatHistory = [];
-    private readonly IPdfParsingService _pdfParser;
+    private readonly DocumentParserFactory _parserFactory;
     private readonly IObsidianService _obsidianService;
-    private readonly IAiService _aiService;
+    private IAiService _aiService;
 
     private const int MaxInputTokens = 1_000_000;
     private const int CharsPerToken = 4;
@@ -23,18 +24,31 @@ public sealed class KnowledgeHubService
     public int LastContextTokenCount { get; private set; }
 
     public KnowledgeHubService(
-        IPdfParsingService pdfParser,
+        DocumentParserFactory parserFactory,
         IObsidianService obsidianService,
         IAiService aiService)
     {
-        _pdfParser = pdfParser;
+        _parserFactory = parserFactory;
         _obsidianService = obsidianService;
         _aiService = aiService;
     }
 
-    public async Task<Result<SourceDocument>> AddPdfAsync(string filePath, CancellationToken cancellationToken = default)
+    public void SetAiService(IAiService aiService)
     {
-        var result = await _pdfParser.ParsePdfAsync(filePath, cancellationToken);
+        _aiService = aiService;
+    }
+
+    public async Task<Result<SourceDocument>> AddDocumentAsync(string filePath, CancellationToken cancellationToken = default)
+    {
+        var parser = _parserFactory.GetParser(filePath);
+        
+        if (parser is null)
+        {
+            var extension = Path.GetExtension(filePath);
+            return Result.Failure<SourceDocument>($"Unsupported file type: {extension}");
+        }
+
+        var result = await parser.ParseAsync(filePath, cancellationToken);
 
         if (result.IsSuccess)
         {
@@ -79,6 +93,14 @@ public sealed class KnowledgeHubService
 
     public async Task<Result<ChatMessage>> AskQuestionAsync(string question, CancellationToken cancellationToken = default)
     {
+        return await AskQuestionWithImagesAsync(question, null, cancellationToken);
+    }
+
+    public async Task<Result<ChatMessage>> AskQuestionWithImagesAsync(
+        string question, 
+        string[]? base64Images = null,
+        CancellationToken cancellationToken = default)
+    {
         if (string.IsNullOrWhiteSpace(question))
             return Result.Failure<ChatMessage>("Question cannot be empty");
 
@@ -97,7 +119,17 @@ public sealed class KnowledgeHubService
         _chatHistory.Add(userMessage);
 
         var context = AggregateContext(includedSources);
-        var aiResult = await _aiService.AskQuestionAsync(question, context, cancellationToken);
+        
+        // Use multimodal API if images are provided and service supports it
+        Result<AiResponse> aiResult;
+        if (base64Images is not null && _aiService is GeminiAiService gemini)
+        {
+            aiResult = await gemini.AskQuestionWithImagesAsync(question, context, base64Images, cancellationToken);
+        }
+        else
+        {
+            aiResult = await _aiService.AskQuestionAsync(question, context, cancellationToken);
+        }
 
         if (aiResult.IsFailure)
         {
@@ -107,6 +139,15 @@ public sealed class KnowledgeHubService
         var assistantMessage = new ChatMessage(
             Id: ChatMessageId.NewId(),
             Content: aiResult.Value.Content,
+            Role: MessageRole.Assistant,
+            Timestamp: DateTime.UtcNow,
+            SourceCitations: aiResult.Value.SourcesCited
+        );
+
+        _chatHistory.Add(assistantMessage);
+
+        return Result.Success(assistantMessage);
+    }
             Role: MessageRole.Assistant,
             Timestamp: DateTime.UtcNow,
             SourceCitations: aiResult.Value.SourcesCited
@@ -361,8 +402,13 @@ public sealed class KnowledgeHubService
 
         foreach (var source in sources)
         {
-            var header = $"=== SOURCE: [{source.Name}] ===\n";
-            var block = $"{header}{source.Content}\n\n";
+            var block = $"""
+                <Source filename="{source.Name}">
+                {source.Content}
+                </Source>
+
+                """;
+            
             if (totalChars + block.Length > MaxContextChars)
             {
                 WasLastContextTruncated = true;

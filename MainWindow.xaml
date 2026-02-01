@@ -3,358 +3,658 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Nexus AI" 
         Height="900" Width="1600"
         WindowStartupLocation="CenterScreen"
-        Background="#0F0F12"
-        WindowStyle="None"
-        ResizeMode="CanResizeWithGrip"
-        AllowsTransparency="False"
-        UseLayoutRounding="True"
-        SnapsToDevicePixels="True"
+        Background="{DynamicResource MaterialDesignPaper}"
+        Style="{StaticResource MaterialDesignWindow}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="ClearType">
+        TextOptions.TextRenderingMode="Auto">
 
     <Window.Resources>
-        <Storyboard x:Key="FadeInAnimation">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             From="0" To="1" Duration="0:0:0.3">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
+        <!-- File Type Icon Mapping -->
+        <Style x:Key="FileTypeIconTextBlock" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
     </Window.Resources>
 
-    <Border CornerRadius="16" BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1">
+    <materialDesign:DialogHost Identifier="RootDialog">
         <Grid>
-            <Border CornerRadius="16" Background="{StaticResource DeepDarkBackgroundBrush}" />
-            
-            <Grid TextElement.Foreground="White">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" 
-                        Style="{StaticResource SolidPanel}" 
-                        Height="70"
-                        CornerRadius="16,16,0,0">
-                    <Grid Margin="24,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Width="44" Height="44" 
-                                    CornerRadius="12"
-                                    Background="{StaticResource AccentGradientBrush}">
-                                <Border.Effect>
-                                    <DropShadowEffect Color="{StaticResource AccentPurple}" 
-                                                      BlurRadius="20" 
-                                                      ShadowDepth="0" 
-                                                      Opacity="0.7"/>
-                                </Border.Effect>
-                                <Viewbox Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Canvas Width="24" Height="24">
-                                        <Canvas.RenderTransform>
-                                            <RotateTransform Angle="45" CenterX="12" CenterY="12"/>
-                                        </Canvas.RenderTransform>
-                                        <Ellipse Canvas.Left="10" Canvas.Top="10" Width="4" Height="4" Fill="White"/>
-                                        <Ellipse Canvas.Left="2" Canvas.Top="2" Width="3" Height="3" Fill="White" Opacity="0.8"/>
-                                        <Ellipse Canvas.Left="19" Canvas.Top="2" Width="3" Height="3" Fill="White" Opacity="0.8"/>
-                                        <Ellipse Canvas.Left="2" Canvas.Top="19" Width="3" Height="3" Fill="White" Opacity="0.8"/>
-                                        <Ellipse Canvas.Left="19" Canvas.Top="19" Width="3" Height="3" Fill="White" Opacity="0.8"/>
-                                        <Line X1="12" Y1="12" X2="3.5" Y2="3.5" Stroke="White" StrokeThickness="1.5" Opacity="0.6"/>
-                                        <Line X1="12" Y1="12" X2="20.5" Y2="3.5" Stroke="White" StrokeThickness="1.5" Opacity="0.6"/>
-                                        <Line X1="12" Y1="12" X2="3.5" Y2="20.5" Stroke="White" StrokeThickness="1.5" Opacity="0.6"/>
-                                        <Line X1="12" Y1="12" X2="20.5" Y2="20.5" Stroke="White" StrokeThickness="1.5" Opacity="0.6"/>
-                                    </Canvas>
-                                </Viewbox>
-                            </Border>
-                            
-                            <TextBlock Text="NEXUS" Margin="16,0,0,0" VerticalAlignment="Center" Foreground="White" FontSize="28" FontWeight="Black" FontFamily="{StaticResource PrimaryFont}">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect Color="{StaticResource AccentPurple}" BlurRadius="12" ShadowDepth="0" Opacity="0.4"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
-                            <Border Background="#1A1A22" BorderBrush="#7C3AED" BorderThickness="1" CornerRadius="8" Padding="12,8" Margin="0,0,12,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="🔑 API Key" Foreground="White" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                    <PasswordBox x:Name="ApiKeyBox" 
-                                                 Width="240" Height="28"
-                                                 Background="Transparent"
-                                                 Foreground="White"
-                                                 BorderThickness="0"
-                                                 Padding="0"
-                                                 FontSize="13"
-                                                 PasswordChanged="ApiKeyBox_PasswordChanged"
-                                                 ToolTip="Вставьте Gemini API key (aistudio.google.com)"
-                                                 VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-                            
-                            <TextBlock Text="{Binding StatusMessage}" 
-                                       Foreground="White"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,12,0"/>
-                            <Border Background="#252530" CornerRadius="8" BorderBrush="#555555" BorderThickness="1" Padding="0" Margin="0">
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="−" Width="36" Height="36" Click="MinimizeWindow" Margin="2" Foreground="White" Background="Transparent" BorderThickness="0" FontSize="16" ToolTip="Свернуть"/>
-                                    <Button Content="□" Width="36" Height="36" Click="MaximizeWindow" Margin="2" Foreground="White" Background="Transparent" BorderThickness="0" FontSize="14" ToolTip="Развернуть"/>
-                                    <Button Content="✕" Width="36" Height="36" Click="CloseWindow" Margin="2" Foreground="#FF6B6B" Background="Transparent" BorderThickness="0" FontSize="14" ToolTip="Закрыть"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <Grid Grid.Row="1" Margin="0,8,0,8">
+            <!-- Header Bar -->
+            <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryDark" Padding="16,12" 
+                                      materialDesign:ElevationAssist.Elevation="Dp4"
+                                      MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="420" MinWidth="360" MaxWidth="620"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="0">
-                        <Border Style="{StaticResource SolidPanel}"
-                                Margin="16,0,8,16"
-                                AllowDrop="True"
-                                Drop="Sidebar_Drop"
-                                DragEnter="Sidebar_DragEnter"
-                                DragLeave="Sidebar_DragLeave"
-                                x:Name="SidebarBorder">
+                    <!-- Logo & Title -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Brain" Width="32" Height="32" 
+                                                 Foreground="{DynamicResource SecondaryHueMidBrush}"
+                                                 VerticalAlignment="Center"/>
+                        <TextBlock Text="NEXUS AI" FontSize="20" FontWeight="Bold" 
+                                   Margin="12,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- AI Provider & Settings -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- AI Provider Toggle -->
+                        <Border Background="{DynamicResource MaterialDesignDivider}" 
+                                CornerRadius="8" Padding="8" Margin="0,0,16,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CloudOutline" Width="20" Height="20" 
+                                                         Margin="0,0,8,0" VerticalAlignment="Center"
+                                                         Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}"/>
+                                <materialDesign:PackIcon Kind="ServerNetwork" Width="20" Height="20" 
+                                                         Margin="0,0,8,0" VerticalAlignment="Center"
+                                                         Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}"/>
+                                
+                                <ComboBox ItemsSource="{Binding Source={StaticResource AiProviderValues}}"
+                                          SelectedItem="{Binding SelectedAiProvider}"
+                                          MinWidth="120"
+                                          Style="{StaticResource MaterialDesignFilledComboBox}"
+                                          materialDesign:HintAssist.Hint="AI Provider"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,12,0"/>
+                                
+                                <!-- Ollama Model Selector -->
+                                <ComboBox ItemsSource="{Binding AvailableOllamaModels}"
+                                          SelectedItem="{Binding SelectedOllamaModel}"
+                                          MinWidth="140"
+                                          Style="{StaticResource MaterialDesignFilledComboBox}"
+                                          materialDesign:HintAssist.Hint="Model"
+                                          VerticalAlignment="Center"
+                                          Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                
+                                <!-- Refresh Ollama Models Button -->
+                                <Button Style="{StaticResource MaterialDesignIconButton}"
+                                        Command="{Binding LoadOllamaModelsCommand}"
+                                        ToolTip="Refresh Ollama models"
+                                        Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}">
+                                    <materialDesign:PackIcon Kind="Refresh"/>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Gemini API Key (only visible for Gemini) -->
+                        <Border Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Key" Width="20" Height="20" 
+                                                         Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <PasswordBox x:Name="ApiKeyBox" 
+                                             Width="240"
+                                             materialDesign:HintAssist.Hint="Gemini API Key"
+                                             materialDesign:HintAssist.IsFloating="False"
+                                             Style="{StaticResource MaterialDesignFilledPasswordBox}"
+                                             PasswordChanged="ApiKeyBox_PasswordChanged"
+                                             ToolTip="Get your API key from aistudio.google.com"
+                                             Margin="0,0,16,0"/>
+                            </StackPanel>
+                        </Border>
+                        
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                Click="MinimizeWindow" 
+                                ToolTip="Minimize">
+                            <materialDesign:PackIcon Kind="WindowMinimize"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                Click="MaximizeWindow"
+                                ToolTip="Maximize">
+                            <materialDesign:PackIcon Kind="WindowMaximize"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" 
+                                Click="CloseWindow"
+                                ToolTip="Close">
+                            <materialDesign:PackIcon Kind="Close"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </materialDesign:ColorZone>
+
+            <!-- Main 3-Pane Layout -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="360" MinWidth="320" MaxWidth="480"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*" MinWidth="300"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- LEFT SIDEBAR: Documents/Sources -->
+                <Border Grid.Column="0" Background="{DynamicResource MaterialDesignCardBackground}"
+                        materialDesign:ElevationAssist.Elevation="Dp2"
+                        Margin="8"
+                        AllowDrop="True"
+                        Drop="Sidebar_Drop"
+                        DragEnter="Sidebar_DragEnter"
+                        DragLeave="Sidebar_DragLeave"
+                        x:Name="SidebarBorder">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Sidebar Header -->
+                        <StackPanel Grid.Row="0" Margin="20,20,20,16">
+                            <TextBlock Text="📚 Knowledge Base" 
+                                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="Drag &amp; drop files or click to add" 
+                                       Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                       Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <!-- Documents List -->
+                        <Grid Grid.Row="1">
+                            <!-- Empty State -->
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                        Visibility="{Binding Sources.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
+                                <materialDesign:PackIcon Kind="CloudUpload" Width="80" Height="80"
+                                                         Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                                         Opacity="0.3"
+                                                         HorizontalAlignment="Center"/>
+                                <TextBlock Text="No documents loaded" 
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                           Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                           HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                            </StackPanel>
+
+                            <!-- Documents ScrollViewer -->
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                          Margin="12,0"
+                                          Visibility="{Binding Sources.Count, Converter={StaticResource CountToVisibilityConverter}}">
+                                <ItemsControl ItemsSource="{Binding Sources}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <materialDesign:Card Margin="0,0,0,8" Padding="12"
+                                                                 UniformCornerRadius="8">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- File Icon based on extension -->
+                                                    <materialDesign:PackIcon Grid.Column="0" 
+                                                                             Kind="{Binding Document.FilePath, Converter={StaticResource FileIconConverter}}"
+                                                                             Width="24" Height="24"
+                                                                             Foreground="{DynamicResource SecondaryHueMidBrush}"
+                                                                             Margin="0,0,12,0"
+                                                                             VerticalAlignment="Center"/>
+
+                                                    <!-- Checkbox -->
+                                                    <CheckBox Grid.Column="1" 
+                                                              IsChecked="{Binding IsIncluded}"
+                                                              ToolTip="Include in context"
+                                                              Margin="0,0,12,0"
+                                                              VerticalAlignment="Center"/>
+
+                                                    <!-- Document Name -->
+                                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Name}" 
+                                                                   FontWeight="Medium"
+                                                                   TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="{Binding LoadedAtDisplay}" 
+                                                                   Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                                                   Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                                                   FontSize="10"/>
+                                                    </StackPanel>
+
+                                                    <!-- Remove Button -->
+                                                    <Button Grid.Column="3" 
+                                                            Style="{StaticResource MaterialDesignIconButton}"
+                                                            Command="{Binding DataContext.RemoveSourceCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                                            CommandParameter="{Binding}"
+                                                            ToolTip="Remove document">
+                                                        <materialDesign:PackIcon Kind="Close"/>
+                                                    </Button>
+                                                </Grid>
+                                            </materialDesign:Card>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+
+                        <!-- Sidebar Actions -->
+                        <StackPanel Grid.Row="2" Margin="20">
+                            <!-- Obsidian Vault Section -->
+                            <Expander Header="Obsidian Vault" Margin="0,0,0,12"
+                                      materialDesign:ExpanderAssist.HorizontalHeaderPadding="12">
+                                <StackPanel Margin="12,8">
+                                    <TextBox Text="{Binding ObsidianVaultPath, UpdateSourceTrigger=PropertyChanged}"
+                                             materialDesign:HintAssist.Hint="Vault Path"
+                                             Style="{StaticResource MaterialDesignFilledTextBox}"
+                                             Margin="0,0,0,8"/>
+                                    <TextBox Text="{Binding ObsidianSubfolder, UpdateSourceTrigger=PropertyChanged}"
+                                             materialDesign:HintAssist.Hint="Subfolder (optional)"
+                                             Style="{StaticResource MaterialDesignFilledTextBox}"
+                                             Margin="0,0,0,12"/>
+                                    <Button Content="SYNC VAULT" 
+                                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                                            Command="{Binding LoadObsidianVaultCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            ToolTip="Load all .md notes from vault"/>
+                                </StackPanel>
+                            </Expander>
+
+                            <!-- Add Document Button -->
+                            <Button Content="ADD DOCUMENTS"
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Command="{Binding AddDocumentCommand}"
+                                    Height="48"
+                                    HorizontalAlignment="Stretch"
+                                    materialDesign:ButtonAssist.CornerRadius="8">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="FileUpload" 
+                                                                 Width="20" Height="20" 
+                                                                 Margin="0,0,8,0"/>
+                                        <TextBlock Text="ADD DOCUMENTS" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+
+                            <!-- Loading Indicator -->
+                            <ProgressBar IsIndeterminate="True"
+                                         Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}"
+                                         Margin="0,12,0,0"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Drag Overlay -->
+                    <Border x:Name="DragDropOverlay" 
+                            Visibility="Collapsed" 
+                            Background="{DynamicResource PrimaryHueMidBrush}"
+                            Opacity="0.1"
+                            BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                            BorderThickness="2"
+                            CornerRadius="8"
+                            IsHitTestVisible="False">
+                        <TextBlock Text="Drop files here" 
+                                   FontSize="24" FontWeight="Bold"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+                    </Border>
+                </Border>
+
+                <!-- Splitter -->
+                <GridSplitter Grid.Column="1" Width="4" 
+                              Background="{DynamicResource MaterialDesignDivider}"
+                              HorizontalAlignment="Center"/>
+
+                <!-- CENTER: Chat Area -->
+                <Border Grid.Column="2" 
+                        Background="{DynamicResource MaterialDesignCardBackground}"
+                        materialDesign:ElevationAssist.Elevation="Dp1"
+                        Margin="4,8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Chat Messages -->
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" 
+                                      Padding="20" x:Name="ChatScrollViewer">
+                            <StackPanel>
+                                <!-- Welcome Message -->
+                                <materialDesign:Card Padding="24" Margin="0,0,0,20"
+                                                     materialDesign:ElevationAssist.Elevation="Dp0"
+                                                     Background="{DynamicResource PrimaryHueLightBrush}"
+                                                     Visibility="{Binding ChatMessages.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
+                                    <StackPanel>
+                                        <TextBlock Text="👋 Welcome to Nexus AI" 
+                                                   Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                                   FontWeight="Bold" Margin="0,0,0,8"/>
+                                        <TextBlock Text="I'm your AI research assistant powered by Gemini 2.0 Flash. Load documents to start asking questions."
+                                                   Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+                                    </StackPanel>
+                                </materialDesign:Card>
+
+                                <!-- Chat Messages -->
+                                <ItemsControl ItemsSource="{Binding ChatMessages}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <!-- User Message (Right) -->
+                                            <materialDesign:Card Margin="100,0,0,12" Padding="16"
+                                                                 HorizontalAlignment="Right"
+                                                                 Background="{DynamicResource PrimaryHueMidBrush}"
+                                                                 Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                                 UniformCornerRadius="12">
+                                                <TextBlock Text="{Binding Content}" 
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+                                            </materialDesign:Card>
+
+                                            <!-- AI Message (Left) -->
+                                            <materialDesign:Card Margin="0,0,100,12" Padding="16"
+                                                                 HorizontalAlignment="Left"
+                                                                 materialDesign:ElevationAssist.Elevation="Dp2"
+                                                                 Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}"
+                                                                 UniformCornerRadius="12">
+                                                <materialDesign:Card.ContextMenu>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="Read Aloud" 
+                                                                  Command="{Binding DataContext.PlayAudioCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                  CommandParameter="{Binding Content}">
+                                                            <MenuItem.Icon>
+                                                                <materialDesign:PackIcon Kind="VolumeHigh"/>
+                                                            </MenuItem.Icon>
+                                                        </MenuItem>
+                                                        <MenuItem Header="Copy" 
+                                                                  Command="{Binding CopyCommand}">
+                                                            <MenuItem.Icon>
+                                                                <materialDesign:PackIcon Kind="ContentCopy"/>
+                                                            </MenuItem.Icon>
+                                                        </MenuItem>
+                                                    </ContextMenu>
+                                                </materialDesign:Card.ContextMenu>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Content}" 
+                                                               TextWrapping="Wrap"
+                                                               Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                                                    
+                                                    <!-- Citations -->
+                                                    <ItemsControl ItemsSource="{Binding SourceCitations}"
+                                                                  Margin="0,12,0,0"
+                                                                  Visibility="{Binding SourceCitations, Converter={StaticResource NullToVisibilityConverter}}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <materialDesign:Chip Content="{Binding}" 
+                                                                                     Margin="0,0,8,4"
+                                                                                     IconBackground="{DynamicResource SecondaryHueMidBrush}"
+                                                                                     IconForeground="White">
+                                                                    <materialDesign:Chip.Icon>
+                                                                        <materialDesign:PackIcon Kind="FileDocument"/>
+                                                                    </materialDesign:Chip.Icon>
+                                                                </materialDesign:Chip>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
+                                                </StackPanel>
+                                            </materialDesign:Card>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Thinking Indicator -->
+                                <StackPanel HorizontalAlignment="Left" 
+                                            Visibility="{Binding IsThinking, Converter={StaticResource BoolToVisibilityConverter}}"
+                                            Margin="0,12">
+                                    <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                                 Width="40" Height="40"
+                                                 IsIndeterminate="True"
+                                                 Value="0"/>
+                                    <TextBlock Text="Thinking..." 
+                                               Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,8,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- Input Area -->
+                        <Border Grid.Row="1" 
+                                Background="{DynamicResource MaterialDesignCardBackground}"
+                                Padding="20,12"
+                                BorderBrush="{DynamicResource MaterialDesignDivider}"
+                                BorderThickness="0,1,0,0">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <StackPanel Grid.Row="0" Margin="20,20,20,16">
-                                    <TextBlock Text="📚 Sources" FontSize="20" FontWeight="Bold" Foreground="White"/>
-                                    <TextBlock Text="Drag &amp; drop PDF or MD files here" Foreground="#A0A0A8" Margin="0,4,0,0"/>
-                                </StackPanel>
+                                <!-- Audio Controls (when playing) -->
+                                <Border Grid.Row="0" 
+                                        Padding="12,8"
+                                        Background="{DynamicResource PrimaryHueLightBrush}"
+                                        CornerRadius="8"
+                                        Margin="0,0,0,8"
+                                        Visibility="{Binding IsPlayingAudio, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                <Grid Grid.Row="1">
-                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding Sources.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
-                                        <TextBlock Text="☁️" FontSize="64" HorizontalAlignment="Center" Foreground="White" Opacity="0.3"/>
-                                        <TextBlock Text="Drop your knowledge here" Foreground="White" Opacity="0.5" FontSize="16" HorizontalAlignment="Center" Margin="0,16,0,8"/>
-                                    </StackPanel>
-                                    
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="12,0" Visibility="{Binding Sources.Count, Converter={StaticResource CountToVisibilityConverter}}">
-                                        <ItemsControl ItemsSource="{Binding Sources}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border Style="{StaticResource SourceCard}" Margin="0,0,0,8">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="#7C3AED" Margin="0,0,12,0" VerticalAlignment="Center" Visibility="{Binding IsIncluded, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                                            <CheckBox Grid.Column="1" IsChecked="{Binding IsIncluded}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                                            <TextBlock Grid.Column="2" Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                                            <Button Grid.Column="3" Content="✕" Style="{StaticResource GhostButton}" Command="{Binding DataContext.RemoveSourceCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Foreground="White" Width="32" Height="32" Padding="0" ToolTip="Удалить источник"/>
-                                                        </Grid>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </ScrollViewer>
-                                </Grid>
+                                        <materialDesign:PackIcon Grid.Column="0" 
+                                                                 Kind="VolumeHigh" 
+                                                                 Width="24" Height="24"
+                                                                 VerticalAlignment="Center"
+                                                                 Margin="0,0,12,0"/>
 
-                                <StackPanel Grid.Row="2" Margin="20,16,20,20">
-                                    <!-- Obsidian Vault -->
-                                    <Border Background="#1A1A22" BorderBrush="#7C3AED" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,12">
-                                        <StackPanel>
-                                            <TextBlock Text="Obsidian" Foreground="White" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,8"/>
-                                            <TextBlock Text="Путь к хранилищу (папка с .md):" Foreground="#A0A0A8" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
-                                            <Grid Margin="0,0,0,6">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBox Text="{Binding ObsidianVaultPath, UpdateSourceTrigger=PropertyChanged}" 
-                                                         Background="#252530" Foreground="White" BorderThickness="0" Padding="8,6" 
-                                                         FontSize="12" VerticalContentAlignment="Center"
-                                                         Margin="0,0,8,0" MinWidth="120"/>
-                                                <Button Grid.Column="1" Content="Обзор..." Style="{StaticResource GhostButton}" 
-                                                        Command="{Binding BrowseVaultPathCommand}" MinWidth="72" Padding="10,6" Foreground="White"/>
-                                            </Grid>
-                                            <TextBlock Text="Подпапка (необязательно):" Foreground="#A0A0A8" FontSize="11" Margin="0,0,0,4"/>
-                                            <TextBox Text="{Binding ObsidianSubfolder, UpdateSourceTrigger=PropertyChanged}" 
-                                                     Background="#252530" Foreground="White" BorderThickness="0" Padding="8,6" 
-                                                     FontSize="12" VerticalContentAlignment="Center" Margin="0,0,0,8"/>
-                                            <Button Style="{StaticResource GhostButton}" Command="{Binding LoadObsidianVaultCommand}" 
-                                                    Height="36" MinWidth="140" Padding="12,0" Foreground="White" 
-                                                    ToolTip="Загрузить все .md заметки из выбранной папки" Content="Sync Vault"/>
+                                        <TextBlock Grid.Column="1" 
+                                                   Text="Playing audio..."
+                                                   VerticalAlignment="Center"
+                                                   Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                            <Button Style="{StaticResource MaterialDesignIconButton}"
+                                                    Command="{Binding PauseAudioCommand}"
+                                                    ToolTip="Pause">
+                                                <materialDesign:PackIcon Kind="Pause"/>
+                                            </Button>
+                                            <Button Style="{StaticResource MaterialDesignIconButton}"
+                                                    Command="{Binding StopAudioCommand}"
+                                                    ToolTip="Stop">
+                                                <materialDesign:PackIcon Kind="Stop"/>
+                                            </Button>
                                         </StackPanel>
-                                    </Border>
-                                    <Button Style="{StaticResource PremiumButton}" Command="{Binding AddPdfCommand}" Margin="0,0,0,8" Height="45">
-                                        <TextBlock Text="📄 Add PDF" Foreground="White" FontWeight="Bold"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Input Controls -->
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                             Text="{Binding UserQuestion, UpdateSourceTrigger=PropertyChanged}"
+                                             materialDesign:HintAssist.Hint="Ask a question about your documents..."
+                                             Style="{StaticResource MaterialDesignFilledTextBox}"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             MaxHeight="120"
+                                             VerticalScrollBarVisibility="Auto"
+                                             Margin="0,0,12,0"
+                                             AllowDrop="True"
+                                             Drop="ChatInput_Drop"/>
+
+                                    <Button Grid.Column="1"
+                                            Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                            Command="{Binding AskQuestionCommand}"
+                                            ToolTip="Send message (Ctrl+Enter)"
+                                            Height="56" Width="56">
+                                        <materialDesign:PackIcon Kind="Send" Width="28" Height="28"/>
                                     </Button>
-                                </StackPanel>
+                                </Grid>
                             </Grid>
                         </Border>
-                        <Border x:Name="DragDropOverlay" Style="{StaticResource DragDropOverlay}" Visibility="Collapsed" Margin="16,0,8,16" IsHitTestVisible="False"/>
                     </Grid>
+                </Border>
 
-                    <GridSplitter Grid.Column="1" Width="2" Background="{StaticResource GlassBorderBrush}" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                <!-- Splitter -->
+                <GridSplitter Grid.Column="3" Width="4" 
+                              Background="{DynamicResource MaterialDesignDivider}"
+                              HorizontalAlignment="Center"/>
 
-                    <Border Grid.Column="2" Style="{StaticResource SolidPanel}" Margin="8,0,16,16">
-                        <Grid>
+                <!-- RIGHT: Artifacts & Graph Panel -->
+                <Border Grid.Column="4"
+                        Background="{DynamicResource MaterialDesignCardBackground}"
+                        materialDesign:ElevationAssist.Elevation="Dp2"
+                        Margin="8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Tab Selector -->
+                        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryLight" Padding="8" Margin="8,8,8,0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <RadioButton Content="🎨 Artifacts" 
+                                             Style="{StaticResource MaterialDesignTabRadioButton}"
+                                             IsChecked="True"
+                                             GroupName="RightPanelTabs"
+                                             Click="ShowArtifactsTab"
+                                             Margin="0,0,8,0"/>
+                                <RadioButton Content="🕸️ Graph" 
+                                             Style="{StaticResource MaterialDesignTabRadioButton}"
+                                             GroupName="RightPanelTabs"
+                                             Click="ShowGraphTab"/>
+                            </StackPanel>
+                        </materialDesign:ColorZone>
+
+                        <!-- Artifacts Tab -->
+                        <Grid x:Name="ArtifactsTabContent" Grid.Row="1" Margin="12" Visibility="Visible">
+                            <!-- Generation Buttons -->
+                            <StackPanel VerticalAlignment="Top"
+                                        Visibility="{Binding Artifacts.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
+                                <TextBlock Text="Generate from sources:" 
+                                           Style="{StaticResource MaterialDesignBody2TextBlock}"
+                                           Margin="0,0,0,12"/>
+                                <Button Content="Deep Dive" 
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Command="{Binding GenerateDeepDiveCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="0,0,0,8"/>
+                                <Button Content="Notebook Guide" 
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Command="{Binding GenerateNotebookGuideCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="0,0,0,8"/>
+                                <Button Content="FAQ" 
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Command="{Binding GenerateFaqCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="0,0,0,8"/>
+                                <Button Content="Study Guide" 
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Command="{Binding GenerateStudyGuideCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="0,0,0,8"/>
+                                <Button Content="Summary" 
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Command="{Binding GenerateSummaryCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="0,0,0,8"/>
+                                <Button Content="Podcast Script" 
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Command="{Binding GeneratePodcastScriptCommand}"
+                                        HorizontalAlignment="Stretch"/>
+                            </StackPanel>
+
+                            <!-- Artifacts List & Viewer -->
+                            <Grid Visibility="{Binding Artifacts.Count, Converter={StaticResource CountToVisibilityConverter}}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Artifacts List -->
+                                <ListBox Grid.Row="0" 
+                                         ItemsSource="{Binding Artifacts}"
+                                         SelectedItem="{Binding SelectedArtifact}"
+                                         MaxHeight="200"
+                                         Margin="0,0,0,12">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Title}" FontWeight="Medium"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <!-- Artifact Viewer -->
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                                              Visibility="{Binding SelectedArtifact, Converter={StaticResource NullToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <Button Content="EXPORT TO OBSIDIAN"
+                                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                Command="{Binding ExportArtifactToObsidianCommand}"
+                                                HorizontalAlignment="Left"
+                                                Margin="0,0,0,16"/>
+                                        
+                                        <TextBlock Text="{Binding SelectedArtifact.Title}"
+                                                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                                   FontWeight="Bold"
+                                                   Margin="0,0,0,12"/>
+                                        
+                                        <TextBlock Text="{Binding SelectedArtifact.Content}"
+                                                   TextWrapping="Wrap"
+                                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Grid>
+
+                        <!-- Graph Tab -->
+                        <Grid x:Name="GraphTabContent" Grid.Row="1" Margin="12" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <Border Grid.Row="0" Background="{StaticResource SecondaryPanelBrush}" CornerRadius="12" Margin="20,20,20,0" Padding="4">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" Content="💬 Chat" Style="{StaticResource PremiumButton}" Click="ShowChatTab" x:Name="ChatTabButton" Padding="16,10"/>
-                                    <Button Grid.Column="1" Content="🎨 Artifacts" Style="{StaticResource GhostButton}" Click="ShowArtifactsTab" x:Name="ArtifactsTabButton" Foreground="White"/>
-                                </Grid>
+                            <Button Grid.Row="0" 
+                                    Content="REFRESH GRAPH"
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Command="{Binding RefreshGraphCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    Margin="0,0,0,12"/>
+
+                            <Border Grid.Row="1" 
+                                    BorderBrush="{DynamicResource MaterialDesignDivider}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                <Canvas x:Name="GraphCanvas" Background="{DynamicResource MaterialDesignCardBackground}">
+                                    <!-- Graph visualization will be drawn here -->
+                                </Canvas>
                             </Border>
-
-                            <Grid Grid.Row="1" Margin="20">
-                                <Grid x:Name="ChatTab" Visibility="Visible">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-                                        <StackPanel>
-                                            <Border Background="#1A1A24" CornerRadius="12" Padding="20" Margin="0,0,0,20" Visibility="{Binding ChatMessages.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
-                                                <StackPanel MaxWidth="700">
-                                                    <TextBlock Text="👋 Welcome to Nexus AI" FontSize="20" FontWeight="Bold" Foreground="White" Margin="0,0,0,8"/>
-                                                    <TextBlock Text="I'm your AI research assistant. Load documents to start." Foreground="#A0A0A8" TextWrapping="Wrap"/>
-                                                </StackPanel>
-                                            </Border>
-                                            <ItemsControl ItemsSource="{Binding ChatMessages}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Border Background="#252530" CornerRadius="12" Padding="15" Margin="0,0,0,10" HorizontalAlignment="{Binding IsUser, Converter={StaticResource ChatAlignmentConverter}}" MaxWidth="800">
-                                                            <StackPanel>
-                                                                <TextBlock Text="{Binding Content}" Foreground="White" TextWrapping="Wrap"/>
-                                                                <TextBlock Text="{Binding Citations}" Foreground="#7C3AED" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" Visibility="{Binding Citations, Converter={StaticResource NullToVisibilityConverter}}"/>
-                                                            </StackPanel>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                            <StackPanel HorizontalAlignment="Center" Visibility="{Binding IsThinking, Converter={StaticResource BoolToVisibilityConverter}}" Margin="20">
-                                                <Ellipse Width="15" Height="15" Fill="{StaticResource AccentGradientBrush}">
-                                                    <Ellipse.Effect><DropShadowEffect BlurRadius="10" Color="{StaticResource AccentPurple}"/></Ellipse.Effect>
-                                                </Ellipse>
-                                                <TextBlock Text="Thinking..." Foreground="White" Margin="0,10,0,0" HorizontalAlignment="Center"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </ScrollViewer>
-
-                                    <StackPanel Grid.Row="1" Margin="0,12,0,0">
-                                        <Button Style="{StaticResource GhostButton}" Command="{Binding ExportToObsidianCommand}" 
-                                                MinHeight="44" Height="44" MinWidth="280" Foreground="White" Margin="0,0,0,8" HorizontalAlignment="Left"
-                                                Padding="14,10" VerticalContentAlignment="Center"
-                                                Content="📤 Сохранить диалог в Obsidian" ToolTip="Экспорт всего чата (вопросы и ответы по PDF) в папку AI_Notebook вашего хранилища"/>
-                                        <Border Background="#1A1A22" BorderBrush="#7C3AED" BorderThickness="1" CornerRadius="12" Padding="16">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Border Grid.Column="0" Background="#252530" CornerRadius="8" Padding="12,10" Margin="0,0,12,0">
-                                                    <TextBox Text="{Binding UserQuestion, UpdateSourceTrigger=PropertyChanged}" 
-                                                             Background="Transparent" Foreground="White" BorderThickness="0" 
-                                                             FontSize="15" VerticalContentAlignment="Center" MinHeight="36" 
-                                                             TextWrapping="Wrap" AcceptsReturn="True"
-                                                             CaretBrush="White"
-                                                             Padding="0"/>
-                                                </Border>
-                                                <Button Grid.Column="1" Content="➤ Отправить" Style="{StaticResource PremiumButton}" Height="44" MinWidth="120" Command="{Binding AskQuestionCommand}"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid x:Name="ArtifactsTab" Visibility="Collapsed">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <Border Grid.Row="0" Background="#1A1A22" CornerRadius="8" Padding="12" Margin="0,0,0,12">
-                                        <StackPanel>
-                                            <TextBlock Text="Создать артефакт из источников" Foreground="White" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                                            <WrapPanel>
-                                                <Button Content="📋 Путеводитель" Style="{StaticResource GhostButton}" Command="{Binding GenerateNotebookGuideCommand}" Margin="0,0,8,8" Foreground="White" Padding="10,6" MinWidth="130"/>
-                                                <Button Content="❓ FAQ" Style="{StaticResource GhostButton}" Command="{Binding GenerateFaqCommand}" Margin="0,0,8,8" Foreground="White" Padding="10,6" MinWidth="70"/>
-                                                <Button Content="📖 Study Guide" Style="{StaticResource GhostButton}" Command="{Binding GenerateStudyGuideCommand}" Margin="0,0,8,8" Foreground="White" Padding="10,6" MinWidth="120"/>
-                                                <Button Content="📄 Summary" Style="{StaticResource GhostButton}" Command="{Binding GenerateSummaryCommand}" Margin="0,0,8,8" Foreground="White" Padding="10,6" MinWidth="95"/>
-                                                <Button Content="📑 Outline" Style="{StaticResource GhostButton}" Command="{Binding GenerateOutlineCommand}" Margin="0,0,8,8" Foreground="White" Padding="10,6" MinWidth="85"/>
-                                                <Button Content="🎙 Podcast" Style="{StaticResource GhostButton}" Command="{Binding GeneratePodcastScriptCommand}" Margin="0,0,8,8" Foreground="White" Padding="10,6" MinWidth="95"/>
-                                            </WrapPanel>
-                                        </StackPanel>
-                                    </Border>
-                                    <Grid Grid.Row="1">
-                                        <TextBlock Text="Загрузите источники и нажмите кнопку выше" Foreground="#55FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding Artifacts.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}"/>
-                                        <Grid Visibility="{Binding Artifacts.Count, Converter={StaticResource CountToVisibilityConverter}}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="200"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <ListBox ItemsSource="{Binding Artifacts}" SelectedItem="{Binding SelectedArtifact}" Background="#1A1A22" BorderThickness="0" Foreground="White" Padding="8">
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" Margin="0,4"/>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                            </ListBox>
-                                            <Border Grid.Column="1" Background="#252530" CornerRadius="8" Margin="8,0,0,0" Padding="16">
-                                                <Grid>
-                                                    <TextBlock Text="Выберите артефакт из списка слева" Foreground="#55FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SelectedArtifact, Converter={StaticResource NullToVisibilityInverseConverter}}"/>
-                                                    <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedArtifact, Converter={StaticResource NullToVisibilityConverter}}">
-                                                        <StackPanel>
-                                                            <Button Style="{StaticResource GhostButton}" Command="{Binding ExportArtifactToObsidianCommand}" 
-                                                                    Content="📤 Экспорт в Obsidian" Foreground="White" HorizontalAlignment="Left" Margin="0,0,0,12" Padding="10,6" MinWidth="180"
-                                                                    ToolTip="Сохранить этот артефакт в папку AI_Notebook хранилища Obsidian"/>
-                                                            <TextBlock Text="{Binding SelectedArtifact.Title}" FontWeight="Bold" FontSize="16" Foreground="White" Margin="0,0,0,8"/>
-                                                            <TextBlock Text="{Binding SelectedArtifact.Content}" Foreground="White" TextWrapping="Wrap"/>
-                                                        </StackPanel>
-                                                    </ScrollViewer>
-                                                </Grid>
-                                            </Border>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
                         </Grid>
-                    </Border>
-                </Grid>
-
-                <Border Grid.Row="2" Background="{StaticResource SecondaryPanelBrush}" Height="32" CornerRadius="0,0,16,16">
-                    <Grid Margin="24,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" Foreground="#88FFFFFF" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Grid.Column="1" Text="NEXUS AI v4.0-mvp" Foreground="#44FFFFFF" VerticalAlignment="Center" Margin="16,0,0,0"/>
                     </Grid>
                 </Border>
             </Grid>
         </Grid>
-    </Border>
+    </materialDesign:DialogHost>
 </Window>

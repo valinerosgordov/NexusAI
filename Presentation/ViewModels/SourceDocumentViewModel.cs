@@ -17,7 +17,7 @@ public sealed partial class SourceDocumentViewModel : ObservableObject
     public string Name => Document.Name;
     public string TypeDisplay => Document.Type.ToString();
     public string LoadedAtDisplay => Document.LoadedAt.ToLocalTime().ToString("g");
-    public string TypeIcon => Document.Type == SourceType.Pdf ? "📄" : "📝";
+    public string TypeIcon => Document.Type == SourceType.Document ? "📄" : "📝";
 
     public SourceDocumentViewModel(SourceDocument document)
     {

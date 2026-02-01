@@ -4,6 +4,7 @@ using NexusAI.Application.Services;
 using NexusAI.Domain;
 using NexusAI.Domain.Models;
 using NexusAI.Infrastructure;
+using NexusAI.Infrastructure.Services;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
@@ -15,6 +16,11 @@ public sealed partial class MainViewModel : ObservableObject
 {
     private readonly KnowledgeHubService _knowledgeHub;
     private readonly ApiKeyHolder _apiKeyHolder;
+    private readonly DocumentParserFactory _parserFactory;
+    private readonly GeminiAiService _geminiService;
+    private readonly OllamaService _ollamaService;
+    private readonly IAudioService _audioService;
+    private readonly KnowledgeGraphService _graphService;
 
     [ObservableProperty]
     private string _geminiApiKey = string.Empty;
@@ -52,32 +58,67 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string[] _followUpQuestions = [];
 
+    [ObservableProperty]
+    private AiProvider _selectedAiProvider = AiProvider.Gemini;
+
+    [ObservableProperty]
+    private string? _selectedOllamaModel;
+
+    [ObservableProperty]
+    private bool _isOllamaAvailable;
+
+    [ObservableProperty]
+    private bool _isPlayingAudio;
+
+    [ObservableProperty]
+    private string? _currentlySpeakingText;
+
+    public string[]? PendingImages { get; set; }
+
     public ObservableCollection<SourceDocumentViewModel> Sources { get; } = [];
     public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = [];
     public ObservableCollection<Artifact> Artifacts { get; } = [];
+    public ObservableCollection<string> AvailableOllamaModels { get; } = [];
+    public ObservableCollection<KnowledgeGraphService.GraphNode> GraphNodes { get; } = [];
+    public ObservableCollection<KnowledgeGraphService.GraphEdge> GraphEdges { get; } = [];
 
-    public MainViewModel(KnowledgeHubService knowledgeHub, ApiKeyHolder apiKeyHolder)
+    public MainViewModel(
+        KnowledgeHubService knowledgeHub, 
+        ApiKeyHolder apiKeyHolder, 
+        DocumentParserFactory parserFactory,
+        GeminiAiService geminiService,
+        OllamaService ollamaService,
+        IAudioService audioService,
+        KnowledgeGraphService graphService)
     {
         _knowledgeHub = knowledgeHub;
         _apiKeyHolder = apiKeyHolder;
+        _parserFactory = parserFactory;
+        _geminiService = geminiService;
+        _ollamaService = ollamaService;
+        _audioService = audioService;
+        _graphService = graphService;
+
+        // Check Ollama availability on startup
+        _ = CheckOllamaAvailabilityAsync();
     }
 
     [RelayCommand]
-    private async Task AddPdfAsync()
+    private async Task AddDocumentAsync()
     {
         OpenFileDialog dialog = new OpenFileDialog
         {
-            Filter = "PDF Files (*.pdf)|*.pdf",
-            Title = "Select PDF Document"
+            Filter = _parserFactory.GetFileDialogFilter(),
+            Title = "Select Document"
         };
         if (dialog.ShowDialog() != true)
             return;
 
         IsBusy = true;
-        StatusMessage = "Loading PDF...";
+        StatusMessage = "Loading document...";
         try
         {
-            var result = await _knowledgeHub.AddPdfAsync(dialog.FileName);
+            var result = await _knowledgeHub.AddDocumentAsync(dialog.FileName);
             if (result.IsSuccess)
             {
                 Sources.Add(new SourceDocumentViewModel(result.Value));
@@ -86,12 +127,12 @@ public sealed partial class MainViewModel : ObservableObject
             }
             else
             {
-                ShowError($"Failed to load PDF: {result.Error}");
+                ShowError($"Failed to load document: {result.Error}");
             }
         }
         catch (Exception ex)
         {
-            ShowError($"Unexpected error loading PDF: {ex.Message}");
+            ShowError($"Unexpected error loading document: {ex.Message}");
         }
         finally
         {
@@ -175,7 +216,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanAskQuestion))]
     private async Task AskQuestionAsync()
     {
-        if (string.IsNullOrWhiteSpace(GeminiApiKey))
+        if (string.IsNullOrWhiteSpace(GeminiApiKey) && SelectedAiProvider == AiProvider.Gemini)
         {
             MessageBox.Show("Please enter your Gemini API key in settings", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -183,11 +224,21 @@ public sealed partial class MainViewModel : ObservableObject
 
         IsBusy = true;
         IsThinking = true;
-        StatusMessage = "Thinking...";
+        StatusMessage = PendingImages != null ? $"Analyzing {PendingImages.Length} image(s)..." : "Thinking...";
 
         try
         {
-            var result = await _knowledgeHub.AskQuestionAsync(UserQuestion);
+            Result<ChatMessage> result;
+            
+            if (PendingImages != null && PendingImages.Length > 0)
+            {
+                result = await _knowledgeHub.AskQuestionWithImagesAsync(UserQuestion, PendingImages);
+                PendingImages = null; // Clear after use
+            }
+            else
+            {
+                result = await _knowledgeHub.AskQuestionAsync(UserQuestion);
+            }
 
             if (result.IsSuccess)
             {
@@ -532,27 +583,33 @@ public sealed partial class MainViewModel : ObservableObject
             var loadedCount = 0;
             foreach (var filePath in files)
             {
-                var extension = Path.GetExtension(filePath).ToLowerInvariant();
-
-                if (extension == ".pdf")
+                var result = await _knowledgeHub.AddDocumentAsync(filePath);
+                if (result.IsSuccess)
                 {
-                    var result = await _knowledgeHub.AddPdfAsync(filePath);
-                    if (result.IsSuccess)
-                    {
-                        Sources.Add(new SourceDocumentViewModel(result.Value));
-                        loadedCount++;
-                    }
+                    Sources.Add(new SourceDocumentViewModel(result.Value));
+                    loadedCount++;
                 }
-                else if (extension == ".md")
+                else
                 {
-                    var result = await LoadMarkdownFileAsync(filePath);
-                    if (result.IsSuccess)
-                    {
-                        Sources.Add(new SourceDocumentViewModel(result.Value));
-                        loadedCount++;
-                    }
+                    ShowError($"Failed to load {Path.GetFileName(filePath)}: {result.Error}");
                 }
             }
+
+            if (loadedCount > 0)
+            {
+                StatusMessage = $"✅ Loaded {loadedCount} document(s)";
+                CheckContextLimits();
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError($"Unexpected error processing files: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 
             StatusMessage = loadedCount > 0 
                 ? $"Loaded {loadedCount} file(s)" 
@@ -650,4 +707,144 @@ public sealed partial class MainViewModel : ObservableObject
                {artifact.Content}
                """;
     }
+
+    // AI Provider Management
+    private async Task CheckOllamaAvailabilityAsync()
+    {
+        IsOllamaAvailable = await _ollamaService.IsOllamaRunningAsync();
+        
+        if (IsOllamaAvailable)
+        {
+            await LoadOllamaModelsAsync();
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoadOllamaModelsAsync()
+    {
+        var result = await _ollamaService.GetAvailableModelsAsync();
+        
+        if (result.IsSuccess)
+        {
+            AvailableOllamaModels.Clear();
+            foreach (var model in result.Value)
+            {
+                AvailableOllamaModels.Add(model);
+            }
+
+            if (AvailableOllamaModels.Count > 0 && string.IsNullOrEmpty(SelectedOllamaModel))
+            {
+                SelectedOllamaModel = AvailableOllamaModels[0];
+            }
+
+            IsOllamaAvailable = true;
+            StatusMessage = $"✅ Found {AvailableOllamaModels.Count} Ollama model(s)";
+        }
+        else
+        {
+            IsOllamaAvailable = false;
+            StatusMessage = "⚠️ Ollama not available";
+        }
+    }
+
+    partial void OnSelectedAiProviderChanged(AiProvider value)
+    {
+        UpdateAiService();
+        
+        if (value == AiProvider.Ollama)
+        {
+            _ = CheckOllamaAvailabilityAsync();
+        }
+    }
+
+    partial void OnSelectedOllamaModelChanged(string? value)
+    {
+        if (!string.IsNullOrEmpty(value))
+        {
+            _ollamaService.SelectedModel = value;
+            StatusMessage = $"Ollama model: {value}";
+        }
+    }
+
+    private void UpdateAiService()
+    {
+        var newService = SelectedAiProvider switch
+        {
+            AiProvider.Gemini => (IAiService)_geminiService,
+            AiProvider.Ollama => _ollamaService,
+            _ => _geminiService
+        };
+
+        _knowledgeHub.SetAiService(newService);
+
+        StatusMessage = SelectedAiProvider == AiProvider.Gemini 
+            ? "Using Gemini (Cloud)" 
+            : $"Using Ollama (Local) - {SelectedOllamaModel ?? "No model selected"}";
+    }
+
+    // Audio/TTS Commands
+    [RelayCommand]
+    private async Task PlayAudioAsync(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
+        IsPlayingAudio = true;
+        CurrentlySpeakingText = text;
+
+        var result = await _audioService.SpeakAsync(text);
+        
+        if (result.IsFailure)
+        {
+            ShowError($"Audio playback failed: {result.Error}");
+        }
+
+        IsPlayingAudio = false;
+        CurrentlySpeakingText = null;
+    }
+
+    [RelayCommand]
+    private void PauseAudio()
+    {
+        _audioService.Pause();
+    }
+
+    [RelayCommand]
+    private void ResumeAudio()
+    {
+        _audioService.Resume();
+    }
+
+    [RelayCommand]
+    private void StopAudio()
+    {
+        _audioService.Stop();
+        IsPlayingAudio = false;
+        CurrentlySpeakingText = null;
+    }
+
+    // Knowledge Graph Commands
+    [RelayCommand]
+    private void RefreshGraph()
+    {
+        var documents = Sources
+            .Where(s => s.IsIncluded)
+            .Select(s => s.Document)
+            .ToArray();
+
+        var (nodes, edges) = _graphService.BuildGraph(documents);
+
+        GraphNodes.Clear();
+        GraphEdges.Clear();
+
+        foreach (var node in nodes)
+            GraphNodes.Add(node);
+
+        foreach (var edge in edges)
+            GraphEdges.Add(edge);
+
+        StatusMessage = $"Graph: {nodes.Length} nodes, {edges.Length} connections";
+    }
 }
+
+

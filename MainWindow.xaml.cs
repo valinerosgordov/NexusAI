@@ -3,6 +3,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+using System.IO;
 using NexusAI.Presentation.ViewModels;
 
 namespace NexusAI;
@@ -13,11 +15,18 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Loaded += MainWindow_Loaded;
-        MouseDown += (s, e) =>
+    }
+
+    private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount == 2)
         {
-            if (e.ChangedButton == MouseButton.Left)
-                DragMove();
-        };
+            MaximizeWindow(sender, e);
+        }
+        else
+        {
+            DragMove();
+        }
     }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -57,49 +66,140 @@ public partial class MainWindow : Window
 
     #endregion
 
-    #region Tab Switching with Animations
-
-    private void ShowChatTab(object sender, RoutedEventArgs e)
-    {
-        SwitchTab(ChatTab, ArtifactsTab);
-        ChatTabButton.Style = (Style)FindResource("PremiumButton");
-        ArtifactsTabButton.Style = (Style)FindResource("GhostButton");
-    }
+    #region Tab Switching
 
     private void ShowArtifactsTab(object sender, RoutedEventArgs e)
     {
-        SwitchTab(ArtifactsTab, ChatTab);
-        ChatTabButton.Style = (Style)FindResource("GhostButton");
-        ArtifactsTabButton.Style = (Style)FindResource("PremiumButton");
+        if (ArtifactsTabContent != null && GraphTabContent != null)
+        {
+            ArtifactsTabContent.Visibility = Visibility.Visible;
+            GraphTabContent.Visibility = Visibility.Collapsed;
+        }
     }
 
-    private void SwitchTab(UIElement showTab, UIElement hideTab)
+    private void ShowGraphTab(object sender, RoutedEventArgs e)
     {
-        // Fade out old tab
-        var fadeOut = new DoubleAnimation
+        if (ArtifactsTabContent != null && GraphTabContent != null)
         {
-            From = 1,
-            To = 0,
-            Duration = TimeSpan.FromSeconds(0.15),
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
-        };
+            ArtifactsTabContent.Visibility = Visibility.Collapsed;
+            GraphTabContent.Visibility = Visibility.Visible;
 
-        fadeOut.Completed += (s, e) =>
-        {
-            hideTab.Visibility = Visibility.Collapsed;
-            showTab.Visibility = Visibility.Visible;
-            var fadeIn = new DoubleAnimation
+            // Refresh graph when tab is shown
+            if (DataContext is MainViewModel viewModel)
             {
-                From = 0,
-                To = 1,
-                Duration = TimeSpan.FromSeconds(0.3),
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
-            };
-            
-            showTab.BeginAnimation(OpacityProperty, fadeIn);
-        };
+                viewModel.RefreshGraphCommand.Execute(null);
+                DrawGraph();
+            }
+        }
+    }
 
-        hideTab.BeginAnimation(OpacityProperty, fadeOut);
+    private void DrawGraph()
+    {
+        if (DataContext is not MainViewModel viewModel || GraphCanvas == null)
+            return;
+
+        GraphCanvas.Children.Clear();
+
+        // Draw edges first (so they appear behind nodes)
+        foreach (var edge in viewModel.GraphEdges)
+        {
+            var sourceNode = viewModel.GraphNodes.FirstOrDefault(n => n.DocumentId == edge.Source);
+            var targetNode = viewModel.GraphNodes.FirstOrDefault(n => n.DocumentId == edge.Target);
+
+            if (sourceNode != null && targetNode != null)
+            {
+                var line = new Line
+                {
+                    X1 = sourceNode.X,
+                    Y1 = sourceNode.Y,
+                    X2 = targetNode.X,
+                    Y2 = targetNode.Y,
+                    Stroke = new SolidColorBrush(Colors.Gray),
+                    StrokeThickness = Math.Max(1, edge.SharedKeywords / 2.0),
+                    Opacity = 0.4
+                };
+                GraphCanvas.Children.Add(line);
+            }
+        }
+
+        // Draw nodes
+        foreach (var node in viewModel.GraphNodes)
+        {
+            var ellipse = new Ellipse
+            {
+                Width = 60,
+                Height = 60,
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7C3AED")),
+                Stroke = new SolidColorBrush(Colors.White),
+                StrokeThickness = 2
+            };
+
+            Canvas.SetLeft(ellipse, node.X - 30);
+            Canvas.SetTop(ellipse, node.Y - 30);
+
+            var label = new TextBlock
+            {
+                Text = node.Name.Length > 12 ? node.Name.Substring(0, 12) + "..." : node.Name,
+                Foreground = new SolidColorBrush(Colors.White),
+                FontSize = 10,
+                FontWeight = FontWeights.Bold,
+                TextAlignment = TextAlignment.Center,
+                Width = 60
+            };
+
+            Canvas.SetLeft(label, node.X - 30);
+            Canvas.SetTop(label, node.Y + 35);
+
+            GraphCanvas.Children.Add(ellipse);
+            GraphCanvas.Children.Add(label);
+        }
+    }
+
+    #endregion
+
+    #region Image Drag & Drop
+
+    private async void ChatInput_Drop(object sender, DragEventArgs e)
+    {
+        if (DataContext is not MainViewModel viewModel)
+            return;
+
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var imageFiles = files
+                .Where(f => f.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                           f.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                           f.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            if (imageFiles.Length > 0)
+            {
+                var base64Images = new List<string>();
+                foreach (var imagePath in imageFiles)
+                {
+                    try
+                    {
+                        var bytes = await File.ReadAllBytesAsync(imagePath);
+                        var base64 = Convert.ToBase64String(bytes);
+                        base64Images.Add(base64);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to load image: {ex.Message}", "Error", 
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+
+                if (base64Images.Count > 0)
+                {
+                    // Store images temporarily in ViewModel for next question
+                    viewModel.PendingImages = base64Images.ToArray();
+                    MessageBox.Show($"✅ {base64Images.Count} image(s) attached. Ask your question now.", 
+                        "Images Attached", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
     }
 
     #endregion
@@ -117,9 +217,10 @@ public partial class MainWindow : Window
         {
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             
+            var supportedExtensions = new[] { ".pdf", ".docx", ".pptx", ".epub", ".txt", ".md" };
             var supportedFiles = files
-                .Where(f => f.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) || 
-                           f.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+                .Where(f => supportedExtensions.Any(ext => 
+                    f.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
                 .ToArray();
 
             if (supportedFiles.Length > 0)
@@ -128,7 +229,8 @@ public partial class MainWindow : Window
             }
             else
             {
-                MessageBox.Show("Please drop PDF or MD files only.", "Invalid File Type", 
+                MessageBox.Show("Please drop supported document files (PDF, DOCX, PPTX, EPUB, TXT, MD).", 
+                    "Invalid File Type", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -139,9 +241,9 @@ public partial class MainWindow : Window
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var supportedExtensions = new[] { ".pdf", ".docx", ".pptx", ".epub", ".txt", ".md" };
             var hasSupported = files.Any(f => 
-                f.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) || 
-                f.EndsWith(".md", StringComparison.OrdinalIgnoreCase));
+                supportedExtensions.Any(ext => f.EndsWith(ext, StringComparison.OrdinalIgnoreCase)));
 
             if (hasSupported)
             {
