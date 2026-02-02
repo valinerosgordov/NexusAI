@@ -47,21 +47,20 @@ public sealed class EpubParser : IDocumentParser
     {
         var book = EpubReader.ReadBook(filePath);
         var sb = new StringBuilder();
-
         foreach (var chapter in book.ReadingOrder)
         {
-            var chapterContent = chapter.ReadContentAsText();
+            var htmlContent = chapter.Content;
             
-            if (!string.IsNullOrWhiteSpace(chapterContent))
+            if (!string.IsNullOrWhiteSpace(htmlContent))
             {
-                // Strip HTML tags (basic approach)
+
                 var text = System.Text.RegularExpressions.Regex.Replace(
-                    chapterContent, 
+                    htmlContent, 
                     @"<[^>]+>", 
                     string.Empty
                 );
                 
-                // Decode HTML entities
+
                 text = System.Net.WebUtility.HtmlDecode(text);
                 
                 if (!string.IsNullOrWhiteSpace(text))

@@ -14,7 +14,7 @@ public static class DependencyInjection
         services.AddHttpClient();
         services.AddSingleton<ApiKeyHolder>();
         
-        // Register both AI services
+
         services.AddSingleton<GeminiAiService>(sp =>
         {
             var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
@@ -30,11 +30,7 @@ public static class DependencyInjection
             var httpClient = httpClientFactory.CreateClient();
             return new OllamaService(httpClient);
         });
-
-        // Default to Gemini
         services.AddSingleton<IAiService>(sp => sp.GetRequiredService<GeminiAiService>());
-
-        // Register all document parsers
         services.AddSingleton<IDocumentParser, PdfParser>();
         services.AddSingleton<IDocumentParser, WordParser>();
         services.AddSingleton<IDocumentParser, PresentationParser>();
@@ -43,7 +39,7 @@ public static class DependencyInjection
         services.AddSingleton<DocumentParserFactory>();
 
         services.AddSingleton<IObsidianService, ObsidianService>();
-        services.AddSingleton<IAudioService, SpeechSynthesisService>();
+        services.AddScoped<IAudioService, SpeechSynthesisService>();
         services.AddSingleton<KnowledgeGraphService>();
         services.AddSingleton<KnowledgeHubService>();
         services.AddSingleton<MainViewModel>();

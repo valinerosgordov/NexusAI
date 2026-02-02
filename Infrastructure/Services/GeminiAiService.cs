@@ -6,8 +6,6 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 
 namespace NexusAI.Infrastructure.Services;
-
-// вызовы Gemini API
 public sealed class GeminiAiService : IAiService
 {
     private readonly HttpClient _httpClient;
@@ -51,9 +49,13 @@ public sealed class GeminiAiService : IAiService
                 return Result.Failure<AiResponse>("Question cannot be empty");
 
             var body = CreateRequestBody(question, context, base64Images);
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{ModelName}:generateContent?key={_apiKeyHolder.ApiKey}";
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{ModelName}:generateContent";
 
-            var response = await _httpClient.PostAsJsonAsync(url, body, cancellationToken)
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Add("x-goog-api-key", _apiKeyHolder.ApiKey);
+            request.Content = JsonContent.Create(body);
+
+            var response = await _httpClient.SendAsync(request, cancellationToken)
                 .ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -65,10 +67,17 @@ public sealed class GeminiAiService : IAiService
             var geminiResponse = await response.Content.ReadFromJsonAsync<GeminiResponse>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            if (geminiResponse?.Candidates is null || geminiResponse.Candidates.Length == 0)
-                return Result.Failure<AiResponse>("No response from AI");
+            if (geminiResponse?.Candidates is not { Length: > 0 } candidates)
+                return Result.Failure<AiResponse>("No candidates in API response");
 
-            var content = geminiResponse.Candidates[0].Content.Parts[0].Text;
+            var firstCandidate = candidates[0];
+            if (firstCandidate?.Content?.Parts is not { Length: > 0 } parts)
+                return Result.Failure<AiResponse>("No content parts in API response");
+
+            var content = parts[0]?.Text ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(content))
+                return Result.Failure<AiResponse>("Empty response from AI");
+
             var sourceCitations = ExtractSourceCitations(content);
             var tokensUsed = geminiResponse.UsageMetadata?.TotalTokenCount ?? 0;
 
@@ -107,8 +116,6 @@ public sealed class GeminiAiService : IAiService
               """;
 
         var parts = new List<object> { new { text = fullPrompt } };
-
-        // Add images if provided
         if (base64Images is not null && base64Images.Length > 0)
         {
             foreach (var imageData in base64Images)

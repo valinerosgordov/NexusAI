@@ -39,8 +39,6 @@ public sealed class OllamaService : IAiService
         {
             if (string.IsNullOrWhiteSpace(question))
                 return Result.Failure<AiResponse>("Question cannot be empty");
-
-            // Check if Ollama is running
             if (!await IsOllamaRunningAsync(cancellationToken))
                 return Result.Failure<AiResponse>("Ollama is not running. Please start Ollama desktop app.");
 
@@ -173,8 +171,6 @@ public sealed class OllamaService : IAiService
         }
         return list.ToArray();
     }
-
-    // DTOs
     private sealed record OllamaResponse(
         [property: JsonPropertyName("message")] OllamaMessage? Message,
         [property: JsonPropertyName("done")] bool Done

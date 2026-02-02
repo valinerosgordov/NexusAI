@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NexusAI.Application.Interfaces;
 using NexusAI.Application.Services;
 using NexusAI.Domain;
 using NexusAI.Domain.Models;
@@ -98,8 +99,6 @@ public sealed partial class MainViewModel : ObservableObject
         _ollamaService = ollamaService;
         _audioService = audioService;
         _graphService = graphService;
-
-        // Check Ollama availability on startup
         _ = CheckOllamaAvailabilityAsync();
     }
 
@@ -464,7 +463,7 @@ public sealed partial class MainViewModel : ObservableObject
         StatusMessage = $"❌ {message}";
         ErrorMessage = message;
         IsErrorVisible = true;
-        // скрыть через 8 сек
+
         Task.Delay(8000).ContinueWith(_ =>
         {
             IsErrorVisible = false;
@@ -611,16 +610,6 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
-            StatusMessage = loadedCount > 0 
-                ? $"Loaded {loadedCount} file(s)" 
-                : "No supported files found";
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
     private async Task<Result<SourceDocument>> LoadMarkdownFileAsync(string filePath)
     {
         try
@@ -707,8 +696,6 @@ public sealed partial class MainViewModel : ObservableObject
                {artifact.Content}
                """;
     }
-
-    // AI Provider Management
     private async Task CheckOllamaAvailabilityAsync()
     {
         IsOllamaAvailable = await _ollamaService.IsOllamaRunningAsync();
@@ -781,8 +768,6 @@ public sealed partial class MainViewModel : ObservableObject
             ? "Using Gemini (Cloud)" 
             : $"Using Ollama (Local) - {SelectedOllamaModel ?? "No model selected"}";
     }
-
-    // Audio/TTS Commands
     [RelayCommand]
     private async Task PlayAudioAsync(string? text)
     {
@@ -822,8 +807,6 @@ public sealed partial class MainViewModel : ObservableObject
         IsPlayingAudio = false;
         CurrentlySpeakingText = null;
     }
-
-    // Knowledge Graph Commands
     [RelayCommand]
     private void RefreshGraph()
     {
@@ -846,5 +829,3 @@ public sealed partial class MainViewModel : ObservableObject
         StatusMessage = $"Graph: {nodes.Length} nodes, {edges.Length} connections";
     }
 }
-
-

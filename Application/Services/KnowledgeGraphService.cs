@@ -62,8 +62,6 @@ public sealed class KnowledgeGraphService
     {
         if (string.IsNullOrWhiteSpace(text))
             return Array.Empty<string>();
-
-        // Simple keyword extraction: top frequent words (excluding common stopwords)
         var stopwords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",

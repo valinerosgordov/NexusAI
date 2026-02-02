@@ -83,8 +83,6 @@ public partial class MainWindow : Window
         {
             ArtifactsTabContent.Visibility = Visibility.Collapsed;
             GraphTabContent.Visibility = Visibility.Visible;
-
-            // Refresh graph when tab is shown
             if (DataContext is MainViewModel viewModel)
             {
                 viewModel.RefreshGraphCommand.Execute(null);
@@ -99,8 +97,6 @@ public partial class MainWindow : Window
             return;
 
         GraphCanvas.Children.Clear();
-
-        // Draw edges first (so they appear behind nodes)
         foreach (var edge in viewModel.GraphEdges)
         {
             var sourceNode = viewModel.GraphNodes.FirstOrDefault(n => n.DocumentId == edge.Source);
@@ -121,8 +117,6 @@ public partial class MainWindow : Window
                 GraphCanvas.Children.Add(line);
             }
         }
-
-        // Draw nodes
         foreach (var node in viewModel.GraphNodes)
         {
             var ellipse = new Ellipse
@@ -193,7 +187,7 @@ public partial class MainWindow : Window
 
                 if (base64Images.Count > 0)
                 {
-                    // Store images temporarily in ViewModel for next question
+
                     viewModel.PendingImages = base64Images.ToArray();
                     MessageBox.Show($"✅ {base64Images.Count} image(s) attached. Ask your question now.", 
                         "Images Attached", MessageBoxButton.OK, MessageBoxImage.Information);

@@ -3,10 +3,6 @@ using System.Windows;
 using System.Windows.Data;
 
 namespace NexusAI.Presentation.Converters;
-
-/// <summary>
-/// Converts count (int) to Visibility. Parameter "Inverted" = Visible when count is 0.
-/// </summary>
 public sealed class CountToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

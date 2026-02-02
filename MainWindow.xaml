@@ -8,56 +8,168 @@
         Title="Nexus AI" 
         Height="900" Width="1600"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource MaterialDesignPaper}"
-        Style="{StaticResource MaterialDesignWindow}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="#0A0A0A"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize"
+        FontFamily="Segoe UI, SF Pro Display, -apple-system"
+        TextElement.Foreground="#F5F5F7"
         TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
+        TextElement.FontSize="14"
         TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="Auto">
-
+        TextOptions.TextRenderingMode="ClearType">
     <Window.Resources>
-        <!-- File Type Icon Mapping -->
-        <Style x:Key="FileTypeIconTextBlock" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Storyboard x:Key="FadeIn">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="SlideUp">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" 
+                             From="20" To="0" Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4"/>
+        </Storyboard>
+        <Style x:Key="ModernButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="#8B5CF6"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="10"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                                                 To="1.02" Duration="0:0:0.15"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                                                 To="1.02" Duration="0:0:0.15"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                                                 To="1" Duration="0:0:0.15"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                                                 To="1" Duration="0:0:0.15"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SubtleButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderBrush" Value="#2C2C2E"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="8"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform X="0"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1C1C1E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}">
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Foreground" Value="#98989D"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#F5F5F7"/>
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                                                 To="1.15" Duration="0:0:0.1"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                                                 To="1.15" Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                                                 To="1" Duration="0:0:0.1"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                                                 To="1" Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
-
     <materialDesign:DialogHost Identifier="RootDialog">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <!-- Header Bar -->
-            <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryDark" Padding="16,12" 
-                                      materialDesign:ElevationAssist.Elevation="Dp4"
-                                      MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Logo & Title -->
-                    <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Brain" Width="32" Height="32" 
-                                                 Foreground="{DynamicResource SecondaryHueMidBrush}"
-                                                 VerticalAlignment="Center"/>
-                        <TextBlock Text="NEXUS AI" FontSize="20" FontWeight="Bold" 
-                                   Margin="12,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <!-- AI Provider & Settings -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- AI Provider Toggle -->
-                        <Border Background="{DynamicResource MaterialDesignDivider}" 
-                                CornerRadius="8" Padding="8" Margin="0,0,16,0">
+        <Border Background="#0A0A0A" CornerRadius="12" BorderThickness="1" BorderBrush="#1C1C1E">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="0" Opacity="0.5"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Background="#000000" 
+                        CornerRadius="12,12,0,0"
+                        BorderThickness="0,0,0,1"
+                        BorderBrush="#1C1C1E"
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                    <Grid Height="64" Margin="20,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Background="#8B5CF6" Width="36" Height="36" CornerRadius="8" Margin="0,0,12,0">
+                                <materialDesign:PackIcon Kind="Brain" Width="20" Height="20" 
+                                                         VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                         Foreground="White"/>
+                            </Border>
+                            <TextBlock Text="Nexus AI" 
+                                       FontSize="18" 
+                                       FontWeight="SemiBold"
+                                       Foreground="#F5F5F7"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Background="#1C1C1E" 
+                                    CornerRadius="10" Padding="12,8" Margin="0,0,12,0">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="CloudOutline" Width="20" Height="20" 
                                                          Margin="0,0,8,0" VerticalAlignment="Center"
@@ -65,7 +177,6 @@
                                 <materialDesign:PackIcon Kind="ServerNetwork" Width="20" Height="20" 
                                                          Margin="0,0,8,0" VerticalAlignment="Center"
                                                          Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}"/>
-                                
                                 <ComboBox ItemsSource="{Binding Source={StaticResource AiProviderValues}}"
                                           SelectedItem="{Binding SelectedAiProvider}"
                                           MinWidth="120"
@@ -73,8 +184,6 @@
                                           materialDesign:HintAssist.Hint="AI Provider"
                                           VerticalAlignment="Center"
                                           Margin="0,0,12,0"/>
-                                
-                                <!-- Ollama Model Selector -->
                                 <ComboBox ItemsSource="{Binding AvailableOllamaModels}"
                                           SelectedItem="{Binding SelectedOllamaModel}"
                                           MinWidth="140"
@@ -88,8 +197,6 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                
-                                <!-- Refresh Ollama Models Button -->
                                 <Button Style="{StaticResource MaterialDesignIconButton}"
                                         Command="{Binding LoadOllamaModelsCommand}"
                                         ToolTip="Refresh Ollama models"
@@ -98,9 +205,11 @@
                                 </Button>
                             </StackPanel>
                         </Border>
-
-                        <!-- Gemini API Key (only visible for Gemini) -->
-                        <Border Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}">
+                        <Border Background="#1C1C1E" 
+                                CornerRadius="10" 
+                                Padding="12,8" 
+                                Margin="0,0,12,0"
+                                Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Key" Width="20" Height="20" 
                                                          Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -110,32 +219,32 @@
                                              materialDesign:HintAssist.IsFloating="False"
                                              Style="{StaticResource MaterialDesignFilledPasswordBox}"
                                              PasswordChanged="ApiKeyBox_PasswordChanged"
-                                             ToolTip="Get your API key from aistudio.google.com"
-                                             Margin="0,0,16,0"/>
+                                             ToolTip="Get your API key from aistudio.google.com"/>
                             </StackPanel>
                         </Border>
-                        
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                Click="MinimizeWindow" 
-                                ToolTip="Minimize">
-                            <materialDesign:PackIcon Kind="WindowMinimize"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                Click="MaximizeWindow"
-                                ToolTip="Maximize">
-                            <materialDesign:PackIcon Kind="WindowMaximize"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                Click="CloseWindow"
-                                ToolTip="Close">
-                            <materialDesign:PackIcon Kind="Close"/>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </materialDesign:ColorZone>
-
-            <!-- Main 3-Pane Layout -->
-            <Grid Grid.Row="1">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource IconButtonStyle}" 
+                                        Click="MinimizeWindow" 
+                                        Margin="0,0,8,0"
+                                        ToolTip="Minimize">
+                                    <materialDesign:PackIcon Kind="WindowMinimize" Width="16" Height="16"/>
+                                </Button>
+                                <Button Style="{StaticResource IconButtonStyle}" 
+                                        Click="MaximizeWindow"
+                                        Margin="0,0,8,0"
+                                        ToolTip="Maximize">
+                                    <materialDesign:PackIcon Kind="WindowMaximize" Width="16" Height="16"/>
+                                </Button>
+                                <Button Style="{StaticResource IconButtonStyle}" 
+                                        Click="CloseWindow"
+                                        ToolTip="Close">
+                                    <materialDesign:PackIcon Kind="Close" Width="16" Height="16"/>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Grid Grid.Row="1" Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="360" MinWidth="320" MaxWidth="480"/>
                     <ColumnDefinition Width="Auto"/>
@@ -143,58 +252,122 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="1*" MinWidth="300"/>
                 </Grid.ColumnDefinitions>
-
-                <!-- LEFT SIDEBAR: Documents/Sources -->
-                <Border Grid.Column="0" Background="{DynamicResource MaterialDesignCardBackground}"
-                        materialDesign:ElevationAssist.Elevation="Dp2"
-                        Margin="8"
-                        AllowDrop="True"
-                        Drop="Sidebar_Drop"
-                        DragEnter="Sidebar_DragEnter"
-                        DragLeave="Sidebar_DragLeave"
-                        x:Name="SidebarBorder">
+                <Grid Grid.Column="0">
+                    <Border Background="#1C1C1E"
+                            CornerRadius="12"
+                            Margin="12,8,8,12"
+                            AllowDrop="True"
+                            Drop="Sidebar_Drop"
+                            DragEnter="Sidebar_DragEnter"
+                            DragLeave="Sidebar_DragLeave"
+                            x:Name="SidebarBorder">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-
-                        <!-- Sidebar Header -->
-                        <StackPanel Grid.Row="0" Margin="20,20,20,16">
+                        <StackPanel Grid.Row="0" Margin="20,24,20,16">
                             <TextBlock Text="📚 Knowledge Base" 
-                                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                       FontWeight="Bold"/>
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="#F5F5F7"/>
                             <TextBlock Text="Drag &amp; drop files or click to add" 
-                                       Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                                       Foreground="{DynamicResource MaterialDesignBodyLight}"
-                                       Margin="0,4,0,0"/>
+                                       FontSize="12"
+                                       Foreground="#98989D"
+                                       Margin="0,6,0,0"/>
                         </StackPanel>
-
-                        <!-- Documents List -->
                         <Grid Grid.Row="1">
-                            <!-- Empty State -->
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
                                         Visibility="{Binding Sources.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
-                                <materialDesign:PackIcon Kind="CloudUpload" Width="80" Height="80"
-                                                         Foreground="{DynamicResource MaterialDesignBodyLight}"
-                                                         Opacity="0.3"
-                                                         HorizontalAlignment="Center"/>
+                                <Border Width="96" Height="96" 
+                                        CornerRadius="48"
+                                        Background="#1C1C1E"
+                                        BorderThickness="2"
+                                        Margin="0,0,0,16"
+                                        HorizontalAlignment="Center">
+                                    <Border.BorderBrush>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#8B5CF6" Offset="0"/>
+                                            <GradientStop Color="#A78BFA" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.BorderBrush>
+                                    <materialDesign:PackIcon Kind="CloudUpload" Width="48" Height="48"
+                                                             Foreground="#8B5CF6"
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center"/>
+                                </Border>
                                 <TextBlock Text="No documents loaded" 
-                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                           Foreground="{DynamicResource MaterialDesignBodyLight}"
-                                           HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                                           FontSize="14"
+                                           FontWeight="Medium"
+                                           Foreground="#F5F5F7"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Drag &amp; drop files or click ADD DOCUMENTS" 
+                                           FontSize="12"
+                                           Foreground="#98989D"
+                                           HorizontalAlignment="Center" 
+                                           Margin="0,6,0,0"
+                                           TextAlignment="Center"
+                                           MaxWidth="200"
+                                           TextWrapping="Wrap"/>
                             </StackPanel>
-
-                            <!-- Documents ScrollViewer -->
                             <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                                          Margin="12,0"
+                                          Margin="16,0"
                                           Visibility="{Binding Sources.Count, Converter={StaticResource CountToVisibilityConverter}}">
                                 <ItemsControl ItemsSource="{Binding Sources}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <materialDesign:Card Margin="0,0,0,8" Padding="12"
-                                                                 UniformCornerRadius="8">
+                                            <Border Background="#0D0D0D" 
+                                                    CornerRadius="10" 
+                                                    Padding="14"
+                                                    Margin="0,0,0,10"
+                                                    BorderThickness="1"
+                                                    BorderBrush="#2C2C2E"
+                                                    Cursor="Hand"
+                                                    x:Name="DocumentCard">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background">
+                                                                    <Setter.Value>
+                                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                            <GradientStop Color="#1C1C1E" Offset="0"/>
+                                                                            <GradientStop Color="#0D0D0D" Offset="1"/>
+                                                                        </LinearGradientBrush>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="BorderBrush" Value="#8B5CF6"/>
+                                                                <Trigger.EnterActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <ThicknessAnimation Storyboard.TargetProperty="Margin" 
+                                                                                              To="-2,0,-2,10" 
+                                                                                              Duration="0:0:0.15">
+                                                                                <ThicknessAnimation.EasingFunction>
+                                                                                    <CubicEase EasingMode="EaseOut"/>
+                                                                                </ThicknessAnimation.EasingFunction>
+                                                                            </ThicknessAnimation>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </Trigger.EnterActions>
+                                                                <Trigger.ExitActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <ThicknessAnimation Storyboard.TargetProperty="Margin" 
+                                                                                              To="0,0,0,10" 
+                                                                                              Duration="0:0:0.15">
+                                                                                <ThicknessAnimation.EasingFunction>
+                                                                                    <CubicEase EasingMode="EaseOut"/>
+                                                                                </ThicknessAnimation.EasingFunction>
+                                                                            </ThicknessAnimation>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </Trigger.ExitActions>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
@@ -202,52 +375,56 @@
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-
-                                                    <!-- File Icon based on extension -->
-                                                    <materialDesign:PackIcon Grid.Column="0" 
-                                                                             Kind="{Binding Document.FilePath, Converter={StaticResource FileIconConverter}}"
-                                                                             Width="24" Height="24"
-                                                                             Foreground="{DynamicResource SecondaryHueMidBrush}"
-                                                                             Margin="0,0,12,0"
-                                                                             VerticalAlignment="Center"/>
-
-                                                    <!-- Checkbox -->
+                                                    <Border Grid.Column="0" 
+                                                            Width="36" Height="36" 
+                                                            CornerRadius="8"
+                                                            Margin="0,0,12,0"
+                                                            VerticalAlignment="Center">
+                                                        <Border.Background>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                <GradientStop Color="#A78BFA" Offset="0"/>
+                                                                <GradientStop Color="#8B5CF6" Offset="1"/>
+                                                            </LinearGradientBrush>
+                                                        </Border.Background>
+                                                        <materialDesign:PackIcon Kind="{Binding Document.FilePath, Converter={StaticResource FileIconConverter}}"
+                                                                                 Width="18" Height="18"
+                                                                                 Foreground="White"
+                                                                                 HorizontalAlignment="Center"
+                                                                                 VerticalAlignment="Center"/>
+                                                    </Border>
                                                     <CheckBox Grid.Column="1" 
                                                               IsChecked="{Binding IsIncluded}"
                                                               ToolTip="Include in context"
                                                               Margin="0,0,12,0"
                                                               VerticalAlignment="Center"/>
-
-                                                    <!-- Document Name -->
                                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                                         <TextBlock Text="{Binding Name}" 
                                                                    FontWeight="Medium"
+                                                                   FontSize="13"
+                                                                   Foreground="#F5F5F7"
                                                                    TextTrimming="CharacterEllipsis"/>
                                                         <TextBlock Text="{Binding LoadedAtDisplay}" 
-                                                                   Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                                                                   Foreground="{DynamicResource MaterialDesignBodyLight}"
-                                                                   FontSize="10"/>
+                                                                   FontSize="11"
+                                                                   Foreground="#98989D"
+                                                                   Margin="0,2,0,0"/>
                                                     </StackPanel>
-
-                                                    <!-- Remove Button -->
                                                     <Button Grid.Column="3" 
                                                             Style="{StaticResource MaterialDesignIconButton}"
+                                                            Width="32" Height="32"
                                                             Command="{Binding DataContext.RemoveSourceCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
                                                             CommandParameter="{Binding}"
-                                                            ToolTip="Remove document">
-                                                        <materialDesign:PackIcon Kind="Close"/>
+                                                            ToolTip="Remove document"
+                                                            Foreground="#98989D">
+                                                        <materialDesign:PackIcon Kind="Close" Width="16" Height="16"/>
                                                     </Button>
                                                 </Grid>
-                                            </materialDesign:Card>
+                                            </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </ScrollViewer>
                         </Grid>
-
-                        <!-- Sidebar Actions -->
-                        <StackPanel Grid.Row="2" Margin="20">
-                            <!-- Obsidian Vault Section -->
+                        <StackPanel Grid.Row="2" Margin="20,8,20,20">
                             <Expander Header="Obsidian Vault" Margin="0,0,0,12"
                                       materialDesign:ExpanderAssist.HorizontalHeaderPadding="12">
                                 <StackPanel Margin="12,8">
@@ -266,128 +443,128 @@
                                             ToolTip="Load all .md notes from vault"/>
                                 </StackPanel>
                             </Expander>
-
-                            <!-- Add Document Button -->
-                            <Button Content="ADD DOCUMENTS"
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Command="{Binding AddDocumentCommand}"
-                                    Height="48"
-                                    HorizontalAlignment="Stretch"
-                                    materialDesign:ButtonAssist.CornerRadius="8">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Kind="FileUpload" 
-                                                                 Width="20" Height="20" 
-                                                                 Margin="0,0,8,0"/>
-                                        <TextBlock Text="ADD DOCUMENTS" FontWeight="Bold"/>
-                                    </StackPanel>
-                                </Button.Content>
+                            <Button Command="{Binding AddDocumentCommand}"
+                                    Style="{StaticResource ModernButton}"
+                                    HorizontalAlignment="Stretch">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#A78BFA" Offset="0"/>
+                                        <GradientStop Color="#8B5CF6" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="FileUpload" 
+                                                             Width="18" Height="18" 
+                                                             Margin="0,0,10,0"
+                                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="ADD DOCUMENTS" 
+                                               FontWeight="SemiBold"
+                                               FontSize="13"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
                             </Button>
-
-                            <!-- Loading Indicator -->
                             <ProgressBar IsIndeterminate="True"
                                          Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}"
                                          Margin="0,12,0,0"/>
                         </StackPanel>
                     </Grid>
-
-                    <!-- Drag Overlay -->
-                    <Border x:Name="DragDropOverlay" 
-                            Visibility="Collapsed" 
-                            Background="{DynamicResource PrimaryHueMidBrush}"
-                            Opacity="0.1"
-                            BorderBrush="{DynamicResource PrimaryHueMidBrush}"
-                            BorderThickness="2"
-                            CornerRadius="8"
-                            IsHitTestVisible="False">
-                        <TextBlock Text="Drop files here" 
-                                   FontSize="24" FontWeight="Bold"
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Center"
-                                   Foreground="{DynamicResource PrimaryHueMidBrush}"/>
-                    </Border>
                 </Border>
-
-                <!-- Splitter -->
+                <Border x:Name="DragDropOverlay" 
+                        Visibility="Collapsed" 
+                        Background="{DynamicResource PrimaryHueMidBrush}"
+                        Opacity="0.1"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                        BorderThickness="2"
+                        CornerRadius="8"
+                        Margin="8"
+                        IsHitTestVisible="False">
+                    <TextBlock Text="Drop files here" 
+                               FontSize="24" FontWeight="Bold"
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+                </Border>
+            </Grid>
                 <GridSplitter Grid.Column="1" Width="4" 
                               Background="{DynamicResource MaterialDesignDivider}"
                               HorizontalAlignment="Center"/>
-
-                <!-- CENTER: Chat Area -->
                 <Border Grid.Column="2" 
-                        Background="{DynamicResource MaterialDesignCardBackground}"
-                        materialDesign:ElevationAssist.Elevation="Dp1"
-                        Margin="4,8">
+                        Background="#1C1C1E"
+                        CornerRadius="12"
+                        Margin="8,8,8,12">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-
-                        <!-- Chat Messages -->
                         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" 
-                                      Padding="20" x:Name="ChatScrollViewer">
+                                      Padding="32,24" x:Name="ChatScrollViewer">
                             <StackPanel>
-                                <!-- Welcome Message -->
-                                <materialDesign:Card Padding="24" Margin="0,0,0,20"
-                                                     materialDesign:ElevationAssist.Elevation="Dp0"
-                                                     Background="{DynamicResource PrimaryHueLightBrush}"
-                                                     Visibility="{Binding ChatMessages.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
+                                <Border Background="#0D0D0D" 
+                                        Padding="32" 
+                                        Margin="0,0,0,24"
+                                        CornerRadius="16"
+                                        BorderThickness="1"
+                                        BorderBrush="#2C2C2E"
+                                        Visibility="{Binding ChatMessages.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
                                     <StackPanel>
                                         <TextBlock Text="👋 Welcome to Nexus AI" 
-                                                   Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                                                   FontWeight="Bold" Margin="0,0,0,8"/>
+                                                   FontSize="22"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#F5F5F7"
+                                                   Margin="0,0,0,12"/>
                                         <TextBlock Text="I'm your AI research assistant powered by Gemini 2.0 Flash. Load documents to start asking questions."
-                                                   Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                                   FontSize="14"
+                                                   LineHeight="22"
                                                    TextWrapping="Wrap"
-                                                   Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+                                                   Foreground="#98989D"/>
                                     </StackPanel>
-                                </materialDesign:Card>
-
-                                <!-- Chat Messages -->
+                                </Border>
                                 <ItemsControl ItemsSource="{Binding ChatMessages}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <!-- User Message (Right) -->
-                                            <materialDesign:Card Margin="100,0,0,12" Padding="16"
-                                                                 HorizontalAlignment="Right"
-                                                                 Background="{DynamicResource PrimaryHueMidBrush}"
-                                                                 Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                                 UniformCornerRadius="12">
-                                                <TextBlock Text="{Binding Content}" 
-                                                           TextWrapping="Wrap"
-                                                           Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
-                                            </materialDesign:Card>
-
-                                            <!-- AI Message (Left) -->
-                                            <materialDesign:Card Margin="0,0,100,12" Padding="16"
-                                                                 HorizontalAlignment="Left"
-                                                                 materialDesign:ElevationAssist.Elevation="Dp2"
-                                                                 Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}"
-                                                                 UniformCornerRadius="12">
-                                                <materialDesign:Card.ContextMenu>
-                                                    <ContextMenu>
-                                                        <MenuItem Header="Read Aloud" 
-                                                                  Command="{Binding DataContext.PlayAudioCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                  CommandParameter="{Binding Content}">
-                                                            <MenuItem.Icon>
-                                                                <materialDesign:PackIcon Kind="VolumeHigh"/>
-                                                            </MenuItem.Icon>
-                                                        </MenuItem>
-                                                        <MenuItem Header="Copy" 
-                                                                  Command="{Binding CopyCommand}">
-                                                            <MenuItem.Icon>
-                                                                <materialDesign:PackIcon Kind="ContentCopy"/>
-                                                            </MenuItem.Icon>
-                                                        </MenuItem>
-                                                    </ContextMenu>
-                                                </materialDesign:Card.ContextMenu>
+                                            <Grid>
+                                                <Border Margin="120,0,0,16" 
+                                                        Padding="20,16"
+                                                        HorizontalAlignment="Right"
+                                                        Background="#8B5CF6"
+                                                        Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                        CornerRadius="20,20,4,20">
+                                                    <TextBlock Text="{Binding Content}" 
+                                                               TextWrapping="Wrap"
+                                                               FontSize="14"
+                                                               LineHeight="22"
+                                                               Foreground="#FFFFFF"/>
+                                                </Border>
+                                                <Border Margin="0,0,120,16" 
+                                                        Padding="20,16"
+                                                        HorizontalAlignment="Left"
+                                                        Background="#0D0D0D"
+                                                        BorderThickness="1"
+                                                        BorderBrush="#2C2C2E"
+                                                        Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}"
+                                                        CornerRadius="20,20,20,4">
+                                                    <Border.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="Read Aloud" 
+                                                                      Command="{Binding DataContext.PlayAudioCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                      CommandParameter="{Binding Content}">
+                                                                <MenuItem.Icon>
+                                                                    <materialDesign:PackIcon Kind="VolumeHigh"/>
+                                                                </MenuItem.Icon>
+                                                            </MenuItem>
+                                                            <MenuItem Header="Copy" 
+                                                                      Command="{Binding CopyCommand}">
+                                                                <MenuItem.Icon>
+                                                                    <materialDesign:PackIcon Kind="ContentCopy"/>
+                                                                </MenuItem.Icon>
+                                                            </MenuItem>
+                                                        </ContextMenu>
+                                                    </Border.ContextMenu>
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding Content}" 
                                                                TextWrapping="Wrap"
                                                                Style="{StaticResource MaterialDesignBody1TextBlock}"/>
-                                                    
-                                                    <!-- Citations -->
                                                     <ItemsControl ItemsSource="{Binding SourceCitations}"
                                                                   Margin="0,12,0,0"
                                                                   Visibility="{Binding SourceCitations, Converter={StaticResource NullToVisibilityConverter}}">
@@ -410,12 +587,11 @@
                                                         </ItemsControl.ItemsPanel>
                                                     </ItemsControl>
                                                 </StackPanel>
-                                            </materialDesign:Card>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-
-                                <!-- Thinking Indicator -->
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                                 <StackPanel HorizontalAlignment="Left" 
                                             Visibility="{Binding IsThinking, Converter={StaticResource BoolToVisibilityConverter}}"
                                             Margin="0,12">
@@ -430,25 +606,23 @@
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
-
-                        <!-- Input Area -->
                         <Border Grid.Row="1" 
-                                Background="{DynamicResource MaterialDesignCardBackground}"
-                                Padding="20,12"
-                                BorderBrush="{DynamicResource MaterialDesignDivider}"
+                                Background="#0D0D0D"
+                                Padding="24,16"
+                                BorderBrush="#2C2C2E"
                                 BorderThickness="0,1,0,0">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-
-                                <!-- Audio Controls (when playing) -->
                                 <Border Grid.Row="0" 
-                                        Padding="12,8"
-                                        Background="{DynamicResource PrimaryHueLightBrush}"
-                                        CornerRadius="8"
-                                        Margin="0,0,0,8"
+                                        Padding="16,12"
+                                        Background="#1C1C1E"
+                                        CornerRadius="10"
+                                        Margin="0,0,0,12"
+                                        BorderThickness="1"
+                                        BorderBrush="#2C2C2E"
                                         Visibility="{Binding IsPlayingAudio, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -456,144 +630,221 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <materialDesign:PackIcon Grid.Column="0" 
-                                                                 Kind="VolumeHigh" 
-                                                                 Width="24" Height="24"
-                                                                 VerticalAlignment="Center"
-                                                                 Margin="0,0,12,0"/>
-
+                                        <Border Grid.Column="0" 
+                                                Background="#8B5CF6" 
+                                                Width="32" Height="32" 
+                                                CornerRadius="8"
+                                                Margin="0,0,12,0"
+                                                VerticalAlignment="Center">
+                                            <materialDesign:PackIcon Kind="VolumeHigh" 
+                                                                     Width="16" Height="16"
+                                                                     Foreground="White"
+                                                                     HorizontalAlignment="Center"
+                                                                     VerticalAlignment="Center"/>
+                                        </Border>
                                         <TextBlock Grid.Column="1" 
                                                    Text="Playing audio..."
                                                    VerticalAlignment="Center"
-                                                   Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-
+                                                   FontSize="13"
+                                                   Foreground="#F5F5F7"/>
                                         <StackPanel Grid.Column="2" Orientation="Horizontal">
                                             <Button Style="{StaticResource MaterialDesignIconButton}"
                                                     Command="{Binding PauseAudioCommand}"
-                                                    ToolTip="Pause">
-                                                <materialDesign:PackIcon Kind="Pause"/>
+                                                    Width="32" Height="32"
+                                                    ToolTip="Pause"
+                                                    Foreground="#98989D">
+                                                <materialDesign:PackIcon Kind="Pause" Width="16" Height="16"/>
                                             </Button>
                                             <Button Style="{StaticResource MaterialDesignIconButton}"
                                                     Command="{Binding StopAudioCommand}"
-                                                    ToolTip="Stop">
-                                                <materialDesign:PackIcon Kind="Stop"/>
+                                                    Width="32" Height="32"
+                                                    ToolTip="Stop"
+                                                    Foreground="#98989D">
+                                                <materialDesign:PackIcon Kind="Stop" Width="16" Height="16"/>
                                             </Button>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
-
-                                <!-- Input Controls -->
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <TextBox Grid.Column="0"
-                                             Text="{Binding UserQuestion, UpdateSourceTrigger=PropertyChanged}"
-                                             materialDesign:HintAssist.Hint="Ask a question about your documents..."
-                                             Style="{StaticResource MaterialDesignFilledTextBox}"
-                                             AcceptsReturn="True"
-                                             TextWrapping="Wrap"
-                                             MaxHeight="120"
-                                             VerticalScrollBarVisibility="Auto"
-                                             Margin="0,0,12,0"
-                                             AllowDrop="True"
-                                             Drop="ChatInput_Drop"/>
-
+                                    <Border Grid.Column="0" 
+                                            Background="#1C1C1E"
+                                            BorderThickness="1"
+                                            BorderBrush="#2C2C2E"
+                                            CornerRadius="12"
+                                            Padding="16,12"
+                                            Margin="0,0,12,0">
+                                        <TextBox Text="{Binding UserQuestion, UpdateSourceTrigger=PropertyChanged}"
+                                                 materialDesign:HintAssist.Hint="Ask a question about your documents..."
+                                                 materialDesign:HintAssist.Foreground="#98989D"
+                                                 Style="{StaticResource MaterialDesignTextBox}"
+                                                 AcceptsReturn="True"
+                                                 TextWrapping="Wrap"
+                                                 MaxHeight="120"
+                                                 BorderThickness="0"
+                                                 VerticalScrollBarVisibility="Auto"
+                                                 FontSize="14"
+                                                 Foreground="#F5F5F7"
+                                                 AllowDrop="True"
+                                                 Drop="ChatInput_Drop"/>
+                                    </Border>
                                     <Button Grid.Column="1"
-                                            Style="{StaticResource MaterialDesignFloatingActionButton}"
                                             Command="{Binding AskQuestionCommand}"
-                                            ToolTip="Send message (Ctrl+Enter)"
-                                            Height="56" Width="56">
-                                        <materialDesign:PackIcon Kind="Send" Width="28" Height="28"/>
+                                            Background="#8B5CF6"
+                                            Foreground="White"
+                                            Width="56" Height="56"
+                                            Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                            materialDesign:ButtonAssist.CornerRadius="12"
+                                            ToolTip="Send message (Ctrl+Enter)">
+                                        <materialDesign:PackIcon Kind="Send" Width="24" Height="24"/>
                                     </Button>
                                 </Grid>
                             </Grid>
                         </Border>
                     </Grid>
                 </Border>
-
-                <!-- Splitter -->
                 <GridSplitter Grid.Column="3" Width="4" 
                               Background="{DynamicResource MaterialDesignDivider}"
                               HorizontalAlignment="Center"/>
-
-                <!-- RIGHT: Artifacts & Graph Panel -->
                 <Border Grid.Column="4"
-                        Background="{DynamicResource MaterialDesignCardBackground}"
-                        materialDesign:ElevationAssist.Elevation="Dp2"
-                        Margin="8">
+                        Background="#1C1C1E"
+                        CornerRadius="12"
+                        Margin="8,8,12,12">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-
-                        <!-- Tab Selector -->
-                        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryLight" Padding="8" Margin="8,8,8,0">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <RadioButton Content="🎨 Artifacts" 
+                        <Border Grid.Row="0" 
+                                Background="#0D0D0D" 
+                                Padding="6" 
+                                Margin="16,16,16,16"
+                                CornerRadius="12"
+                                BorderThickness="1"
+                                BorderBrush="#2C2C2E">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <RadioButton Grid.Column="0"
+                                             Content="🎨 Artifacts" 
                                              Style="{StaticResource MaterialDesignTabRadioButton}"
                                              IsChecked="True"
+                                             FontSize="13"
+                                             FontWeight="SemiBold"
+                                             Foreground="#F5F5F7"
                                              GroupName="RightPanelTabs"
-                                             Click="ShowArtifactsTab"
-                                             Margin="0,0,8,0"/>
-                                <RadioButton Content="🕸️ Graph" 
+                                             HorizontalAlignment="Stretch"
+                                             HorizontalContentAlignment="Center"
+                                             Padding="0,8"
+                                             Click="ShowArtifactsTab"/>
+                                
+                                <RadioButton Grid.Column="1"
+                                             Content="🕸️ Graph" 
                                              Style="{StaticResource MaterialDesignTabRadioButton}"
+                                             FontSize="13"
+                                             FontWeight="SemiBold"
+                                             Foreground="#F5F5F7"
                                              GroupName="RightPanelTabs"
+                                             HorizontalAlignment="Stretch"
+                                             HorizontalContentAlignment="Center"
+                                             Padding="0,8"
                                              Click="ShowGraphTab"/>
-                            </StackPanel>
-                        </materialDesign:ColorZone>
-
-                        <!-- Artifacts Tab -->
-                        <Grid x:Name="ArtifactsTabContent" Grid.Row="1" Margin="12" Visibility="Visible">
-                            <!-- Generation Buttons -->
-                            <StackPanel VerticalAlignment="Top"
-                                        Visibility="{Binding Artifacts.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
-                                <TextBlock Text="Generate from sources:" 
-                                           Style="{StaticResource MaterialDesignBody2TextBlock}"
-                                           Margin="0,0,0,12"/>
-                                <Button Content="Deep Dive" 
-                                        Style="{StaticResource MaterialDesignOutlinedButton}"
-                                        Command="{Binding GenerateDeepDiveCommand}"
-                                        HorizontalAlignment="Stretch"
-                                        Margin="0,0,0,8"/>
-                                <Button Content="Notebook Guide" 
-                                        Style="{StaticResource MaterialDesignOutlinedButton}"
-                                        Command="{Binding GenerateNotebookGuideCommand}"
-                                        HorizontalAlignment="Stretch"
-                                        Margin="0,0,0,8"/>
-                                <Button Content="FAQ" 
-                                        Style="{StaticResource MaterialDesignOutlinedButton}"
-                                        Command="{Binding GenerateFaqCommand}"
-                                        HorizontalAlignment="Stretch"
-                                        Margin="0,0,0,8"/>
-                                <Button Content="Study Guide" 
-                                        Style="{StaticResource MaterialDesignOutlinedButton}"
-                                        Command="{Binding GenerateStudyGuideCommand}"
-                                        HorizontalAlignment="Stretch"
-                                        Margin="0,0,0,8"/>
-                                <Button Content="Summary" 
-                                        Style="{StaticResource MaterialDesignOutlinedButton}"
-                                        Command="{Binding GenerateSummaryCommand}"
-                                        HorizontalAlignment="Stretch"
-                                        Margin="0,0,0,8"/>
-                                <Button Content="Podcast Script" 
-                                        Style="{StaticResource MaterialDesignOutlinedButton}"
-                                        Command="{Binding GeneratePodcastScriptCommand}"
-                                        HorizontalAlignment="Stretch"/>
-                            </StackPanel>
-
-                            <!-- Artifacts List & Viewer -->
+                            </Grid>
+                        </Border>
+                        <Grid x:Name="ArtifactsTabContent" Grid.Row="1" Margin="16,0,16,16" Visibility="Visible">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel VerticalAlignment="Top"
+                                            Visibility="{Binding Artifacts.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
+                                    
+                                    <TextBlock Text="📖 RESEARCH" 
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="#8B5CF6"
+                                               Margin="0,0,0,12"/>
+                                    
+                                    <Button Style="{StaticResource SubtleButton}"
+                                            Command="{Binding GenerateDeepDiveCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            Margin="0,0,0,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="16" Height="16" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Deep Dive" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <Button Style="{StaticResource SubtleButton}"
+                                            Command="{Binding GenerateSummaryCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            Margin="0,0,0,20">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="TextBoxOutline" Width="16" Height="16" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Summary" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <TextBlock Text="📚 LEARNING" 
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="#8B5CF6"
+                                               Margin="0,0,0,12"/>
+                                    
+                                    <Button Style="{StaticResource SubtleButton}"
+                                            Command="{Binding GenerateNotebookGuideCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            Margin="0,0,0,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="NotebookOutline" Width="16" Height="16" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Notebook Guide" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <Button Style="{StaticResource SubtleButton}"
+                                            Command="{Binding GenerateStudyGuideCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            Margin="0,0,0,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="SchoolOutline" Width="16" Height="16" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Study Guide" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <Button Style="{StaticResource SubtleButton}"
+                                            Command="{Binding GenerateFaqCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            Margin="0,0,0,20">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="HelpCircleOutline" Width="16" Height="16" Margin="0,0,8,0"/>
+                                            <TextBlock Text="FAQ" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <TextBlock Text="🎙️ CONTENT" 
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="#8B5CF6"
+                                               Margin="0,0,0,12"/>
+                                    
+                                    <Button Style="{StaticResource SubtleButton}"
+                                            Command="{Binding GeneratePodcastScriptCommand}"
+                                            HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Microphone" Width="16" Height="16" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Podcast Script" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </ScrollViewer>
                             <Grid Visibility="{Binding Artifacts.Count, Converter={StaticResource CountToVisibilityConverter}}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-
-                                <!-- Artifacts List -->
                                 <ListBox Grid.Row="0" 
                                          ItemsSource="{Binding Artifacts}"
                                          SelectedItem="{Binding SelectedArtifact}"
@@ -605,8 +856,6 @@
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
-
-                                <!-- Artifact Viewer -->
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                                               Visibility="{Binding SelectedArtifact, Converter={StaticResource NullToVisibilityConverter}}">
                                     <StackPanel>
@@ -615,12 +864,10 @@
                                                 Command="{Binding ExportArtifactToObsidianCommand}"
                                                 HorizontalAlignment="Left"
                                                 Margin="0,0,0,16"/>
-                                        
                                         <TextBlock Text="{Binding SelectedArtifact.Title}"
                                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                                                    FontWeight="Bold"
                                                    Margin="0,0,0,12"/>
-                                        
                                         <TextBlock Text="{Binding SelectedArtifact.Content}"
                                                    TextWrapping="Wrap"
                                                    Style="{StaticResource MaterialDesignBody1TextBlock}"/>
@@ -628,33 +875,39 @@
                                 </ScrollViewer>
                             </Grid>
                         </Grid>
-
-                        <!-- Graph Tab -->
                         <Grid x:Name="GraphTabContent" Grid.Row="1" Margin="12" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-
-                            <Button Grid.Row="0" 
-                                    Content="REFRESH GRAPH"
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                            <Button Style="{StaticResource ModernButton}"
                                     Command="{Binding RefreshGraphCommand}"
                                     HorizontalAlignment="Stretch"
-                                    Margin="0,0,0,12"/>
-
+                                    Margin="0,0,0,12">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#A78BFA" Offset="0"/>
+                                        <GradientStop Color="#8B5CF6" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="GraphOutline" Width="18" Height="18" Margin="0,0,10,0"/>
+                                    <TextBlock Text="REFRESH GRAPH" FontWeight="SemiBold" FontSize="13"/>
+                                </StackPanel>
+                            </Button>
                             <Border Grid.Row="1" 
-                                    BorderBrush="{DynamicResource MaterialDesignDivider}"
+                                    Background="#0D0D0D"
+                                    BorderBrush="#2C2C2E"
                                     BorderThickness="1"
-                                    CornerRadius="8">
-                                <Canvas x:Name="GraphCanvas" Background="{DynamicResource MaterialDesignCardBackground}">
-                                    <!-- Graph visualization will be drawn here -->
+                                    CornerRadius="10">
+                                <Canvas x:Name="GraphCanvas" Background="Transparent">
                                 </Canvas>
                             </Border>
                         </Grid>
                     </Grid>
                 </Border>
             </Grid>
-        </Grid>
+            </Grid>
+        </Border>
     </materialDesign:DialogHost>
 </Window>

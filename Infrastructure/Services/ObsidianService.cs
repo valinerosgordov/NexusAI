@@ -68,8 +68,6 @@ public sealed class ObsidianService : IObsidianService
         {
             if (!Directory.Exists(vaultPath))
                 return Result.Failure<string>($"Vault path does not exist: {vaultPath}");
-
-            // всё в папку AI_Notebook внутри vault
             var aiNotebookPath = Path.Combine(vaultPath, "AI_Notebook");
             Directory.CreateDirectory(aiNotebookPath);
 

@@ -2,14 +2,17 @@ using NexusAI.Application.Interfaces;
 using NexusAI.Domain;
 using NexusAI.Domain.Models;
 using NexusAI.Infrastructure.Services;
+using System.Collections.Concurrent;
+using System.IO;
 using System.Text;
 
 namespace NexusAI.Application.Services;
 
 public sealed class KnowledgeHubService
 {
-    private readonly List<SourceDocument> _sources = [];
-    private readonly List<ChatMessage> _chatHistory = [];
+    private readonly ConcurrentBag<SourceDocument> _sources = [];
+    private readonly ConcurrentBag<ChatMessage> _chatHistory = [];
+    private readonly object _sourcesLock = new();
     private readonly DocumentParserFactory _parserFactory;
     private readonly IObsidianService _obsidianService;
     private IAiService _aiService;
@@ -18,8 +21,27 @@ public sealed class KnowledgeHubService
     private const int CharsPerToken = 4;
     private const int MaxContextChars = MaxInputTokens * CharsPerToken;
 
-    public IReadOnlyList<SourceDocument> Sources => _sources;
-    public IReadOnlyList<ChatMessage> ChatHistory => _chatHistory;
+    public IReadOnlyList<SourceDocument> Sources
+    {
+        get
+        {
+            lock (_sourcesLock)
+            {
+                return _sources.ToArray();
+            }
+        }
+    }
+
+    public IReadOnlyList<ChatMessage> ChatHistory
+    {
+        get
+        {
+            lock (_sourcesLock)
+            {
+                return _chatHistory.ToArray();
+            }
+        }
+    }
     public bool WasLastContextTruncated { get; private set; }
     public int LastContextTokenCount { get; private set; }
 
@@ -52,7 +74,10 @@ public sealed class KnowledgeHubService
 
         if (result.IsSuccess)
         {
-            _sources.Add(result.Value);
+            lock (_sourcesLock)
+            {
+                _sources.Add(result.Value);
+            }
         }
 
         return result;
@@ -64,7 +89,13 @@ public sealed class KnowledgeHubService
 
         if (result.IsSuccess)
         {
-            _sources.AddRange(result.Value);
+            lock (_sourcesLock)
+            {
+                foreach (var doc in result.Value)
+                {
+                    _sources.Add(doc);
+                }
+            }
             return Result.Success(result.Value.Length);
         }
 
@@ -73,22 +104,41 @@ public sealed class KnowledgeHubService
 
     public void ToggleSourceInclusion(SourceDocumentId id)
     {
-        var source = _sources.FirstOrDefault(s => s.Id == id);
-        if (source is not null)
+        lock (_sourcesLock)
         {
-            var index = _sources.IndexOf(source);
-            _sources[index] = source with { IsIncluded = !source.IsIncluded };
+            var sourcesList = _sources.ToList();
+            var source = sourcesList.FirstOrDefault(s => s.Id == id);
+            if (source is not null)
+            {
+                var updated = source with { IsIncluded = !source.IsIncluded };
+                _sources.Clear();
+                foreach (var s in sourcesList)
+                {
+                    _sources.Add(s.Id == id ? updated : s);
+                }
+            }
         }
     }
 
     public void RemoveSource(SourceDocumentId id)
     {
-        _sources.RemoveAll(s => s.Id == id);
+        lock (_sourcesLock)
+        {
+            var filtered = _sources.Where(s => s.Id != id).ToList();
+            _sources.Clear();
+            foreach (var s in filtered)
+            {
+                _sources.Add(s);
+            }
+        }
     }
 
     public void ClearSources()
     {
-        _sources.Clear();
+        lock (_sourcesLock)
+        {
+            _sources.Clear();
+        }
     }
 
     public async Task<Result<ChatMessage>> AskQuestionAsync(string question, CancellationToken cancellationToken = default)
@@ -104,7 +154,11 @@ public sealed class KnowledgeHubService
         if (string.IsNullOrWhiteSpace(question))
             return Result.Failure<ChatMessage>("Question cannot be empty");
 
-        var includedSources = _sources.Where(s => s.IsIncluded).ToArray();
+        SourceDocument[] includedSources;
+        lock (_sourcesLock)
+        {
+            includedSources = _sources.Where(s => s.IsIncluded).ToArray();
+        }
 
         if (includedSources.Length == 0)
             return Result.Failure<ChatMessage>("No sources are currently included. Please add and include at least one document.");
@@ -116,11 +170,14 @@ public sealed class KnowledgeHubService
             Timestamp: DateTime.UtcNow
         );
 
-        _chatHistory.Add(userMessage);
+        lock (_sourcesLock)
+        {
+            _chatHistory.Add(userMessage);
+        }
 
         var context = AggregateContext(includedSources);
         
-        // Use multimodal API if images are provided and service supports it
+
         Result<AiResponse> aiResult;
         if (base64Images is not null && _aiService is GeminiAiService gemini)
         {
@@ -144,16 +201,10 @@ public sealed class KnowledgeHubService
             SourceCitations: aiResult.Value.SourcesCited
         );
 
-        _chatHistory.Add(assistantMessage);
-
-        return Result.Success(assistantMessage);
-    }
-            Role: MessageRole.Assistant,
-            Timestamp: DateTime.UtcNow,
-            SourceCitations: aiResult.Value.SourcesCited
-        );
-
-        _chatHistory.Add(assistantMessage);
+        lock (_sourcesLock)
+        {
+            _chatHistory.Add(assistantMessage);
+        }
 
         return Result.Success(assistantMessage);
     }
@@ -164,7 +215,12 @@ public sealed class KnowledgeHubService
         string content,
         CancellationToken cancellationToken = default)
     {
-        var includedSources = _sources.Where(s => s.IsIncluded).ToArray();
+        SourceDocument[] includedSources;
+        lock (_sourcesLock)
+        {
+            includedSources = _sources.Where(s => s.IsIncluded).ToArray();
+        }
+
         var sourceLinks = includedSources
             .Select(s => $"- [[{s.Name}]]")
             .ToArray();
@@ -174,7 +230,11 @@ public sealed class KnowledgeHubService
 
     public async Task<Result<ChatMessage>> GenerateDeepDiveAsync(CancellationToken cancellationToken = default)
     {
-        var includedSources = _sources.Where(s => s.IsIncluded).ToArray();
+        SourceDocument[] includedSources;
+        lock (_sourcesLock)
+        {
+            includedSources = _sources.Where(s => s.IsIncluded).ToArray();
+        }
 
         if (includedSources.Length == 0)
             return Result.Failure<ChatMessage>("No sources are currently included. Please add and include at least one document.");
@@ -197,7 +257,10 @@ public sealed class KnowledgeHubService
             SourceCitations: aiResult.Value.SourcesCited
         );
 
-        _chatHistory.Add(deepDiveMessage);
+        lock (_sourcesLock)
+        {
+            _chatHistory.Add(deepDiveMessage);
+        }
 
         return Result.Success(deepDiveMessage);
     }
@@ -229,7 +292,11 @@ public sealed class KnowledgeHubService
 
     public async Task<Result<Artifact>> GenerateArtifactAsync(ArtifactType type, CancellationToken cancellationToken = default)
     {
-        var includedSources = _sources.Where(s => s.IsIncluded).ToArray();
+        SourceDocument[] includedSources;
+        lock (_sourcesLock)
+        {
+            includedSources = _sources.Where(s => s.IsIncluded).ToArray();
+        }
 
         if (includedSources.Length == 0)
             return Result.Failure<Artifact>("No sources are currently included. Please add and include at least one document.");
@@ -286,7 +353,10 @@ public sealed class KnowledgeHubService
 
     public void ClearChatHistory()
     {
-        _chatHistory.Clear();
+        lock (_sourcesLock)
+        {
+            _chatHistory.Clear();
+        }
     }
 
     private static string CreateArtifactPrompt(ArtifactType type, SourceDocument[] sources)
@@ -391,8 +461,6 @@ public sealed class KnowledgeHubService
         ArtifactType.Outline => "Outline & Glossary",
         _ => "Deep Dive Analysis"
     };
-
-    // склейка контекста под лимит токенов
     private string AggregateContext(SourceDocument[] sources)
     {
         var sb = new StringBuilder();

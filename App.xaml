@@ -9,32 +9,34 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- MaterialDesignInXaml Toolkit -->
-                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="DeepPurple" SecondaryColor="Indigo" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Purple" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
                 
-                <!-- Premium 2026 Styles -->
-                <ResourceDictionary Source="Resources/Styles.xaml"/>
+                <ResourceDictionary>
+                    <SolidColorBrush x:Key="MaterialDesignPaper" Color="#0D0D0D"/>
+                    <SolidColorBrush x:Key="MaterialDesignBackground" Color="#000000"/>
+                    <SolidColorBrush x:Key="MaterialDesignCardBackground" Color="#1C1C1E"/>
+                    <SolidColorBrush x:Key="MaterialDesignToolBarBackground" Color="#000000"/>
+                    <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#8B5CF6"/>
+                    <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="#A78BFA"/>
+                    <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="#6D28D9"/>
+                    <SolidColorBrush x:Key="MaterialDesignBody" Color="#F5F5F7"/>
+                    <SolidColorBrush x:Key="MaterialDesignBodyLight" Color="#98989D"/>
+                    <SolidColorBrush x:Key="MaterialDesignDivider" Color="#2C2C2E"/>
+                    <SolidColorBrush x:Key="MaterialDesignSelection" Color="#2C2C2E"/>
+                </ResourceDictionary>
                 
-                <!-- Centralized String Resources -->
-                <ResourceDictionary Source="Resources/Strings.xaml"/>
-                
-                <!-- Converters -->
                 <ResourceDictionary>
                     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
                     <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
                     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
                     <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
                     <converters:NullToVisibilityInverseConverter x:Key="NullToVisibilityInverseConverter"/>
-                    <converters:ChatAlignmentConverter x:Key="ChatAlignmentConverter"/>
-                    <converters:CitationClickableConverter x:Key="CitationClickableConverter"/>
-                    <converters:ChatBubbleStyleConverter x:Key="ChatBubbleStyleConverter"/>
                     <converters:FileTypeIconConverter x:Key="FileTypeIconConverter"/>
                     <converters:FileIconConverter x:Key="FileIconConverter"/>
                     <converters:AiProviderToVisibilityConverter x:Key="AiProviderToVisibilityConverter"/>
                 </ResourceDictionary>
                 
-                <!-- Enum Data Providers -->
                 <ResourceDictionary>
                     <ObjectDataProvider x:Key="AiProviderValues" MethodName="GetValues" 
                                         ObjectType="{x:Type System:Enum}">
@@ -43,10 +45,6 @@
                                     xmlns:local="clr-namespace:NexusAI.Domain.Models;assembly=NexusAI"/>
                         </ObjectDataProvider.MethodParameters>
                     </ObjectDataProvider>
-                </ResourceDictionary>
-                
-                <!-- Empty State Converter -->
-                <ResourceDictionary>
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
