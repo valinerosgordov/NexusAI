@@ -1138,14 +1138,14 @@ Built with ❤️ using these amazing open-source projects:
 
 ## 📊 Project Stats
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/NexusAI?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/NexusAI?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/yourusername/NexusAI?style=social)
+![GitHub stars](https://img.shields.io/github/stars/valinerosgordov/NexusAI?style=social)
+![GitHub forks](https://img.shields.io/github/forks/valinerosgordov/NexusAI?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/valinerosgordov/NexusAI?style=social)
 
-![GitHub issues](https://img.shields.io/github/issues/yourusername/NexusAI)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/NexusAI)
-![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/NexusAI)
-![Code size](https://img.shields.io/github/languages/code-size/yourusername/NexusAI)
+![GitHub issues](https://img.shields.io/github/issues/valinerosgordov/NexusAI)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/valinerosgordov/NexusAI)
+![GitHub last commit](https://img.shields.io/github/last-commit/valinerosgordov/NexusAI)
+![Code size](https://img.shields.io/github/languages/code-size/valinerosgordov/NexusAI)
 
 ---
 
