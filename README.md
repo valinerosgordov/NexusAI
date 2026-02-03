@@ -91,17 +91,24 @@
 git clone https://github.com/yourusername/NexusAI.git
 cd NexusAI
 
-# Restore dependencies
-dotnet restore
+# Restore dependencies (multi-project solution)
+dotnet restore NexusAI.sln
 
-# Build
-dotnet build --configuration Release
+# Build all projects
+dotnet build NexusAI.sln --configuration Release
 
-# Run
-dotnet run --project NexusAI.csproj
+# Run Presentation project
+dotnet run --project src/NexusAI.Presentation/NexusAI.Presentation.csproj
 ```
 
 **Or open `NexusAI.sln` in Visual Studio 2022+ and press F5.**
+
+### Project Build Order
+
+1. `NexusAI.Domain` (no dependencies)
+2. `NexusAI.Application` (→ Domain)
+3. `NexusAI.Infrastructure` (→ Domain, Application)
+4. `NexusAI.Presentation` (→ all layers)
 
 ---
 
@@ -183,54 +190,79 @@ Switch to **🕸️ Graph** tab:
 
 ## 🏗️ Architecture
 
-### Clean Architecture + MVVM
+### Clean Architecture by Robert C. Martin
+
+**4-Layer separation** with strict dependency rules:
 
 ```
 ┌─────────────────────────────────────────┐
-│         Presentation Layer              │
-│  (WPF UI, ViewModels, Converters)       │
+│    NexusAI.Presentation (WPF)           │
+│  ViewModels · Converters · XAML         │
 └──────────────┬──────────────────────────┘
-               │
+               │ depends on ↓
 ┌──────────────▼──────────────────────────┐
-│       Application Layer                 │
-│  (KnowledgeHubService, Interfaces)      │
+│    NexusAI.Application                  │
+│  Use Cases · Interfaces · Validation    │
 └──────────────┬──────────────────────────┘
-               │
+               │ depends on ↓
 ┌──────────────▼──────────────────────────┐
-│      Infrastructure Layer               │
-│  (GeminiAiService, OllamaService,       │
-│   DocumentParsers, ObsidianService)     │
-└──────────────┬──────────────────────────┘
-               │
-┌──────────────▼──────────────────────────┐
-│          Domain Layer                   │
-│  (Models, Result<T>, Strongly-Typed IDs)│
+│    NexusAI.Domain (Core)                │
+│  Entities · Result<T> · Value Objects   │
+│  ✅ ZERO external dependencies          │
+└─────────────────────────────────────────┘
+               ▲
+               │ depends on ↑
+┌──────────────┴──────────────────────────┐
+│    NexusAI.Infrastructure               │
+│  AI Services · Parsers · File I/O       │
 └─────────────────────────────────────────┘
 ```
 
-### Key Patterns
+**Dependency Rule**: All arrows point **inward** toward Domain.
 
-- **Strategy Pattern**: Document parsers (`IDocumentParser`)
-- **Railway Oriented Programming**: `Result<T>` monad for error handling
-- **Dependency Injection**: Constructor injection throughout
-- **MVVM**: `RelayCommand`, `ObservableProperty` via CommunityToolkit
-- **Thread-Safe Collections**: `ConcurrentBag<T>` + locks for shared state
-- **IDisposable**: Proper resource cleanup (audio, HTTP clients)
+### Key Design Patterns
+
+| Pattern | Implementation | Purpose |
+|---------|----------------|---------|
+| **Use Cases (Command/Handler)** | `AddDocumentCommand` + `Handler` | Single Responsibility, testable business logic |
+| **Factory Pattern** | `IAiServiceFactory` | Runtime AI provider switching (Gemini/Ollama) |
+| **Strategy Pattern** | `IDocumentParser` | Pluggable document parsers |
+| **Railway Oriented Programming** | `Result<T>` + 15 extension methods | Functional error handling, no exceptions |
+| **Interface Segregation** | `IDocumentParser` + `IDocumentParserMetadata` | Clients depend only on what they need |
+| **Dependency Injection** | Microsoft.Extensions.DI | Inversion of Control throughout |
+| **MVVM** | `RelayCommand`, `ObservableProperty` | Separation of concerns in UI |
+| **Thread-Safe Collections** | `ConcurrentBag<T>` (no locks) | Built-in thread safety |
+
+### SOLID Compliance ✅
+
+- ✅ **Single Responsibility**: One handler per use case
+- ✅ **Open/Closed**: Add new parsers/providers without modifying existing code
+- ✅ **Liskov Substitution**: All `IAiService` implementations interchangeable
+- ✅ **Interface Segregation**: Small, focused interfaces
+- ✅ **Dependency Inversion**: All layers depend on abstractions (interfaces)
 
 ---
 
 ## 🔒 Security & Best Practices
 
-✅ **Implemented:**
-- API keys in HTTP headers (not URL query params)
-- Thread-safe collections with locks
-- Defensive null checks for API responses
-- Scoped lifetime for `IDisposable` services
-- `ConfigureAwait(false)` in all async library code
+✅ **Architecture:**
+- **Clean Architecture** - strict layer separation enforced by project references
+- **Use Cases** - single responsibility per business operation
+- **Railway Oriented Programming** - no exceptions in business logic
+- **Interface Segregation** - clients depend only on what they need
+- **Thread-safe collections** - `ConcurrentBag<T>` with built-in safety (no manual locks)
+
+✅ **Code Quality:**
+- **Nullable reference types** enabled (`<Nullable>enable</Nullable>`)
+- **Strongly-typed IDs** (`ChatMessageId`, `SourceDocumentId`)
+- **Immutable records** for domain models
+- **`ConfigureAwait(false)`** in all async library code
+- **Defensive null checks** for all external API responses
 
 🔐 **Privacy:**
 - Local mode (Ollama) → **zero** data leaves your machine
 - Gemini API → subject to Google's privacy policy ([Read here](https://ai.google.dev/gemini-api/terms))
+- API keys stored in memory only (not persisted to disk)
 
 ---
 
@@ -238,22 +270,80 @@ Switch to **🕸️ Graph** tab:
 
 ```
 NexusAI/
-├── Application/
-│   ├── Interfaces/          # IAiService, IDocumentParser, etc.
-│   └── Services/            # KnowledgeHubService, KnowledgeGraphService
-├── Domain/
-│   ├── Models/              # ChatMessage, SourceDocument, AiResponse
-│   └── Result.cs            # Railway-oriented error handling
-├── Infrastructure/
-│   ├── Services/            # GeminiAiService, OllamaService, Parsers
-│   └── DependencyInjection.cs
-├── Presentation/
-│   ├── ViewModels/          # MainViewModel, ChatMessageViewModel
-│   └── Converters/          # WPF value converters
-├── App.xaml                 # MaterialDesign theme setup
-├── MainWindow.xaml          # 3-pane layout
-└── NexusAI.csproj           # .NET 8 project
+├── src/
+│   ├── NexusAI.Domain/                    # ✅ Core (0 dependencies)
+│   │   ├── Common/
+│   │   │   ├── Result.cs                  # Railway-oriented error handling
+│   │   │   └── ResultExtensions.cs        # Fluent Result<T> extensions
+│   │   └── Models/
+│   │       ├── ChatMessage.cs             # Strongly-typed IDs (ChatMessageId)
+│   │       ├── SourceDocument.cs          # Immutable records
+│   │       ├── Artifact.cs                # Value objects
+│   │       └── AiProvider.cs              # Enums
+│   │
+│   ├── NexusAI.Application/               # → Domain only
+│   │   ├── Interfaces/
+│   │   │   ├── IAiService.cs              # Abstraction for AI providers
+│   │   │   ├── IAiServiceFactory.cs       # Strategy pattern
+│   │   │   ├── IDocumentParser.cs         # Interface segregation
+│   │   │   └── IObsidianService.cs
+│   │   ├── UseCases/                      # Command/Query handlers
+│   │   │   ├── Documents/
+│   │   │   │   ├── AddDocumentCommand.cs
+│   │   │   │   └── AddDocumentCommandExtensions.cs
+│   │   │   ├── Chat/
+│   │   │   │   ├── AskQuestionCommand.cs
+│   │   │   │   └── AskQuestionCommandExtensions.cs
+│   │   │   ├── Artifacts/
+│   │   │   │   └── GenerateArtifactCommand.cs
+│   │   │   └── Obsidian/
+│   │   │       ├── LoadObsidianVaultCommand.cs
+│   │   │       └── ExportToObsidianCommand.cs
+│   │   ├── Services/
+│   │   │   └── KnowledgeGraphService.cs   # Domain service
+│   │   └── DependencyInjection.cs
+│   │
+│   ├── NexusAI.Infrastructure/            # → Domain + Application
+│   │   ├── Services/
+│   │   │   ├── GeminiAiService.cs         # Gemini 2.0 implementation
+│   │   │   ├── OllamaService.cs           # Local LLM implementation
+│   │   │   ├── AiServiceFactory.cs        # Factory for AI provider switching
+│   │   │   ├── ObsidianService.cs         # Vault integration
+│   │   │   └── SpeechSynthesisService.cs  # Text-to-Speech
+│   │   ├── Parsers/
+│   │   │   ├── PdfParser.cs               # iText7
+│   │   │   ├── WordParser.cs              # OpenXml
+│   │   │   ├── PresentationParser.cs      # PowerPoint
+│   │   │   ├── EpubParser.cs              # eBook
+│   │   │   ├── TextParser.cs              # TXT/MD
+│   │   │   └── DocumentParserFactory.cs   # Strategy pattern
+│   │   └── DependencyInjection.cs
+│   │
+│   └── NexusAI.Presentation/              # → Domain + Application + Infrastructure
+│       ├── ViewModels/
+│       │   ├── MainViewModel.cs           # Uses handlers, not services directly
+│       │   ├── ChatMessageViewModel.cs
+│       │   └── SourceDocumentViewModel.cs
+│       ├── Converters/                    # WPF value converters
+│       │   ├── BoolToVisibilityConverter.cs
+│       │   └── AiProviderToVisibilityConverter.cs
+│       ├── App.xaml                       # Composition root (DI setup)
+│       ├── MainWindow.xaml                # 3-pane layout
+│       └── app.manifest
+│
+├── NexusAI.sln                            # Multi-project solution
+└── README.md                              # This file
 ```
+
+### Dependency Graph
+
+```
+Presentation ──→ Application ──→ Domain
+                      ↑            ↑
+                      └─Infrastructure
+```
+
+**All arrows point toward Domain** (Dependency Rule respected).
 
 ---
 
@@ -329,9 +419,13 @@ Contributions are welcome! Please:
 ### Code Style
 
 - Follow [C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
+- **Clean Architecture** - respect dependency rules (no Application → Infrastructure)
+- **Use Cases** - one command/query per file, with handler
+- **Railway Oriented Programming** - always return `Result<T>`, never throw in business logic
 - Use modern C# 12 features (records, primary constructors, collection expressions)
 - Nullable reference types enabled (`<Nullable>enable</Nullable>`)
-- No `null` returns — use `Result<T>` or `Option<T>`
+- **Strongly-typed IDs** for entities (e.g., `SourceDocumentId` instead of `Guid`)
+- **Immutable by default** - prefer `record` over `class` for DTOs/models
 
 ---
 
