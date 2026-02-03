@@ -24,6 +24,10 @@ public partial class App : System.Windows.Application
         services.AddApplication();
 
         // Presentation layer (ViewModels)
+        services.AddSingleton<DocumentsViewModel>();
+        services.AddSingleton<ChatViewModel>();
+        services.AddSingleton<ArtifactsViewModel>();
+        services.AddSingleton<GraphViewModel>();
         services.AddSingleton<MainViewModel>();
         
         services.AddSingleton<ProjectViewModel>(sp =>
@@ -35,13 +39,15 @@ public partial class App : System.Windows.Application
             var aiServiceFactory = sp.GetRequiredService<NexusAI.Application.Interfaces.IAiServiceFactory>();
             var sessionContext = sp.GetRequiredService<NexusAI.Application.Services.SessionContext>();
             
-            return new ProjectViewModel(
+            var vm = new ProjectViewModel(
                 generatePlanHandler,
                 getProjectsHandler,
                 updateTaskStatusHandler,
                 generateScaffoldHandler,
                 aiServiceFactory,
                 sessionContext);
+            vm.Initialize();
+            return vm;
         });
         
         services.AddSingleton<WikiViewModel>(sp =>
@@ -79,7 +85,9 @@ public partial class App : System.Windows.Application
         services.AddSingleton<SettingsViewModel>(sp => 
         {
             var localizationService = sp.GetRequiredService<NexusAI.Application.Interfaces.ILocalizationService>();
-            return new SettingsViewModel(localizationService);
+            var vm = new SettingsViewModel(localizationService);
+            vm.Initialize();
+            return vm;
         });
         
         // Localization (Presentation layer service due to WPF dependencies)

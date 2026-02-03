@@ -185,7 +185,7 @@
                                     BorderBrush="{StaticResource FrostedEdge}">
                                 <StackPanel Orientation="Horizontal">
                                     <RadioButton Content="💼"
-                                                 ToolTip="Professional Mode"
+                                                 ToolTip="{DynamicResource S.Header.ProfessionalMode}"
                                                  IsChecked="{Binding SessionContext.IsProfessionalMode, Mode=OneWay}"
                                                  Command="{Binding SwitchAppModeCommand}"
                                                  Style="{StaticResource MaterialDesignTabRadioButton}"
@@ -194,7 +194,7 @@
                                                  Width="40" Height="32"
                                                  Margin="2,0"/>
                                     <RadioButton Content="🎓"
-                                                 ToolTip="Student Mode"
+                                                 ToolTip="{DynamicResource S.Header.StudentMode}"
                                                  IsChecked="{Binding SessionContext.IsStudentMode, Mode=OneWay}"
                                                  Command="{Binding SwitchAppModeCommand}"
                                                  Style="{StaticResource MaterialDesignTabRadioButton}"
@@ -229,7 +229,7 @@
                                           Foreground="#FFFFFF"
                                           Background="#2A2A2E"
                                           Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                          materialDesign:HintAssist.Hint="AI Provider"
+                                          materialDesign:HintAssist.Hint="{DynamicResource S.Header.AiProvider}"
                                           materialDesign:HintAssist.Foreground="#B0B0B0"
                                           BorderBrush="#6200EA"
                                           BorderThickness="2"
@@ -246,7 +246,7 @@
                                           Foreground="#FFFFFF"
                                           Background="#2A2A2E"
                                           Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                          materialDesign:HintAssist.Hint="Model"
+                                          materialDesign:HintAssist.Hint="{DynamicResource S.Header.OllamaModel}"
                                           materialDesign:HintAssist.Foreground="#B0B0B0"
                                           BorderBrush="#6200EA"
                                           BorderThickness="2"
@@ -267,7 +267,7 @@
                                 <Button Style="{StaticResource MaterialDesignIconButton}"
                                         Command="{Binding LoadOllamaModelsCommand}"
                                         Foreground="#FFFFFF"
-                                        ToolTip="Refresh Ollama models"
+                                        ToolTip="{DynamicResource S.Header.RefreshModels}"
                                         Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}">
                                     <materialDesign:PackIcon Kind="Refresh" Foreground="#FFFFFF"/>
                                 </Button>
@@ -301,7 +301,7 @@
                                              VerticalAlignment="Center"
                                              VerticalContentAlignment="Center"
                                              PasswordChanged="ApiKeyBox_PasswordChanged"
-                                             ToolTip="Paste your Gemini API Key (get from aistudio.google.com)"/>
+                                             ToolTip="{DynamicResource S.Header.ApiKeyTooltip}"/>
                             </StackPanel>
                         </Border>
                             <!-- Window Control Buttons: Minimal Glass Style -->
@@ -310,7 +310,7 @@
                                 <Button Style="{StaticResource ChromeButton}" 
                                         Click="OpenSettings" 
                                         Margin="0,0,16,0"
-                                        ToolTip="Settings (Language, Theme, API Keys)">
+                                        ToolTip="{DynamicResource S.Header.SettingsTooltip}">
                                     <materialDesign:PackIcon Kind="Cog" Width="18" Height="18" Foreground="#FFFFFF"/>
                                 </Button>
                                 
@@ -361,16 +361,35 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Margin="24,20,24,16">
+                            <!-- Professional Mode Title -->
                             <TextBlock FontSize="15"
                                        FontWeight="Bold"
-                                       Foreground="{StaticResource TextPrimary}">
+                                       Foreground="{StaticResource TextPrimary}"
+                                       Visibility="{Binding SessionContext.IsProfessionalMode, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <Run Text="📚 "/>
-                                <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Knowledge Base / Study Library'}"/>
+                                <Run Text="{DynamicResource S.Sidebar.KnowledgeBase}"/>
                             </TextBlock>
+                            <!-- Student Mode Title -->
+                            <TextBlock FontSize="15"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextPrimary}"
+                                       Visibility="{Binding SessionContext.IsStudentMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Run Text="📚 "/>
+                                <Run Text="{DynamicResource S.Sidebar.StudyLibrary}"/>
+                            </TextBlock>
+                            <!-- Professional Mode Subtitle -->
                             <TextBlock FontSize="12"
                                        Foreground="{StaticResource TextSecondary}"
-                                       Margin="0,6,0,0">
-                                <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Drag &amp; drop files or click to add / Add your course materials &amp; textbooks'}"/>
+                                       Margin="0,6,0,0"
+                                       Visibility="{Binding SessionContext.IsProfessionalMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Run Text="{DynamicResource S.Sidebar.DragDrop}"/>
+                            </TextBlock>
+                            <!-- Student Mode Subtitle -->
+                            <TextBlock FontSize="12"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       Margin="0,6,0,0"
+                                       Visibility="{Binding SessionContext.IsStudentMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Run Text="{DynamicResource S.Sidebar.AddMaterials}"/>
                             </TextBlock>
                         </StackPanel>
                         <Grid Grid.Row="1">
@@ -391,12 +410,12 @@
                                                              HorizontalAlignment="Center"
                                                              VerticalAlignment="Center"/>
                                 </Border>
-                                <TextBlock Text="No documents loaded" 
+                                <TextBlock Text="{DynamicResource S.Empty.NoDocuments}" 
                                            FontSize="14"
                                            FontWeight="SemiBold"
                                            Foreground="{StaticResource TextPrimary}"
                                            HorizontalAlignment="Center"/>
-                                <TextBlock Text="Drag &amp; drop files or click ADD DOCUMENTS" 
+                                <TextBlock Text="{DynamicResource S.Empty.DragDropPrompt}" 
                                            FontSize="12"
                                            Foreground="{StaticResource TextSecondary}"
                                            HorizontalAlignment="Center" 
@@ -480,7 +499,7 @@
                                                     </Border>
                                                     <CheckBox Grid.Column="1" 
                                                               IsChecked="{Binding IsIncluded}"
-                                                              ToolTip="Include in context"
+                                                              ToolTip="{DynamicResource S.Sidebar.IncludeTooltip}"
                                                               Margin="0,0,12,0"
                                                               VerticalAlignment="Center"/>
                                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
@@ -499,7 +518,7 @@
                                                             Width="32" Height="32"
                                                             Command="{Binding DataContext.RemoveSourceCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
                                                             CommandParameter="{Binding}"
-                                                            ToolTip="Remove document"
+                                                            ToolTip="{DynamicResource S.Sidebar.RemoveTooltip}"
                                                             Foreground="#98989D">
                                                         <materialDesign:PackIcon Kind="Close" Width="16" Height="16"/>
                                                     </Button>
@@ -516,36 +535,52 @@
                                       materialDesign:ExpanderAssist.HorizontalHeaderPadding="12">
                                 <StackPanel Margin="12,8">
                                     <TextBox Text="{Binding ObsidianVaultPath, UpdateSourceTrigger=PropertyChanged}"
-                                             materialDesign:HintAssist.Hint="Vault Path"
+                                             materialDesign:HintAssist.Hint="{DynamicResource S.Sidebar.VaultPathHint}"
                                              Style="{StaticResource MaterialDesignFilledTextBox}"
                                              Margin="0,0,0,8"/>
                                     <TextBox Text="{Binding ObsidianSubfolder, UpdateSourceTrigger=PropertyChanged}"
-                                             materialDesign:HintAssist.Hint="Subfolder (optional)"
+                                             materialDesign:HintAssist.Hint="{DynamicResource S.Sidebar.SubfolderHint}"
                                              Style="{StaticResource MaterialDesignFilledTextBox}"
                                              Margin="0,0,0,12"/>
                                     <Button Content="{DynamicResource S.Sidebar.SyncVault}" 
                                             Style="{StaticResource MaterialDesignOutlinedButton}"
                                             Command="{Binding LoadObsidianVaultCommand}"
                                             HorizontalAlignment="Stretch"
-                                            ToolTip="Load all .md notes from vault"/>
+                                            ToolTip="{DynamicResource S.Sidebar.LoadVaultTooltip}"/>
                                 </StackPanel>
                             </Expander>
+                            <!-- Professional Mode Button -->
                             <Button Command="{Binding AddDocumentCommand}"
-                                    HorizontalAlignment="Stretch">
+                                    HorizontalAlignment="Stretch"
+                                    Visibility="{Binding SessionContext.IsProfessionalMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource AccentButton}"/>
+                                </Button.Style>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="FileUpload" 
+                                                             Width="18" Height="18" 
+                                                             Margin="0,0,10,0"
+                                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="{DynamicResource S.Sidebar.AddDocuments}"
+                                               FontWeight="SemiBold"
+                                               FontSize="13"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <!-- Student Mode Button -->
+                            <Button Command="{Binding AddDocumentCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    Visibility="{Binding SessionContext.IsStudentMode, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource AccentButton}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SessionContext.IsStudentMode}" Value="True">
-                                                <Setter Property="Background">
-                                                    <Setter.Value>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                            <GradientStop Color="#FFB340" Offset="0"/>
-                                                            <GradientStop Color="#00D9FF" Offset="1"/>
-                                                        </LinearGradientBrush>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Color="#FFB340" Offset="0"/>
+                                                    <GradientStop Color="#00D9FF" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
                                     </Style>
                                 </Button.Style>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -553,11 +588,10 @@
                                                              Width="18" Height="18" 
                                                              Margin="0,0,10,0"
                                                              VerticalAlignment="Center"/>
-                                    <TextBlock FontWeight="SemiBold"
+                                    <TextBlock Text="{DynamicResource S.Sidebar.AddStudyMaterials}"
+                                               FontWeight="SemiBold"
                                                FontSize="13"
-                                               VerticalAlignment="Center">
-                                        <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='ADD DOCUMENTS / ADD STUDY MATERIALS'}"/>
-                                    </TextBlock>
+                                               VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <ProgressBar IsIndeterminate="True"
@@ -575,7 +609,7 @@
                         CornerRadius="8"
                         Margin="8"
                         IsHitTestVisible="False">
-                    <TextBlock Text="Drop files here" 
+                    <TextBlock Text="{DynamicResource S.Empty.DropFilesHere}" 
                                FontSize="24" FontWeight="Bold"
                                HorizontalAlignment="Center" 
                                VerticalAlignment="Center"
@@ -607,13 +641,24 @@
                                                    FontWeight="Bold"
                                                    Foreground="{StaticResource TextPrimary}"
                                                    Margin="0,0,0,12">
-                                            <Run Text="👋 Welcome to Nexus AI"/>
+                                            <Run Text="👋 "/>
+                                            <Run Text="{DynamicResource S.Chat.Welcome}"/>
                                         </TextBlock>
+                                        <!-- Professional Mode Welcome -->
                                         <TextBlock FontSize="14"
                                                    LineHeight="22"
                                                    TextWrapping="Wrap"
-                                                   Foreground="{StaticResource TextSecondary}">
-                                            <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='I am your AI research assistant powered by Gemini 2.0 Flash. Load documents to start asking questions. / I am your Socratic tutor powered by Gemini 2.0 Flash. Upload your study materials and let us learn together!'}"/>
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   Visibility="{Binding SessionContext.IsProfessionalMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Run Text="{DynamicResource S.Chat.WelcomeProMessage}"/>
+                                        </TextBlock>
+                                        <!-- Student Mode Welcome -->
+                                        <TextBlock FontSize="14"
+                                                   LineHeight="22"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   Visibility="{Binding SessionContext.IsStudentMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Run Text="{DynamicResource S.Chat.WelcomeStudentMessage}"/>
                                         </TextBlock>
                                     </StackPanel>
                                 </Border>
@@ -721,7 +766,7 @@
                                                  Width="40" Height="40"
                                                  IsIndeterminate="True"
                                                  Value="0"/>
-                                    <TextBlock Text="Thinking..." 
+                                    <TextBlock Text="{DynamicResource S.Chat.Thinking}" 
                                                Style="{StaticResource MaterialDesignCaptionTextBlock}"
                                                HorizontalAlignment="Center"
                                                Margin="0,8,0,0"/>
@@ -772,14 +817,14 @@
                                             <Button Style="{StaticResource MaterialDesignIconButton}"
                                                     Command="{Binding PauseAudioCommand}"
                                                     Width="32" Height="32"
-                                                    ToolTip="Pause"
+                                                    ToolTip="{DynamicResource S.Chat.PauseTooltip}"
                                                     Foreground="#98989D">
                                                 <materialDesign:PackIcon Kind="Pause" Width="16" Height="16"/>
                                             </Button>
                                             <Button Style="{StaticResource MaterialDesignIconButton}"
                                                     Command="{Binding StopAudioCommand}"
                                                     Width="32" Height="32"
-                                                    ToolTip="Stop"
+                                                    ToolTip="{DynamicResource S.Chat.StopTooltip}"
                                                     Foreground="#98989D">
                                                 <materialDesign:PackIcon Kind="Stop" Width="16" Height="16"/>
                                             </Button>
@@ -794,7 +839,7 @@
                                     <!-- Floating Glass Capsule Input -->
                                     <TextBox Grid.Column="0"
                                              Text="{Binding UserQuestion, UpdateSourceTrigger=PropertyChanged}"
-                                             materialDesign:HintAssist.Hint="Type your question here..."
+                                             materialDesign:HintAssist.Hint="{DynamicResource S.Chat.InputHint}"
                                              materialDesign:HintAssist.Foreground="#B0B0C0"
                                              Style="{StaticResource GlassCapsuleTextBox}"
                                              AcceptsReturn="True"
@@ -810,7 +855,7 @@
                                             Command="{Binding AskQuestionCommand}"
                                             Width="64" Height="64"
                                             Cursor="Hand"
-                                            ToolTip="Send message (Ctrl+Enter)">
+                                            ToolTip="{DynamicResource S.Chat.SendTooltip}">
                                         <Button.Style>
                                             <Style TargetType="Button">
                                                 <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
@@ -916,7 +961,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBlock.Style>
-                                        <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='📖 RESEARCH / 📖 ANALYSIS'}"/>
+                                        <Run Text="{DynamicResource S.Artifacts.Research}"/>
                                     </TextBlock>
                                     
                                     <Button Style="{StaticResource SubtleButton}"
@@ -925,9 +970,7 @@
                                             Margin="0,0,0,8">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock VerticalAlignment="Center">
-                                                <Run Text="{Binding DataContext.SessionContext.CurrentMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Deep Dive / Detailed Explanation'}"/>
-                                            </TextBlock>
+                                            <TextBlock Text="{DynamicResource S.Artifacts.DeepDive}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
                                     
@@ -937,9 +980,7 @@
                                             Margin="0,0,0,20">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="TextBoxOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock VerticalAlignment="Center">
-                                                <Run Text="{Binding DataContext.SessionContext.CurrentMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Summary / Quick Notes'}"/>
-                                            </TextBlock>
+                                            <TextBlock Text="{DynamicResource S.Artifacts.Summary}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
                                     
@@ -956,7 +997,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBlock.Style>
-                                        <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='📚 LEARNING / 🎓 STUDY TOOLS'}"/>
+                                        <Run Text="{DynamicResource S.Artifacts.Learning}"/>
                                     </TextBlock>
                                     
                                     <Button Style="{StaticResource SubtleButton}"
@@ -965,9 +1006,7 @@
                                             Margin="0,0,0,8">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="NotebookOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock VerticalAlignment="Center">
-                                                <Run Text="{Binding DataContext.SessionContext.CurrentMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Notebook Guide / Lecture Notes'}"/>
-                                            </TextBlock>
+                                            <TextBlock Text="{DynamicResource S.Artifacts.NotebookGuide}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
                                     
@@ -977,7 +1016,7 @@
                                             Margin="0,0,0,8">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="SchoolOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="Study Guide" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource S.Artifacts.StudyGuide}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
                                     
@@ -987,7 +1026,7 @@
                                             Margin="0,0,0,20">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="HelpCircleOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="FAQ" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource S.Artifacts.FAQ}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
                                     
@@ -1004,7 +1043,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBlock.Style>
-                                        <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='🎙️ CONTENT / 🎙️ CREATIVE'}"/>
+                                        <Run Text="{DynamicResource S.Artifacts.Content}"/>
                                     </TextBlock>
                                     
                                     <Button Style="{StaticResource SubtleButton}"
@@ -1012,7 +1051,7 @@
                                             HorizontalAlignment="Stretch">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="Microphone" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="Podcast Script" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource S.Artifacts.PodcastScript}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
                                 </StackPanel>
@@ -1036,7 +1075,7 @@
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                                               Visibility="{Binding SelectedArtifact, Converter={StaticResource NullToVisibilityConverter}}">
                                     <StackPanel>
-                                        <Button Content="EXPORT TO OBSIDIAN"
+                                        <Button Content="{DynamicResource S.Graph.ExportToObsidian}"
                                                 Style="{StaticResource MaterialDesignOutlinedButton}"
                                                 Command="{Binding ExportArtifactToObsidianCommand}"
                                                 HorizontalAlignment="Left"
@@ -1097,14 +1136,14 @@
                                 </Button.Background>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <materialDesign:PackIcon Kind="AutoFix" Width="18" Height="18" Margin="0,0,10,0"/>
-                                    <TextBlock Text="GENERATE DIAGRAM" FontWeight="SemiBold" FontSize="13"/>
+                                    <TextBlock Text="{DynamicResource S.Graph.GenerateDiagram}" FontWeight="SemiBold" FontSize="13"/>
                                 </StackPanel>
                             </Button>
                             
                             <Border Grid.Row="2" 
                                     Style="{StaticResource GlassCard}"
                                     CornerRadius="20">
-                                <TextBlock Text="Graph visualization (Coming soon)" 
+                                <TextBlock Text="{DynamicResource S.Graph.VisualizationComingSoon}" 
                                            Foreground="{StaticResource TextSecondary}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"/>

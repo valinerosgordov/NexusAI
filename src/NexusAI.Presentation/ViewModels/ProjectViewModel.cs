@@ -9,14 +9,20 @@ using System.Collections.ObjectModel;
 
 namespace NexusAI.Presentation.ViewModels;
 
-public sealed partial class ProjectViewModel : ObservableObject
+public sealed partial class ProjectViewModel(
+    GenerateProjectPlanHandler generatePlanHandler,
+    GetUserProjectsHandler getProjectsHandler,
+    UpdateTaskStatusHandler updateTaskStatusHandler,
+    GenerateScaffoldHandler generateScaffoldHandler,
+    IAiServiceFactory aiServiceFactory,
+    SessionContext sessionContext) : ObservableObject
 {
-    private readonly GenerateProjectPlanHandler _generatePlanHandler;
-    private readonly GetUserProjectsHandler _getProjectsHandler;
-    private readonly UpdateTaskStatusHandler _updateTaskStatusHandler;
-    private readonly GenerateScaffoldHandler _generateScaffoldHandler;
-    private readonly IAiServiceFactory _aiServiceFactory;
-    private readonly SessionContext _sessionContext;
+    private readonly GenerateProjectPlanHandler _generatePlanHandler = generatePlanHandler;
+    private readonly GetUserProjectsHandler _getProjectsHandler = getProjectsHandler;
+    private readonly UpdateTaskStatusHandler _updateTaskStatusHandler = updateTaskStatusHandler;
+    private readonly GenerateScaffoldHandler _generateScaffoldHandler = generateScaffoldHandler;
+    private readonly IAiServiceFactory _aiServiceFactory = aiServiceFactory;
+    private readonly SessionContext _sessionContext = sessionContext;
     private List<Project> _allProjects = [];
 
     [ObservableProperty] private bool _isBusy;
@@ -33,25 +39,10 @@ public sealed partial class ProjectViewModel : ObservableObject
     public ObservableCollection<ProjectTaskViewModel> DoneTasks { get; } = [];
     public ObservableCollection<TaskRoleDistribution> RoleDistribution { get; } = [];
 
-    // Temporary: Current user (later replace with actual auth)
-    private UserId CurrentUserId { get; } = new UserId(Guid.NewGuid());
+    private UserId CurrentUserId { get; } = new(Guid.NewGuid());
 
-    public ProjectViewModel(
-        GenerateProjectPlanHandler generatePlanHandler,
-        GetUserProjectsHandler getProjectsHandler,
-        UpdateTaskStatusHandler updateTaskStatusHandler,
-        GenerateScaffoldHandler generateScaffoldHandler,
-        IAiServiceFactory aiServiceFactory,
-        SessionContext sessionContext)
+    public void Initialize()
     {
-        _generatePlanHandler = generatePlanHandler;
-        _getProjectsHandler = getProjectsHandler;
-        _updateTaskStatusHandler = updateTaskStatusHandler;
-        _generateScaffoldHandler = generateScaffoldHandler;
-        _aiServiceFactory = aiServiceFactory;
-        _sessionContext = sessionContext;
-
-        // Subscribe to mode changes
         _sessionContext.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName == nameof(SessionContext.CurrentMode))
@@ -214,7 +205,6 @@ public sealed partial class ProjectViewModel : ObservableObject
 
         try
         {
-            // TODO: Add GetProjectTasksHandler to DI container
             await Task.CompletedTask;
         }
         finally

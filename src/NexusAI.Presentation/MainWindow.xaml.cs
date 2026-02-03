@@ -102,17 +102,18 @@ public partial class MainWindow : Window
     {
         try
         {
-            // Get SettingsViewModel from DI container
             if (App.Services == null)
             {
-                MessageBox.Show("Service container not initialized", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                var errorMsg = TryGetResource("S.Error.ServiceContainerNotInitialized") ?? "Service container not initialized";
+                MessageBox.Show(errorMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             var settingsViewModel = App.Services.GetService<ViewModels.SettingsViewModel>();
             if (settingsViewModel == null)
             {
-                MessageBox.Show("Settings service not available", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                var errorMsg = TryGetResource("S.Error.SettingsServiceNotAvailable") ?? "Settings service not available";
+                MessageBox.Show(errorMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -248,5 +249,10 @@ public partial class MainWindow : Window
         
         if (artifactsTab != null) artifactsTab.Visibility = Visibility.Collapsed;
         if (graphTab != null) graphTab.Visibility = Visibility.Visible;
+    }
+
+    private static string? TryGetResource(string key)
+    {
+        return System.Windows.Application.Current?.TryFindResource(key) as string;
     }
 }

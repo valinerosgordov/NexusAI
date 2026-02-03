@@ -89,4 +89,42 @@
     <sys:String x:Key="S.Common.Minimize">Minimize</sys:String>
     <sys:String x:Key="S.Common.Maximize">Maximize</sys:String>
     
+    <!-- Error Messages -->
+    <sys:String x:Key="S.Error.ServiceContainerNotInitialized">Service container not initialized</sys:String>
+    <sys:String x:Key="S.Error.SettingsServiceNotAvailable">Settings service not available</sys:String>
+    
+    <!-- Header & AI Provider -->
+    <sys:String x:Key="S.Header.ApiKeyHint">Gemini API Key</sys:String>
+    <sys:String x:Key="S.Header.ApiKeyTooltip">Paste your Gemini API Key (get from aistudio.google.com)</sys:String>
+    <sys:String x:Key="S.Header.AiProvider">AI Provider</sys:String>
+    <sys:String x:Key="S.Header.OllamaModel">Model</sys:String>
+    <sys:String x:Key="S.Header.RefreshModels">Refresh Ollama models</sys:String>
+    <sys:String x:Key="S.Header.SettingsTooltip">Settings (Language, Theme, API Keys)</sys:String>
+    <sys:String x:Key="S.Header.ProfessionalMode">Professional Mode</sys:String>
+    <sys:String x:Key="S.Header.StudentMode">Student Mode</sys:String>
+    
+    <!-- Sidebar -->
+    <sys:String x:Key="S.Sidebar.VaultPathHint">Vault Path</sys:String>
+    <sys:String x:Key="S.Sidebar.SubfolderHint">Subfolder (optional)</sys:String>
+    <sys:String x:Key="S.Sidebar.LoadVaultTooltip">Load all .md notes from vault</sys:String>
+    <sys:String x:Key="S.Sidebar.IncludeTooltip">Include in context</sys:String>
+    <sys:String x:Key="S.Sidebar.RemoveTooltip">Remove document</sys:String>
+    
+    <!-- Chat Input -->
+    <sys:String x:Key="S.Chat.InputHint">Type your question here...</sys:String>
+    <sys:String x:Key="S.Chat.SendTooltip">Send message (Ctrl+Enter)</sys:String>
+    <sys:String x:Key="S.Chat.PauseTooltip">Pause</sys:String>
+    <sys:String x:Key="S.Chat.StopTooltip">Stop</sys:String>
+    <sys:String x:Key="S.Chat.Thinking">Thinking...</sys:String>
+    
+    <!-- Empty States -->
+    <sys:String x:Key="S.Empty.NoDocuments">No documents loaded</sys:String>
+    <sys:String x:Key="S.Empty.DragDropPrompt">Drag &amp; drop files or click ADD DOCUMENTS</sys:String>
+    <sys:String x:Key="S.Empty.DropFilesHere">Drop files here</sys:String>
+    
+    <!-- Graph -->
+    <sys:String x:Key="S.Graph.GenerateDiagram">GENERATE DIAGRAM</sys:String>
+    <sys:String x:Key="S.Graph.VisualizationComingSoon">Graph visualization (Coming soon)</sys:String>
+    <sys:String x:Key="S.Graph.ExportToObsidian">EXPORT TO OBSIDIAN</sys:String>
+    
 </ResourceDictionary>

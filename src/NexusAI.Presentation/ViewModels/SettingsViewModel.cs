@@ -6,9 +6,9 @@ using System.Globalization;
 
 namespace NexusAI.Presentation.ViewModels;
 
-public sealed partial class SettingsViewModel : ObservableObject
+public sealed partial class SettingsViewModel(ILocalizationService localizationService) : ObservableObject
 {
-    private readonly ILocalizationService _localizationService;
+    private readonly ILocalizationService _localizationService = localizationService;
 
     [ObservableProperty] private LanguageItem? _selectedLanguage;
     [ObservableProperty] private string _statusMessage = string.Empty;
@@ -16,9 +16,8 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     public ObservableCollection<LanguageItem> Languages { get; } = [];
 
-    public SettingsViewModel(ILocalizationService localizationService)
+    public void Initialize()
     {
-        _localizationService = localizationService;
         LoadAvailableLanguages();
     }
 

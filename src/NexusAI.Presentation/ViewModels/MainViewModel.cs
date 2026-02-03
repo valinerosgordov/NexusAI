@@ -2,93 +2,228 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NexusAI.Application.Interfaces;
 using NexusAI.Application.Services;
-using NexusAI.Application.UseCases.Artifacts;
-using NexusAI.Application.UseCases.Chat;
-using NexusAI.Application.UseCases.Diagrams;
-using NexusAI.Application.UseCases.Documents;
-using NexusAI.Application.UseCases.Obsidian;
 using NexusAI.Domain.Models;
 using System.Collections.ObjectModel;
 using System.Windows;
-using MessageBox = System.Windows.MessageBox;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace NexusAI.Presentation.ViewModels;
 
+/// <summary>
+/// Main coordinator ViewModel - delegates responsibilities to focused sub-ViewModels
+/// </summary>
 public sealed partial class MainViewModel : ObservableObject
 {
-    private readonly AddDocumentHandler _addDocumentHandler;
-    private readonly AskQuestionHandler _askQuestionHandler;
-    private readonly GenerateArtifactHandler _generateArtifactHandler;
-    private readonly LoadObsidianVaultHandler _loadObsidianVaultHandler;
-    private readonly ExportToObsidianHandler _exportToObsidianHandler;
-    private readonly GenerateFollowUpQuestionsHandler _generateFollowUpQuestionsHandler;
-    private readonly GenerateDiagramHandler _generateDiagramHandler;
-    private readonly IDocumentParserFactory _parserFactory;
-    private readonly KnowledgeGraphService _graphService;
-    private readonly IAudioService _audioService;
     private readonly IAiServiceFactory _aiServiceFactory;
+    private readonly IAudioService _audioService;
     private readonly SessionContext _sessionContext;
 
+    public DocumentsViewModel Documents { get; }
+    public ChatViewModel Chat { get; }
+    public ArtifactsViewModel Artifacts { get; }
+    public GraphViewModel Graph { get; }
+
     [ObservableProperty] private string _geminiApiKey = string.Empty;
-    [ObservableProperty] private string _obsidianVaultPath = string.Empty;
-    [ObservableProperty] private string _obsidianSubfolder = string.Empty;
-    [ObservableProperty] private string _userQuestion = string.Empty;
     [ObservableProperty] private bool _isBusy;
     [ObservableProperty] private string _statusMessage = "Ready";
-    [ObservableProperty] private bool _isDarkTheme = false;
-    [ObservableProperty] private bool _isThinking = false;
+    [ObservableProperty] private bool _isDarkTheme;
+    [ObservableProperty] private bool _isThinking;
     [ObservableProperty] private string? _errorMessage;
     [ObservableProperty] private bool _isErrorVisible;
-    [ObservableProperty] private Artifact? _selectedArtifact;
-    [ObservableProperty] private string[] _followUpQuestions = [];
     [ObservableProperty] private AiProvider _selectedAiProvider = AiProvider.Gemini;
     [ObservableProperty] private string? _selectedOllamaModel;
     [ObservableProperty] private bool _isOllamaAvailable;
     [ObservableProperty] private bool _isPlayingAudio;
     [ObservableProperty] private string? _currentlySpeakingText;
-    [ObservableProperty] private string _currentMermaidDiagram = string.Empty;
-    [ObservableProperty] private string _selectedDiagramType = "architecture";
 
-    public string[]? PendingImages { get; set; }
-    public ObservableCollection<SourceDocumentViewModel> Sources { get; } = [];
-    public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = [];
-    public ObservableCollection<Artifact> Artifacts { get; } = [];
     public ObservableCollection<string> AvailableOllamaModels { get; } = [];
-    public ObservableCollection<KnowledgeGraphService.GraphNode> GraphNodes { get; } = [];
-    public ObservableCollection<KnowledgeGraphService.GraphEdge> GraphEdges { get; } = [];
 
     public MainViewModel(
-        AddDocumentHandler addDocumentHandler,
-        AskQuestionHandler askQuestionHandler,
-        GenerateArtifactHandler generateArtifactHandler,
-        LoadObsidianVaultHandler loadObsidianVaultHandler,
-        ExportToObsidianHandler exportToObsidianHandler,
-        GenerateFollowUpQuestionsHandler generateFollowUpQuestionsHandler,
-        GenerateDiagramHandler generateDiagramHandler,
-        IDocumentParserFactory parserFactory,
-        KnowledgeGraphService graphService,
+        DocumentsViewModel documentsViewModel,
+        ChatViewModel chatViewModel,
+        ArtifactsViewModel artifactsViewModel,
+        GraphViewModel graphViewModel,
         IAudioService audioService,
         IAiServiceFactory aiServiceFactory,
         SessionContext sessionContext)
     {
-        _addDocumentHandler = addDocumentHandler;
-        _askQuestionHandler = askQuestionHandler;
-        _generateArtifactHandler = generateArtifactHandler;
-        _loadObsidianVaultHandler = loadObsidianVaultHandler;
-        _exportToObsidianHandler = exportToObsidianHandler;
-        _generateFollowUpQuestionsHandler = generateFollowUpQuestionsHandler;
-        _generateDiagramHandler = generateDiagramHandler;
-        _parserFactory = parserFactory;
-        _graphService = graphService;
+        Documents = documentsViewModel;
+        Chat = chatViewModel;
+        Artifacts = artifactsViewModel;
+        Graph = graphViewModel;
         _audioService = audioService;
         _aiServiceFactory = aiServiceFactory;
         _sessionContext = sessionContext;
-        
+
+        WireUpEvents();
         _ = CheckOllamaAvailabilityAsync();
     }
 
     public SessionContext SessionContext => _sessionContext;
+
+    private void WireUpEvents()
+    {
+        Documents.StatusChanged += (_, msg) => StatusMessage = msg;
+        Documents.ErrorOccurred += (_, msg) => ShowError(msg);
+        Documents.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(Documents.IsBusy))
+                IsBusy = Documents.IsBusy;
+        };
+
+        Chat.StatusChanged += (_, msg) => StatusMessage = msg;
+        Chat.ErrorOccurred += (_, msg) => ShowError(msg);
+        Chat.GetIncludedSources = () => Documents.GetIncludedSources();
+        Chat.GetApiKey = () => GeminiApiKey;
+        Chat.GetAiProvider = () => SelectedAiProvider;
+        Chat.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(Chat.IsBusy))
+            {
+                IsBusy = Chat.IsBusy;
+                IsThinking = Chat.IsThinking;
+            }
+        };
+
+        Artifacts.StatusChanged += (_, msg) => StatusMessage = msg;
+        Artifacts.ErrorOccurred += (_, msg) => ShowError(msg);
+        Artifacts.GetIncludedSources = () => Documents.GetIncludedSources();
+        Artifacts.GetApiKey = () => GeminiApiKey;
+        Artifacts.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(Artifacts.IsBusy))
+            {
+                IsBusy = Artifacts.IsBusy;
+                IsThinking = Artifacts.IsThinking;
+            }
+        };
+
+        Graph.StatusChanged += (_, msg) => StatusMessage = msg;
+        Graph.ErrorOccurred += (_, msg) => ShowError(msg);
+        Graph.GetIncludedSources = () => Documents.GetIncludedSources();
+        Graph.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(Graph.IsBusy))
+                IsBusy = Graph.IsBusy;
+        };
+    }
+
+    #region Facade Properties (for XAML binding compatibility)
+
+    public ObservableCollection<SourceDocumentViewModel> Sources => Documents.Sources;
+    public ObservableCollection<ChatMessageViewModel> ChatMessages => Chat.Messages;
+    public ObservableCollection<Artifact> ArtifactsList => Artifacts.Artifacts;
+    public ObservableCollection<KnowledgeGraphService.GraphNode> GraphNodes => Graph.Nodes;
+    public ObservableCollection<KnowledgeGraphService.GraphEdge> GraphEdges => Graph.Edges;
+
+    public string UserQuestion
+    {
+        get => Chat.UserQuestion;
+        set => Chat.UserQuestion = value;
+    }
+
+    public string[] FollowUpQuestions
+    {
+        get => Chat.FollowUpQuestions;
+        set => Chat.FollowUpQuestions = value;
+    }
+
+    public string[]? PendingImages
+    {
+        get => Chat.PendingImages;
+        set => Chat.PendingImages = value;
+    }
+
+    public Artifact? SelectedArtifact
+    {
+        get => Artifacts.SelectedArtifact;
+        set => Artifacts.SelectedArtifact = value;
+    }
+
+    public string CurrentMermaidDiagram
+    {
+        get => Graph.CurrentMermaidDiagram;
+        set => Graph.CurrentMermaidDiagram = value;
+    }
+
+    public string SelectedDiagramType
+    {
+        get => Graph.SelectedDiagramType;
+        set => Graph.SelectedDiagramType = value;
+    }
+
+    public string ObsidianVaultPath
+    {
+        get => Documents.ObsidianVaultPath;
+        set => Documents.ObsidianVaultPath = value;
+    }
+
+    public string ObsidianSubfolder
+    {
+        get => Documents.ObsidianSubfolder;
+        set => Documents.ObsidianSubfolder = value;
+    }
+
+    #endregion
+
+    #region Delegated Commands
+
+    [RelayCommand]
+    private Task AddDocumentAsync() => Documents.AddDocumentCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private Task LoadObsidianVaultAsync() => Documents.LoadObsidianVaultCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private void ToggleSourceInclusion(SourceDocumentViewModel source) =>
+        Documents.ToggleSourceInclusionCommand.Execute(source);
+
+    [RelayCommand]
+    private void RemoveSource(SourceDocumentViewModel source) =>
+        Documents.RemoveSourceCommand.Execute(source);
+
+    [RelayCommand]
+    private void ClearSources() => Documents.ClearSourcesCommand.Execute(null);
+
+    [RelayCommand]
+    private void BrowseVaultPath() => Documents.BrowseVaultPathCommand.Execute(null);
+
+    [RelayCommand]
+    private Task AskQuestionAsync() => Chat.AskQuestionCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private void ClearChat() => Chat.ClearChatCommand.Execute(null);
+
+    [RelayCommand]
+    private void UseFollowUpQuestion(string question) =>
+        Chat.UseFollowUpQuestionCommand.Execute(question);
+
+    [RelayCommand]
+    private Task GenerateFAQAsync() => Artifacts.GenerateFAQCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private Task GenerateStudyGuideAsync() => Artifacts.GenerateStudyGuideCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private Task GeneratePodcastScriptAsync() => Artifacts.GeneratePodcastScriptCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private Task GenerateNotebookGuideAsync() => Artifacts.GenerateNotebookGuideCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private Task GenerateSummaryAsync() => Artifacts.GenerateSummaryCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private Task GenerateOutlineAsync() => Artifacts.GenerateOutlineCommand.ExecuteAsync(null);
+
+    [RelayCommand]
+    private void RefreshGraph() => Graph.RefreshGraphCommand.Execute(null);
+
+    [RelayCommand]
+    private Task GenerateDiagramAsync() => Graph.GenerateDiagramCommand.ExecuteAsync(null);
+
+    #endregion
+
+    #region App-Level Commands
 
     [RelayCommand]
     private void SwitchAppMode()
@@ -98,391 +233,10 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task AddDocumentAsync()
-    {
-        OpenFileDialog dialog = new()
-        {
-            Filter = _parserFactory.GetFileDialogFilter(),
-            Title = "Select Document"
-        };
-        
-        if (dialog.ShowDialog() != true)
-            return;
-
-        IsBusy = true;
-        StatusMessage = "Loading document...";
-        
-        try
-        {
-            var command = new AddDocumentCommand(dialog.FileName);
-            var result = await _addDocumentHandler.HandleAsync(command);
-            
-            if (result.IsSuccess)
-            {
-                Sources.Add(new SourceDocumentViewModel(result.Value));
-                StatusMessage = $"✅ Loaded: {result.Value.Name}";
-            }
-            else
-            {
-                ShowError($"Failed to load document: {result.Error}");
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError($"Unexpected error loading document: {ex.Message}");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    private async Task LoadObsidianVaultAsync()
-    {
-        if (string.IsNullOrWhiteSpace(ObsidianVaultPath))
-        {
-            ShowError("Please enter Obsidian vault path");
-            return;
-        }
-
-        IsBusy = true;
-        var subfolder = string.IsNullOrWhiteSpace(ObsidianSubfolder) ? null : ObsidianSubfolder;
-        StatusMessage = subfolder is null 
-            ? "Loading Obsidian notes..." 
-            : $"Loading notes from '{subfolder}'...";
-
-        try
-        {
-            var command = new LoadObsidianVaultCommand(ObsidianVaultPath, subfolder);
-            var result = await _loadObsidianVaultHandler.HandleAsync(command);
-
-            if (result.IsSuccess)
-            {
-                foreach (var doc in result.Value)
-                {
-                    if (!Sources.Any(s => s.Id == doc.Id))
-                    {
-                        Sources.Add(new SourceDocumentViewModel(doc));
-                    }
-                }
-                var location = subfolder is null ? "vault" : $"'{subfolder}'";
-                StatusMessage = $"✅ Loaded {result.Value.Length} notes from {location}";
-            }
-            else
-            {
-                ShowError($"Failed to load vault: {result.Error}");
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError($"Unexpected error loading vault: {ex.Message}");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    private void ToggleSourceInclusion(SourceDocumentViewModel source)
-    {
-        source.IsIncluded = !source.IsIncluded;
-    }
-
-    [RelayCommand]
-    private void RemoveSource(SourceDocumentViewModel source)
-    {
-        Sources.Remove(source);
-        StatusMessage = $"Removed: {source.Name}";
-    }
-
-    [RelayCommand]
-    private void ClearSources()
-    {
-        if (MessageBox.Show("Clear all sources?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
-            return;
-
-        Sources.Clear();
-        StatusMessage = "✅ All sources cleared";
-    }
-
-    [RelayCommand(CanExecute = nameof(CanAskQuestion))]
-    private async Task AskQuestionAsync()
-    {
-        if (string.IsNullOrWhiteSpace(GeminiApiKey) && SelectedAiProvider == AiProvider.Gemini)
-        {
-            MessageBox.Show("Please enter your Gemini API key in settings", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
-        var includedSources = Sources.Where(s => s.IsIncluded).Select(s => s.Document).ToArray();
-        
-        IsBusy = true;
-        IsThinking = true;
-        StatusMessage = PendingImages != null ? $"Analyzing {PendingImages.Length} image(s)..." : "Thinking...";
-
-        try
-        {
-            var userMessage = new ChatMessage(
-                Id: ChatMessageId.NewId(),
-                Content: UserQuestion,
-                Role: MessageRole.User,
-                Timestamp: DateTime.UtcNow
-            );
-            ChatMessages.Add(new ChatMessageViewModel(userMessage));
-
-            var command = new AskQuestionCommand(UserQuestion, includedSources, PendingImages);
-            var result = await _askQuestionHandler.HandleAsync(command);
-            
-            PendingImages = null;
-
-            if (result.IsSuccess)
-            {
-                var (message, _, _) = result.Value;
-                ChatMessages.Add(new ChatMessageViewModel(message));
-                
-                await GenerateFollowUpQuestionsInternalAsync(UserQuestion, message.Content);
-                UserQuestion = string.Empty;
-                StatusMessage = "Response received";
-            }
-            else
-            {
-                MessageBox.Show(result.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                StatusMessage = "Failed to get response";
-            }
-        }
-        finally
-        {
-            IsBusy = false;
-            IsThinking = false;
-        }
-    }
-
-    private bool CanAskQuestion() => !string.IsNullOrWhiteSpace(UserQuestion) && !IsBusy;
-
-    [RelayCommand]
-    private async Task GenerateFAQAsync() => await GenerateArtifactInternalAsync(ArtifactType.FAQ);
-
-    [RelayCommand]
-    private async Task GenerateStudyGuideAsync() => await GenerateArtifactInternalAsync(ArtifactType.StudyGuide);
-
-    [RelayCommand]
-    private async Task GeneratePodcastScriptAsync() => await GenerateArtifactInternalAsync(ArtifactType.PodcastScript);
-
-    [RelayCommand]
-    private async Task GenerateNotebookGuideAsync() => await GenerateArtifactInternalAsync(ArtifactType.NotebookGuide);
-
-    [RelayCommand]
-    private async Task GenerateSummaryAsync() => await GenerateArtifactInternalAsync(ArtifactType.Summary);
-
-    [RelayCommand]
-    private async Task GenerateOutlineAsync() => await GenerateArtifactInternalAsync(ArtifactType.Outline);
-
-    private async Task GenerateArtifactInternalAsync(ArtifactType type)
-    {
-        if (string.IsNullOrWhiteSpace(GeminiApiKey))
-        {
-            MessageBox.Show("Please enter your Gemini API key in settings", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
-        var includedSources = Sources.Where(s => s.IsIncluded).Select(s => s.Document).ToArray();
-        
-        if (includedSources.Length == 0)
-        {
-            MessageBox.Show("Please select at least one source to analyze", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-            return;
-        }
-
-        IsBusy = true;
-        IsThinking = true;
-        StatusMessage = $"Generating {type}...";
-
-        try
-        {
-            var command = new GenerateArtifactCommand(type, includedSources);
-            var result = await _generateArtifactHandler.HandleAsync(command);
-
-            if (result.IsSuccess)
-            {
-                Artifacts.Add(result.Value);
-                SelectedArtifact = result.Value;
-                StatusMessage = $"✅ {type} generated successfully";
-            }
-            else
-            {
-                MessageBox.Show(result.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                StatusMessage = $"Failed to generate {type}";
-            }
-        }
-        finally
-        {
-            IsBusy = false;
-            IsThinking = false;
-        }
-    }
-
-    [RelayCommand]
-    private void ClearChat()
-    {
-        if (MessageBox.Show("Clear chat history?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
-            return;
-
-        ChatMessages.Clear();
-        StatusMessage = "Chat cleared";
-    }
-
-    [RelayCommand]
-    private void UseFollowUpQuestion(string question)
-    {
-        if (!string.IsNullOrWhiteSpace(question))
-        {
-            UserQuestion = question;
-            FollowUpQuestions = [];
-        }
-    }
-
-    [RelayCommand]
-    private void BrowseVaultPath()
-    {
-        var dialog = new System.Windows.Forms.FolderBrowserDialog
-        {
-            Description = "Select Obsidian Vault Folder"
-        };
-
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-        {
-            ObsidianVaultPath = dialog.SelectedPath ?? string.Empty;
-        }
-    }
-
-    [RelayCommand]
     private void ToggleTheme()
     {
         IsDarkTheme = !IsDarkTheme;
         ApplyTheme(IsDarkTheme);
-    }
-
-    [RelayCommand]
-    private void RefreshGraph()
-    {
-        var documents = Sources
-            .Where(s => s.IsIncluded)
-            .Select(s => s.Document)
-            .ToArray();
-
-        var (nodes, edges) = _graphService.BuildGraph(documents);
-
-        GraphNodes.Clear();
-        GraphEdges.Clear();
-
-        foreach (var node in nodes)
-            GraphNodes.Add(node);
-
-        foreach (var edge in edges)
-            GraphEdges.Add(edge);
-
-        StatusMessage = $"Graph: {nodes.Length} nodes, {edges.Length} connections";
-    }
-
-    [RelayCommand]
-    private async Task GenerateDiagramAsync()
-    {
-        IsBusy = true;
-        StatusMessage = "🎨 AI is generating diagram...";
-
-        try
-        {
-            var projectContext = BuildProjectContext();
-            var command = new GenerateDiagramCommand(projectContext, SelectedDiagramType);
-            var result = await _generateDiagramHandler.HandleAsync(command);
-
-            if (result.IsSuccess)
-            {
-                CurrentMermaidDiagram = result.Value;
-                StatusMessage = $"✅ {SelectedDiagramType} diagram generated";
-            }
-            else
-            {
-                ShowError($"Failed to generate diagram: {result.Error}");
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError($"Error: {ex.Message}");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    private string BuildProjectContext()
-    {
-        var includedSources = Sources.Where(s => s.IsIncluded).ToArray();
-        
-        if (includedSources.Length > 0)
-        {
-            var docNames = string.Join(", ", includedSources.Select(s => s.Document.Name));
-            return $"Project: NexusAI (Clean Architecture WPF app with AI capabilities). Documents: {docNames}";
-        }
-
-        return "Project: NexusAI - A Clean Architecture WPF application with AI-powered features including document analysis, project planning, code scaffolding, and knowledge graphs. Built with .NET 8, MaterialDesign, EF Core, and Gemini AI.";
-    }
-
-    private async Task GenerateFollowUpQuestionsInternalAsync(string question, string answer)
-    {
-        try
-        {
-            var command = new GenerateFollowUpQuestionsCommand(question, answer);
-            var result = await _generateFollowUpQuestionsHandler.HandleAsync(command);
-            if (result.IsSuccess)
-            {
-                FollowUpQuestions = result.Value;
-            }
-        }
-        catch
-        {
-            FollowUpQuestions = [];
-        }
-    }
-
-    private void ShowError(string message)
-    {
-        StatusMessage = $"❌ {message}";
-        ErrorMessage = message;
-        IsErrorVisible = true;
-
-        Task.Delay(8000).ContinueWith(_ =>
-        {
-            IsErrorVisible = false;
-        }, TaskScheduler.FromCurrentSynchronizationContext());
-    }
-
-    partial void OnUserQuestionChanged(string value) => AskQuestionCommand.NotifyCanExecuteChanged();
-    partial void OnIsBusyChanged(bool value) => AskQuestionCommand.NotifyCanExecuteChanged();
-
-    private static void ApplyTheme(bool isDark)
-    {
-        var app = System.Windows.Application.Current;
-        if (app?.Resources.MergedDictionaries.FirstOrDefault(
-            d => d is MaterialDesignThemes.Wpf.BundledTheme) is MaterialDesignThemes.Wpf.BundledTheme bundledTheme)
-        {
-            bundledTheme.BaseTheme = isDark 
-                ? MaterialDesignThemes.Wpf.BaseTheme.Dark
-                : MaterialDesignThemes.Wpf.BaseTheme.Light;
-        }
-    }
-
-    private async Task CheckOllamaAvailabilityAsync()
-    {
-        IsOllamaAvailable = await _aiServiceFactory.IsServiceAvailableAsync(AiProvider.Ollama);
-        
-        if (IsOllamaAvailable)
-        {
-            await LoadOllamaModelsAsync();
-        }
     }
 
     [RelayCommand]
@@ -513,6 +267,18 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    #endregion
+
+    private async Task CheckOllamaAvailabilityAsync()
+    {
+        IsOllamaAvailable = await _aiServiceFactory.IsServiceAvailableAsync(AiProvider.Ollama);
+        
+        if (IsOllamaAvailable)
+        {
+            await LoadOllamaModelsAsync();
+        }
+    }
+
     partial void OnSelectedOllamaModelChanged(string? value)
     {
         if (!string.IsNullOrEmpty(value))
@@ -521,4 +287,29 @@ public sealed partial class MainViewModel : ObservableObject
             StatusMessage = $"Ollama model: {value}";
         }
     }
+
+    private void ShowError(string message)
+    {
+        StatusMessage = $"❌ {message}";
+        ErrorMessage = message;
+        IsErrorVisible = true;
+
+        Task.Delay(8000).ContinueWith(_ =>
+        {
+            IsErrorVisible = false;
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    private static void ApplyTheme(bool isDark)
+    {
+        var app = System.Windows.Application.Current;
+        if (app?.Resources.MergedDictionaries.FirstOrDefault(
+            d => d is MaterialDesignThemes.Wpf.BundledTheme) is MaterialDesignThemes.Wpf.BundledTheme bundledTheme)
+        {
+            bundledTheme.BaseTheme = isDark 
+                ? MaterialDesignThemes.Wpf.BaseTheme.Dark
+                : MaterialDesignThemes.Wpf.BaseTheme.Light;
+        }
+    }
 }
+

@@ -89,4 +89,42 @@
     <sys:String x:Key="S.Common.Minimize">Свернуть</sys:String>
     <sys:String x:Key="S.Common.Maximize">Развернуть</sys:String>
     
+    <!-- Error Messages -->
+    <sys:String x:Key="S.Error.ServiceContainerNotInitialized">Контейнер сервисов не инициализирован</sys:String>
+    <sys:String x:Key="S.Error.SettingsServiceNotAvailable">Сервис настроек недоступен</sys:String>
+    
+    <!-- Header & AI Provider -->
+    <sys:String x:Key="S.Header.ApiKeyHint">Gemini API ключ</sys:String>
+    <sys:String x:Key="S.Header.ApiKeyTooltip">Вставьте ваш Gemini API ключ (получите на aistudio.google.com)</sys:String>
+    <sys:String x:Key="S.Header.AiProvider">AI провайдер</sys:String>
+    <sys:String x:Key="S.Header.OllamaModel">Модель</sys:String>
+    <sys:String x:Key="S.Header.RefreshModels">Обновить модели Ollama</sys:String>
+    <sys:String x:Key="S.Header.SettingsTooltip">Настройки (Язык, Тема, API-ключи)</sys:String>
+    <sys:String x:Key="S.Header.ProfessionalMode">Профессиональный режим</sys:String>
+    <sys:String x:Key="S.Header.StudentMode">Студенческий режим</sys:String>
+    
+    <!-- Sidebar -->
+    <sys:String x:Key="S.Sidebar.VaultPathHint">Путь к хранилищу</sys:String>
+    <sys:String x:Key="S.Sidebar.SubfolderHint">Подпапка (необязательно)</sys:String>
+    <sys:String x:Key="S.Sidebar.LoadVaultTooltip">Загрузить все .md заметки из хранилища</sys:String>
+    <sys:String x:Key="S.Sidebar.IncludeTooltip">Включить в контекст</sys:String>
+    <sys:String x:Key="S.Sidebar.RemoveTooltip">Удалить документ</sys:String>
+    
+    <!-- Chat Input -->
+    <sys:String x:Key="S.Chat.InputHint">Введите ваш вопрос здесь...</sys:String>
+    <sys:String x:Key="S.Chat.SendTooltip">Отправить сообщение (Ctrl+Enter)</sys:String>
+    <sys:String x:Key="S.Chat.PauseTooltip">Пауза</sys:String>
+    <sys:String x:Key="S.Chat.StopTooltip">Стоп</sys:String>
+    <sys:String x:Key="S.Chat.Thinking">Размышляю...</sys:String>
+    
+    <!-- Empty States -->
+    <sys:String x:Key="S.Empty.NoDocuments">Нет загруженных документов</sys:String>
+    <sys:String x:Key="S.Empty.DragDropPrompt">Перетащите файлы или нажмите ДОБАВИТЬ ДОКУМЕНТЫ</sys:String>
+    <sys:String x:Key="S.Empty.DropFilesHere">Перетащите файлы сюда</sys:String>
+    
+    <!-- Graph -->
+    <sys:String x:Key="S.Graph.GenerateDiagram">СОЗДАТЬ ДИАГРАММУ</sys:String>
+    <sys:String x:Key="S.Graph.VisualizationComingSoon">Визуализация графа (Скоро)</sys:String>
+    <sys:String x:Key="S.Graph.ExportToObsidian">ЭКСПОРТ В OBSIDIAN</sys:String>
+    
 </ResourceDictionary>
