@@ -1126,7 +1126,7 @@ Built with ❤️ using these amazing open-source projects:
 - 📖 **Documentation**: [Wiki](../../wiki)
 - 💬 **Discussions**: [GitHub Discussions](../../discussions)
 - 🐛 **Bug Reports**: [Issues](../../issues)
-- 📧 **Contact**: [your.email@example.com](mailto:your.email@example.com)
+- 📧 **Contact**: [vitalydoxr@gmail.com](mailto:vitalydoxr@gmail.com)
 
 ### **Stay Updated**
 
