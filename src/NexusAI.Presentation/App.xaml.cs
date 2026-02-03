@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using NexusAI.Application;
 using NexusAI.Infrastructure;
-using NexusAI.Infrastructure.Persistence;
 using NexusAI.Presentation.ViewModels;
 using System.Windows;
 
@@ -98,10 +97,7 @@ public partial class App : System.Windows.Application
 
     private void InitializeDatabase()
     {
-        using var scope = _serviceProvider!.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        
-        dbContext.Database.EnsureCreated();
+        // DB placeholder
     }
     
     private void InitializeLocalization()

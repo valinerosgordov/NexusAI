@@ -11,7 +11,7 @@ public sealed partial class ChatMessageViewModel : ObservableObject
     [ObservableProperty] private string _contentWithoutSteps = string.Empty;
 
     public string Content => Message.Content;
-    public MessageRole Role => Message.Role;
+    public string Role => Message.Role;
     public string TimeDisplay => Message.Timestamp.ToLocalTime().ToString("HH:mm:ss");
     public bool IsUser => Role == MessageRole.User;
     public bool IsAssistant => Role == MessageRole.Assistant;
@@ -38,7 +38,7 @@ public sealed partial class ChatMessageViewModel : ObservableObject
             return;
 
         var lines = content.Split('\n');
-        var cleanedLines = new List<string>();
+        List<string> cleanedLines = [];
 
         foreach (var line in lines)
         {

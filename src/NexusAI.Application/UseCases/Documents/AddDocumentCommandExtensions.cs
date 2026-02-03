@@ -62,9 +62,10 @@ public static class AddDocumentCommandExtensions
     {
         var command = new AddDocumentCommand(filePath);
 
-        return await handler
-            .ExecuteWithLogging(command, logger, cancellationToken)
-            .ContinueWith(t => t.Result.EnsureNotEmpty())
-            .ContinueWith(t => t.Result.EnsureMaxSize(10_000_000)); // 10MB limit
+        var result = await handler.ExecuteWithLogging(command, logger, cancellationToken);
+        result = result.EnsureNotEmpty();
+        result = result.EnsureMaxSize(10_000_000); // 10MB limit
+        
+        return result;
     }
 }

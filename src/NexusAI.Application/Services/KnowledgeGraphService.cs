@@ -38,7 +38,7 @@ public sealed class KnowledgeGraphService
             );
         }).ToArray();
 
-        var edges = new List<GraphEdge>();
+        List<GraphEdge> edges = [];
         for (int i = 0; i < nodes.Length; i++)
         {
             for (int j = i + 1; j < nodes.Length; j++)

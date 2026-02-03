@@ -26,7 +26,7 @@ public sealed class ObsidianService : IObsidianService
             if (mdFiles.Length == 0)
                 return Result.Success(Array.Empty<SourceDocument>());
 
-            var documents = new List<SourceDocument>();
+            List<SourceDocument> documents = [];
 
             foreach (var filePath in mdFiles)
             {

@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
 using NexusAI.Application.Interfaces;
 using NexusAI.Application.Services;
 using NexusAI.Application.UseCases.Artifacts;
@@ -11,6 +10,8 @@ using NexusAI.Application.UseCases.Obsidian;
 using NexusAI.Domain.Models;
 using System.Collections.ObjectModel;
 using System.Windows;
+using MessageBox = System.Windows.MessageBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace NexusAI.Presentation.ViewModels;
 
@@ -345,14 +346,14 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void BrowseVaultPath()
     {
-        var dialog = new OpenFolderDialog
+        var dialog = new System.Windows.Forms.FolderBrowserDialog
         {
-            Title = "Select Obsidian Vault Folder"
+            Description = "Select Obsidian Vault Folder"
         };
 
-        if (dialog.ShowDialog() == true)
+        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
-            ObsidianVaultPath = dialog.FolderName;
+            ObsidianVaultPath = dialog.SelectedPath ?? string.Empty;
         }
     }
 
@@ -423,7 +424,7 @@ public sealed partial class MainViewModel : ObservableObject
         
         if (includedSources.Length > 0)
         {
-            var docNames = string.Join(", ", includedSources.Select(s => s.Document.FileName));
+            var docNames = string.Join(", ", includedSources.Select(s => s.Document.Name));
             return $"Project: NexusAI (Clean Architecture WPF app with AI capabilities). Documents: {docNames}";
         }
 
@@ -464,7 +465,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     private static void ApplyTheme(bool isDark)
     {
-        var app = Application.Current;
+        var app = System.Windows.Application.Current;
         if (app?.Resources.MergedDictionaries.FirstOrDefault(
             d => d is MaterialDesignThemes.Wpf.BundledTheme) is MaterialDesignThemes.Wpf.BundledTheme bundledTheme)
         {

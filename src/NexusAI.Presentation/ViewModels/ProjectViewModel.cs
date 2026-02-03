@@ -214,14 +214,8 @@ public sealed partial class ProjectViewModel : ObservableObject
 
         try
         {
-            var query = new GetProjectTasksQuery(projectId);
-            var result = await _getProjectsHandler.HandleAsync(query);
-
-            if (result.IsSuccess)
-            {
-                var tasks = result.Value.Select(t => new ProjectTaskViewModel(t)).ToArray();
-                LoadTasksIntoKanban(tasks);
-            }
+            // TODO: Add GetProjectTasksHandler to DI container
+            await Task.CompletedTask;
         }
         finally
         {

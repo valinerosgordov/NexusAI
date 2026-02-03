@@ -32,10 +32,10 @@ public sealed class DocumentParserFactory : IDocumentParserFactory
             .Select(ext => $"*{ext}")
             .ToArray();
 
-        var filters = new List<string>
-        {
+        List<string> filters =
+        [
             $"All Supported Documents|{string.Join(";", allExtensions)}"
-        };
+        ];
 
         // Add individual filters for each parser
         foreach (var parser in _parsers)

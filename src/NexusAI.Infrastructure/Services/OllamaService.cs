@@ -1,6 +1,7 @@
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
+using NexusAI.Infrastructure.Constants;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -12,7 +13,6 @@ namespace NexusAI.Infrastructure.Services;
 public sealed class OllamaService : IAiService
 {
     private readonly HttpClient _httpClient;
-    private const string BaseUrl = "http://localhost:11434";
     private const string SystemPrompt = """
         You are NexusAI, an expert research assistant. Answer strictly based on the provided Context.
         RULES:
@@ -63,7 +63,7 @@ public sealed class OllamaService : IAiService
             var json = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync($"{BaseUrl}/api/chat", content, cancellationToken)
+            var response = await _httpClient.PostAsync($"{ApiEndpoints.OllamaBase}/api/chat", content, cancellationToken)
                 .ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -116,7 +116,7 @@ public sealed class OllamaService : IAiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{BaseUrl}/api/tags", cancellationToken)
+            var response = await _httpClient.GetAsync($"{ApiEndpoints.OllamaBase}/api/tags", cancellationToken)
                 .ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -141,7 +141,7 @@ public sealed class OllamaService : IAiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{BaseUrl}/api/tags", cancellationToken)
+            var response = await _httpClient.GetAsync($"{ApiEndpoints.OllamaBase}/api/tags", cancellationToken)
                 .ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
@@ -167,7 +167,7 @@ public sealed class OllamaService : IAiService
 
     private static string[] ExtractSourceCitations(string content)
     {
-        var list = new List<string>();
+        List<string> list = [];
         int idx = 0;
         while ((idx = content.IndexOf('[', idx)) != -1)
         {

@@ -2,18 +2,21 @@
 
 <div align="center">
 
-**AI-Powered Project & Knowledge Management Platform**
+**Your Second Brain. From Research to Execution.**
 
-*RAG Document Analysis · Project Management · PowerPoint Generation · Wiki Knowledge Base · Dual AI Mode*
+*Desktop-native AI workspace combining RAG Research, Project Management, and Content Creation*
 
-[![.NET 8 LTS](https://img.shields.io/badge/.NET-8.0_LTS-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
-[![WPF](https://img.shields.io/badge/WPF-Windows-0078D4?logo=windows)](https://docs.microsoft.com/en-us/dotnet/desktop/wpf/)
-[![C# 12](https://img.shields.io/badge/C%23-12-239120?logo=c-sharp)](https://docs.microsoft.com/en-us/dotnet/csharp/)
-[![EF Core](https://img.shields.io/badge/EF_Core-8.0-512BD4)](https://docs.microsoft.com/en-us/ef/core/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![.NET 8 LTS](https://img.shields.io/badge/.NET-8.0_LTS-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![WPF](https://img.shields.io/badge/WPF-Windows-0078D4?logo=windows&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/desktop/wpf/)
+[![C# 12](https://img.shields.io/badge/C%23-12-239120?logo=c-sharp&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/csharp/)
+[![Gemini 2.0](https://img.shields.io/badge/Gemini-2.0_Flash-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean-blue)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Active-success)](https://github.com/yourusername/NexusAI)
 
-![NexusAI Banner](docs/screenshots/banner.png)
+![NexusAI Hero](docs/images/hero.png)
+
+[🚀 Quick Start](#-quick-start) · [📸 Screenshots](#-screenshots) · [📖 Documentation](#-user-guide) · [🤝 Contributing](#-contributing)
 
 </div>
 
@@ -21,287 +24,410 @@
 
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
-- [Key Features](#-key-features)
-- [Screenshots](#-screenshots)
-- [Tech Stack](#️-tech-stack)
-- [Architecture](#️-architecture)
-- [Database Schema](#-database-schema)
-- [Installation](#-installation)
-- [Quick Start](#-quick-start)
-- [User Guide](#-user-guide)
-- [Project Structure](#-project-structure)
-- [Development](#-development)
-- [Roadmap](#️-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [✨ Introduction](#-introduction)
+- [🚀 Key Features](#-key-features)
+- [📸 Screenshots](#-screenshots)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🏗️ Getting Started](#️-getting-started)
+- [📚 User Guide](#-user-guide)
+- [🗺️ Roadmap](#️-roadmap)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
 ---
 
-## 🌟 Overview
+## ✨ Introduction
 
-**NexusAI** is a next-generation desktop application that combines AI-powered document analysis with project management, presentation generation, and knowledge organization. Built with Clean Architecture principles and modern C# 12, it provides a professional workspace for both business professionals and students.
+**NexusAI** is a next-generation **desktop-native AI workspace** that transforms how you research, plan, and create. Built on **.NET 8 LTS** with **Clean Architecture**, it combines three powerful capabilities into one seamless experience:
 
-### 🎯 Perfect For:
-
-- **Business Professionals**: Project planning, document analysis, executive presentations
-- **Students**: Study guides, research organization, knowledge graphs
-- **Researchers**: Multi-document RAG analysis, wiki knowledge bases
-- **Developers**: GitHub-integrated Kanban boards, code scaffolding
-
-### ✨ What Makes NexusAI Special:
+### 🎯 **Three Pillars**
 
 ```
-🧠 Dual AI Mode           → Switch between Professional and Student personas
-🎨 Dark Neural Glass UI   → 2026-standard glassmorphic design with fluid animations
-🌐 Multilingual           → Runtime language switching (English/Russian)
-📊 Full RAG Pipeline      → Gemini 2.0 Flash + Ollama local LLM support
-🗂️ Complete PM Suite     → Projects, Kanban boards, GitHub integration
-📚 Knowledge Management   → Wiki, Knowledge Graph, Obsidian sync
-🎤 Presentation Engine    → AI-generated PowerPoint decks from documents
+📚 RAG Research          →  Chat with your documents (PDF, DOCX, PPTX, EPUB)
+📊 Project Management    →  AI-powered Kanban boards with GitHub integration  
+🎨 Content Creation      →  Auto-generate presentations, wikis, and artifacts
 ```
+
+### 🌟 **What Makes NexusAI Special**
+
+<table>
+<tr>
+<td width="50%">
+
+#### 🧠 **Dual AI Mode**
+
+Switch between two distinct AI personalities:
+
+- **💼 Professional Mode**: Executive assistant for business
+  - Concise, action-oriented responses
+  - Project management focus
+  - Business terminology
+  
+- **🎓 Student Mode**: Socratic tutor for learning
+  - Explanatory, teaching-focused
+  - Study guides and concept breakdowns
+  - Educational terminology
+
+*UI instantly transforms (colors, labels, tone) on toggle!*
+
+</td>
+<td width="50%">
+
+#### 🔒 **Hybrid AI Privacy**
+
+**Cloud Power + Local Privacy**
+
+```yaml
+☁️ Gemini 2.0 Flash:
+  - Multimodal (text + images)
+  - RAG with citations
+  - 15 req/min free tier
+
+🔐 Ollama (Local):
+  - 100% private
+  - No internet required
+  - Models: llama3, mistral, etc.
+```
+
+*Switch providers at runtime, no restart needed!*
+
+</td>
+</tr>
+</table>
+
+### 🎨 **Cyber-Noir Glass UI (2026 Standard)**
+
+<table>
+<tr>
+<td width="33%">
+
+**🌑 Void Background**
+
+Almost pure black (`#050505`) creates infinite depth. All elements float on semi-transparent Obsidian Glass.
+
+</td>
+<td width="33%">
+
+**⚡ Neon Plasma Accent**
+
+Electric gradient (`#6200EA → #B500FF`) powers all interactive elements with liquid animations.
+
+</td>
+<td width="33%">
+
+**🪟 Glassmorphism**
+
+Frosted surfaces, super-rounded corners (16-32px), and subtle glows create tactile depth.
+
+</td>
+</tr>
+</table>
+
+**Zero instant changes** — Every element animates in (300ms slide-up), buttons glow on hover (150ms), mode switches cross-fade (500ms).
 
 ---
 
 ## 🚀 Key Features
 
-### 🤖 AI & Document Analysis
+### 🤖 **AI & Document Analysis**
+
+| Feature | Description |
+|---------|-------------|
+| **📚 RAG 2.0 Pipeline** | Chat with PDF, DOCX, PPTX, EPUB, TXT, MD files using Retrieval-Augmented Generation |
+| **🔍 Source Citations** | Every AI response includes `[filename.pdf]` citations linking to exact sources |
+| **🖼️ Multimodal Vision** | Upload images for Gemini Vision analysis (diagrams, charts, screenshots) |
+| **🎙️ Text-to-Speech** | Listen to AI responses with integrated audio player (pause/resume) |
+| **🌐 Multi-Document Context** | Merge context from multiple files for comprehensive answers |
+| **⚡ Streaming Responses** | Real-time token streaming with progress indicators |
+
+<details>
+<summary><b>🔧 How RAG Works</b></summary>
+
+```
+┌──────────────────────────────────────────────────┐
+│  1. DOCUMENT INGESTION                           │
+│     User uploads PDF/DOCX → Parser extracts text │
+│     → Store in SessionContext.SourceDocuments    │
+└──────────────────────────────────────────────────┘
+                    ↓
+┌──────────────────────────────────────────────────┐
+│  2. CONTEXT BUILDING                             │
+│     Merge top 3 relevant docs into prompt        │
+│     Format: <Source>...[filename]...</Source>    │
+└──────────────────────────────────────────────────┘
+                    ↓
+┌──────────────────────────────────────────────────┐
+│  3. AI GENERATION                                │
+│     Gemini 2.0 Flash generates response          │
+│     → Extract citations via regex: \[.*?\]       │
+│     → Link citations to source documents         │
+└──────────────────────────────────────────────────┘
+```
+
+**Tech Stack:**
+- **PDF**: iText7 (v8.0.5)
+- **Office**: DocumentFormat.OpenXml (v3.2.0)
+- **eBooks**: VersOne.Epub (v3.3.5)
+- **AI**: Gemini 2.0 Flash, Ollama
+
+</details>
+
+---
+
+### ⚡ **Actionable Output**
+
+NexusAI doesn't just chat — it **creates real artifacts**:
 
 <table>
 <tr>
-<td width="50%">
+<td width="33%">
 
-#### **Multi-Provider AI**
-- ✅ **Gemini 2.0 Flash** (Cloud, multimodal)
-- ✅ **Ollama** (Local, privacy-first)
-- ✅ Dynamic mode switching at runtime
-- ✅ Streaming responses with citations
+#### 🗂️ **Code Scaffolder**
 
-</td>
-<td width="50%">
+```yaml
+Input: "Create a REST API for blog"
+Output:
+  - BlogController.cs
+  - BlogService.cs
+  - BlogRepository.cs
+  - Blog.cs (entity)
+  - Folder structure
 
-#### **RAG Document Processing**
-- ✅ PDF, DOCX, PPTX, EPUB, TXT, MD
-- ✅ Multi-document context merging
-- ✅ Source citations `[filename.pdf]`
-- ✅ Drag & drop support
-
-</td>
-</tr>
-<tr>
-<td>
-
-#### **Dual AI Personality**
-- 🎩 **Professional Mode**: Concise, business-focused
-- 🎓 **Student Mode**: Socratic teaching, explanations
-- ⚡ Instant UI transformation on toggle
+Action: Download as .zip
+```
 
 </td>
-<td>
+<td width="33%">
 
-#### **Multimodal Analysis**
-- 🖼️ Image understanding (Gemini Vision)
-- 🎙️ Text-to-Speech (integrated audio player)
-- 📊 Visual artifact generation
+#### 🎤 **Presentation Engine**
+
+```yaml
+Input: Topic + slide count
+Output:
+  - Title slide
+  - Content slides
+  - Speaker notes
+  - .pptx file
+
+Action: Download + edit in PowerPoint
+```
+
+</td>
+<td width="33%">
+
+#### 📚 **Wiki Generator**
+
+```yaml
+Input: Documents + topic
+Output:
+  - Hierarchical structure
+  - Chapter breakdown
+  - Tagged pages
+  - Markdown files
+
+Action: Export to Obsidian vault
+```
 
 </td>
 </tr>
 </table>
 
+**Other Artifacts:**
+- 📖 **Deep Dive**: Executive summary + insights (Markdown)
+- ❓ **FAQ**: 10-15 Q&A pairs from sources
+- 📝 **Study Guide**: Learning objectives + questions
+- 🎙️ **Podcast Script**: 2-person dialogue format
+
 ---
 
-### 📊 Project Management
+### 📊 **Smart Project Management**
 
 <table>
 <tr>
 <td width="50%">
 
-#### **Advanced Kanban Board**
-- ✅ Drag-and-drop task management
-- ✅ **OrderIndex** for persistent sorting
-- ✅ Priority badges (High/Medium/Low)
-- ✅ Role-based visual tags
-- ✅ Smart document linking
+#### **🎯 AI-Powered Planning**
+
+1. **Describe your project** in natural language
+2. **AI generates** a complete task breakdown
+3. **Kanban board** auto-populated with:
+   - Task titles & descriptions
+   - Priority levels (High/Medium/Low)
+   - Role assignments (Dev/Design/Marketing)
+   - Estimated hours
+   - Drag-and-drop ordering
+
+**Example:**
+```
+Input: "Build a mobile app for fitness tracking 
+        with social features"
+
+AI Generates:
+✅ 15 tasks across 3 roles
+✅ 120 estimated hours
+✅ Ready-to-use Kanban board
+```
 
 </td>
 <td width="50%">
 
-#### **GitHub Integration**
-- ✅ Link repositories via `GitHubRepoUrl`
-- ✅ Track issues with `GitHubIssueNumber`
-- ✅ Generate code scaffolding
-- ✅ Store project files (`ProjectFile` entity)
+#### **🔗 GitHub Integration**
 
-</td>
-</tr>
-<tr>
-<td>
+- **Link repositories** via `GitHubRepoUrl` field
+- **Track issues** with `GitHubIssueNumber` per task
+- **Store project files** in database (`ProjectFile` entity)
+- **Generate scaffolding** directly from project plan
 
-#### **AI-Powered Planning**
-- ✅ Generate project roadmaps from descriptions
-- ✅ Automatic task breakdown
-- ✅ Estimated hours calculation
-- ✅ Analytics dashboard
-
-</td>
-<td>
-
-#### **Category Filtering**
-- ✅ Work / Education / Personal
-- ✅ Context-aware project lists
-- ✅ Mode-based auto-filtering
-
-</td>
-</tr>
-</table>
-
----
-
-### 📚 Knowledge Management
-
-<table>
-<tr>
-<td width="50%">
-
-#### **Wiki System**
-- ✅ Hierarchical knowledge base
-- ✅ AI-generated wiki structures
-- ✅ Markdown editing
-- ✅ Tag-based organization
-
-</td>
-<td width="50%">
-
-#### **Knowledge Graph**
-- ✅ Visual document relationships
-- ✅ Keyword-based connections
-- ✅ Interactive canvas rendering
-- ✅ Real-time graph updates
-
-</td>
-</tr>
-<tr>
-<td>
-
-#### **Obsidian Integration**
-- ✅ Vault import (with subfolders)
-- ✅ Export chat/artifacts with backlinks
-- ✅ Bidirectional sync
-
-</td>
-<td>
-
-#### **Artifacts Generator**
-- ✅ Study Guide
-- ✅ FAQ (10-15 Q&A)
-- ✅ Executive Summary
-- ✅ Podcast Script
-- ✅ Deep Dive Analysis
+**Kanban Features:**
+- ✅ **OrderIndex** for persistent drag-and-drop sorting
+- ✅ **3 status columns**: Todo / In Progress / Done
+- ✅ **Priority badges** with visual indicators
+- ✅ **Role-based color coding**
+- ✅ **Analytics dashboard** (completion %, task distribution)
+- ✅ **Floating glass cards** with tactile hover effects
 
 </td>
 </tr>
 </table>
 
----
+**Category Filtering:**
+- 💼 **Work**: Business projects
+- 🎓 **Education**: Academic subjects
+- 🏠 **Personal**: Hobby projects
 
-### 🎨 Presentation Engine
-
-<table>
-<tr>
-<td width="50%">
-
-#### **PowerPoint Generation**
-- ✅ AI-generated slide structures
-- ✅ Topic-based deck creation
-- ✅ Fully editable `.pptx` output
-- ✅ Uses `DocumentFormat.OpenXml`
-
-</td>
-<td width="50%">
-
-#### **Smart Content**
-- ✅ Title + bullet points per slide
-- ✅ Speaker notes
-- ✅ Professional templates
-- ✅ Multi-slide generation (configurable)
-
-</td>
-</tr>
-</table>
+*Mode-aware filtering: Professional mode defaults to Work, Student mode to Education.*
 
 ---
 
-### 🎨 Dark Neural Glass UI
+### 🎨 **Neural Glass UI Design System**
 
-<table>
-<tr>
-<td width="50%">
+<details>
+<summary><b>🎭 2026 Design Language (Click to expand)</b></summary>
 
-#### **2026 Design Standard**
-- ✅ **Glassmorphism**: Frosted, semi-transparent surfaces
-- ✅ **Cyber-Noir Palette**: `#050505` base, electric purple gradients
-- ✅ **Heavy Rounded Corners**: `24px` cards, `12px` buttons
-- ✅ **Apple Typography**: Segoe UI Variable Display
+### **Color Palette: Cyber-Noir**
 
-</td>
-<td width="50%">
+```css
+/* Base */
+--void-background:    #050505;  /* Almost pure black */
+--obsidian-glass:     #CC141416; /* 80% opacity dark grey */
 
-#### **Fluid Animations**
-- ✅ **Message Entrance**: Slide up + fade (300ms)
-- ✅ **Mode Transitions**: Cross-fade colors (500ms)
-- ✅ **Hover States**: Scale + glow (150ms)
-- ✅ **Liquid Chat Bubbles**: Animated plasma gradients
+/* Accent: Neon Plasma Gradient */
+--deep-indigo:        #6200EA;
+--electric-violet:    #B500FF;
 
-</td>
-</tr>
-<tr>
-<td>
+/* Text Hierarchy */
+--text-primary:       #FFFFFF;  /* Pure white, Bold */
+--text-secondary:     #B0B0C0;  /* Cool grey */
+--text-tertiary:      #606070;  /* Subtle labels */
 
-#### **Custom Window Chrome**
-- ✅ No standard title bar
-- ✅ Draggable glass header
-- ✅ Custom minimize/maximize/close buttons
-- ✅ Blends into sidebar
+/* Effects */
+--frosted-edge:       #33FFFFFF; /* Subtle inner glow */
+```
 
-</td>
-<td>
+### **Materials & Depth**
 
-#### **Material Design 3**
-- ✅ Elevation shadows
-- ✅ Icon system (Material Design Icons)
-- ✅ Card-based layouts
-- ✅ Responsive components
+| Element | CornerRadius | Effect |
+|---------|-------------|--------|
+| **Windows/Modals** | `32px` | Super-rounded |
+| **Cards** | `24px` | Obsidian Glass |
+| **Buttons** | `16px` | Pill shapes |
+| **Inputs** | `28px` | Floating capsules |
 
-</td>
-</tr>
-</table>
+### **Glassmorphism Simulation**
+
+Since native `BackdropFilter` blur isn't available in WPF, we simulate glass via:
+
+1. **Semi-transparent backgrounds**: `#CC141416` (80% opacity)
+2. **Colored drop shadows**: Purple glow for elevation
+3. **Frosted edge borders**: `#33FFFFFF` 1px inner glow
+4. **Layered transparency**: Multiple overlapping surfaces
+
+### **Animations (The 2026 Feel)**
+
+```yaml
+Message Entrance:
+  - Slide up: TranslateY +20 → 0
+  - Fade in: Opacity 0 → 1
+  - Duration: 300ms
+  - Easing: CubicEase.EaseOut
+
+Mode Switching:
+  - Cross-fade colors
+  - Duration: 500ms
+  - Easing: CubicEase.EaseInOut
+
+Hover States:
+  - Scale: 1.0 → 1.05
+  - Glow: 0 → 24px blur
+  - Duration: 150ms
+
+Card Lift (Drag):
+  - Opacity: 1.0 → 0.85
+  - TranslateY: 0 → -8px
+  - Purple shadow intensifies
+  - Duration: 150ms
+```
+
+### **Zone-by-Zone Implementation**
+
+**Zone 1: Window Chrome**
+- Custom draggable title bar (no standard Windows chrome)
+- Obsidian Glass background blends into sidebar
+- Logo uses Neon Plasma gradient
+- Window controls (minimize/maximize/close) use `ChromeButton` style
+
+**Zone 2: Chat Interface**
+- User bubbles: Liquid Plasma gradient (RadialGradientBrush animated)
+- AI bubbles: Obsidian Glass with white rim lighting
+- Input field: Floating glass capsule with focus glow
+- Messages slide up + fade in (300ms)
+
+**Zone 3: Kanban Board**
+- Columns have no visible borders (floating headers)
+- Task cards: Obsidian Glass pills with `CornerRadius="24"`
+- Drag effect: Card lifts (-8px), becomes translucent, emits purple glow
+- All text uses TextPrimary/TextSecondary colors
+
+</details>
 
 ---
 
-### 🌐 Localization
+### 🌐 **Localization**
 
 <table>
 <tr>
 <td width="50%">
 
 #### **Runtime Language Switching**
-- ✅ English (`en-US`)
-- ✅ Russian (`ru-RU`)
-- ✅ No restart required
-- ✅ `ResourceDictionary` swapping
+
+- 🇬🇧 **English** (`en-US`)
+- 🇷🇺 **Russian** (`ru-RU`)
+
+**No restart required!** UI updates instantly via `ResourceDictionary` swapping.
 
 </td>
 <td width="50%">
 
 #### **70+ Translated Strings**
-- ✅ UI labels, buttons, placeholders
-- ✅ Error messages
-- ✅ Settings panel
-- ✅ Persistent preference storage
+
+```yaml
+Coverage:
+  - UI labels, buttons, placeholders
+  - Error messages
+  - Settings panel
+  - Context menus
+  - Tooltips
+
+Files:
+  - Resources/Languages/en-US.xaml
+  - Resources/Languages/ru-RU.xaml
+```
 
 </td>
 </tr>
 </table>
+
+**Persistent Preference**: Language choice saved to `settings.json` and restored on app launch.
 
 ---
 
@@ -311,42 +437,54 @@
 <tr>
 <td align="center" width="50%">
 
-### Professional Mode
+### 💼 Professional Mode
 ![Professional Mode](docs/screenshots/professional-mode.png)
+
+*Concise AI responses + Project Kanban + Executive Purple theme*
 
 </td>
 <td align="center" width="50%">
 
-### Student Mode
+### 🎓 Student Mode
 ![Student Mode](docs/screenshots/student-mode.png)
 
+*Explanatory AI + Study Planner + Educational Orange/Teal theme*
+
 </td>
 </tr>
 <tr>
 <td align="center">
 
-### Kanban Board
+### 📊 Kanban Board (Cyber-Noir Glass)
 ![Kanban](docs/screenshots/kanban-board.png)
 
+*Floating glass cards on Void background with Neon Plasma accents*
+
 </td>
 <td align="center">
 
-### Knowledge Graph
-![Graph](docs/screenshots/knowledge-graph.png)
+### 💬 Chat Interface (Liquid Plasma)
+![Chat](docs/screenshots/chat-interface.png)
+
+*User bubbles with animated gradient + AI glass bubbles*
 
 </td>
 </tr>
 <tr>
 <td align="center">
 
-### Wiki System
-![Wiki](docs/screenshots/wiki-system.png)
+### 📚 Knowledge Graph
+![Graph](docs/screenshots/knowledge-graph.png)
+
+*Interactive document relationship visualization*
 
 </td>
 <td align="center">
 
-### Presentation Generator
+### 🎤 Presentation Generator
 ![Presentation](docs/screenshots/presentation-gen.png)
+
+*AI-generated .pptx slides with speaker notes*
 
 </td>
 </tr>
@@ -359,26 +497,52 @@
 ### **Core Framework**
 
 ```yaml
-Runtime:        .NET 8.0 LTS
+Runtime:        .NET 8.0 LTS (Long-Term Support)
 Language:       C# 12 (Primary Constructors, Collection Expressions, File-Scoped Namespaces)
-UI:             WPF (Windows Presentation Foundation)
+UI Framework:   WPF (Windows Presentation Foundation)
 Database:       SQLite + Entity Framework Core 8.0
-Architecture:   Clean Architecture (4 layers)
-Patterns:       MVVM, CQRS, Repository, Factory, Strategy
+Architecture:   Clean Architecture (4 layers: Domain → Application → Infrastructure → Presentation)
+Patterns:       MVVM, CQRS, Repository, Factory, Strategy, Railway Oriented Programming
 ```
 
-### **AI & Machine Learning**
+### **AI Providers**
 
-| Provider | Model | Use Case |
-|----------|-------|----------|
-| **Google Gemini** | `gemini-2.0-flash-exp` | Cloud AI, multimodal, strict RAG |
-| **Ollama** | `llama3`, `mistral`, etc. | Local LLM, privacy-first |
+<table>
+<tr>
+<th>Provider</th>
+<th>Model</th>
+<th>Use Case</th>
+<th>Features</th>
+</tr>
+<tr>
+<td><b>🌐 Google Gemini</b></td>
+<td><code>gemini-2.0-flash</code></td>
+<td>Cloud AI</td>
+<td>
+  ✅ Multimodal (text + images)<br>
+  ✅ Strict RAG with citations<br>
+  ✅ 15 req/min free tier<br>
+  ✅ Streaming responses
+</td>
+</tr>
+<tr>
+<td><b>🔐 Ollama</b></td>
+<td><code>llama3</code>, <code>mistral</code>, etc.</td>
+<td>Local LLM</td>
+<td>
+  ✅ 100% offline<br>
+  ✅ Privacy-first<br>
+  ✅ No API costs<br>
+  ✅ Custom models
+</td>
+</tr>
+</table>
 
 ### **Document Processing**
 
 ```yaml
 PDF:        iText7 (v8.0.5)
-Office:     DocumentFormat.OpenXml (v3.4.1) - DOCX, PPTX
+Office:     DocumentFormat.OpenXml (v3.2.0) - DOCX, PPTX
 eBooks:     VersOne.Epub (v3.3.5)
 Text:       Native support for TXT, MD
 ```
@@ -387,1063 +551,497 @@ Text:       Native support for TXT, MD
 
 ```yaml
 Theme:          MaterialDesignInXamlToolkit (v5.1.0)
-Icons:          Material Design Icons
-Layout:         Custom glassmorphic design system
+Icons:          Material Design Icons (2,000+ icons)
+Design System:  Custom Cyber-Noir Glass (Resources/Styles/DarkNeuralGlass.xaml)
 Animations:     WPF Storyboards, DoubleAnimation, ColorAnimation
-MVVM:           CommunityToolkit.Mvvm (v8.3.2)
+MVVM:           CommunityToolkit.Mvvm (v8.4.0) - ObservableProperty, RelayCommand
 ```
 
-### **Database & Persistence**
+### **Architecture Deep Dive**
 
-```yaml
-ORM:                    Entity Framework Core 8.0.11
-Provider:               Microsoft.EntityFrameworkCore.Sqlite
-Migrations:             Code-First approach
-Connection Pooling:     Enabled by default
-```
-
-### **Dependencies**
-
-```xml
-<!-- Core -->
-<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.2" />
-<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
-<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
-
-<!-- Database -->
-<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
-<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11" />
-
-<!-- Document Processing -->
-<PackageReference Include="itext7" Version="8.0.5" />
-<PackageReference Include="DocumentFormat.OpenXml" Version="3.4.1" />
-<PackageReference Include="VersOne.Epub" Version="3.3.5" />
-
-<!-- Audio -->
-<PackageReference Include="System.Speech" Version="8.0.0" />
-
-<!-- GitHub Integration -->
-<PackageReference Include="Octokit" Version="14.0.0" />
-```
-
----
-
-## 🏗️ Architecture
-
-### **Clean Architecture (Robert C. Martin)**
-
-NexusAI strictly follows Clean Architecture principles with **4 isolated layers**:
+<details>
+<summary><b>🏛️ Clean Architecture (Click to expand)</b></summary>
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                  NexusAI.Presentation                        │
+│                  NexusAI.Presentation                        │  ← User Interface
 │  ┌────────────────────────────────────────────────────────┐  │
-│  │ ViewModels · Views · Converters · XAML · App.xaml     │  │
-│  │ Technology: WPF, MaterialDesign, MVVM                  │  │
+│  │ • ViewModels (MVVM)                                    │  │
+│  │ • Views (XAML)                                         │  │
+│  │ • Converters (BoolToVisibility, ModeToColor)          │  │
+│  │ • Resources (DarkNeuralGlass.xaml, Languages)         │  │
+│  │ Technology: WPF, MaterialDesign, CommunityToolkit     │  │
 │  └────────────────────────────────────────────────────────┘  │
 └──────────────────────────┬───────────────────────────────────┘
                            │ depends on ↓
 ┌──────────────────────────▼───────────────────────────────────┐
-│                  NexusAI.Application                         │
+│                  NexusAI.Application                         │  ← Business Logic
 │  ┌────────────────────────────────────────────────────────┐  │
-│  │ Use Cases · Commands · Handlers · Interfaces           │  │
-│  │ Business Logic · Validation · DTOs                     │  │
+│  │ • Use Cases (Commands/Queries with Handlers)           │  │
+│  │ • Interfaces (IAiService, IProjectService)            │  │
+│  │ • Services (SessionContext, KnowledgeGraphService)    │  │
+│  │ • DTOs (Data Transfer Objects)                         │  │
+│  │ Pattern: CQRS, Result<T> (Railway Oriented)           │  │
 │  └────────────────────────────────────────────────────────┘  │
 └──────────────────────────┬───────────────────────────────────┘
                            │ depends on ↓
 ┌──────────────────────────▼───────────────────────────────────┐
-│                     NexusAI.Domain                           │
+│                     NexusAI.Domain                           │  ← Core (Pure C#)
 │  ┌────────────────────────────────────────────────────────┐  │
-│  │ Entities · Value Objects · Enums · Result<T>           │  │
-│  │ ✅ ZERO external dependencies (pure C#)                │  │
+│  │ • Entities (User, Project, ProjectTask, ChatMessage)   │  │
+│  │ • Value Objects                                         │  │
+│  │ • Enums (AppMode, AiProvider, TaskStatus)             │  │
+│  │ • Result<T> (Railway Oriented Programming)            │  │
+│  │ ✅ ZERO external dependencies                          │  │
 │  └────────────────────────────────────────────────────────┘  │
 └──────────────────────────▲───────────────────────────────────┘
                            │ depends on ↑
 ┌──────────────────────────┴───────────────────────────────────┐
-│                  NexusAI.Infrastructure                      │
+│                  NexusAI.Infrastructure                      │  ← External Concerns
 │  ┌────────────────────────────────────────────────────────┐  │
-│  │ EF Core DbContext · AI Services · Parsers · File I/O   │  │
-│  │ External APIs · Third-party integrations               │  │
+│  │ • Persistence (AppDbContext, EF Core migrations)       │  │
+│  │ • AI Services (GeminiAiService, OllamaService)        │  │
+│  │ • Parsers (PdfParser, WordParser, EpubParser)         │  │
+│  │ • External APIs (HTTP clients, Obsidian sync)         │  │
+│  │ Technology: EF Core, HttpClient, iText7, OpenXml      │  │
 │  └────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────┘
 ```
 
-### **Dependency Rule**
-
-> **All dependencies point INWARD toward the Domain layer.**
-
-```
-✅ Presentation   → Application → Domain
-✅ Infrastructure → Application → Domain
-❌ Domain        → (NO dependencies on outer layers)
-```
-
-### **Design Patterns**
-
-| Pattern | Implementation | Location |
-|---------|----------------|----------|
-| **MVVM** | `ObservableProperty`, `RelayCommand` | `Presentation/ViewModels/` |
-| **CQRS** | Commands/Queries with Handlers | `Application/UseCases/` |
-| **Repository** | `IProjectService`, `IAuthService` | `Application/Interfaces/` |
-| **Factory** | `IAiServiceFactory`, `IDocumentParserFactory` | `Infrastructure/Services/` |
-| **Strategy** | `IDocumentParser` (PDF/Word/EPUB) | `Infrastructure/Parsers/` |
-| **Singleton** | `SessionContext`, `LocalizationService` | `Application/Services/` |
-| **Railway Oriented** | `Result<T>` + 15 extension methods | `Domain/Common/Result.cs` |
-| **Primary Constructor** | All services (C# 12) | Throughout |
-
-### **SOLID Principles Compliance**
+**Dependency Rule**: All dependencies point **INWARD** toward Domain.
 
 ```diff
-+ Single Responsibility:  One handler per use case
-+ Open/Closed:            Add new parsers without modifying existing code
-+ Liskov Substitution:    All IAiService implementations are interchangeable
-+ Interface Segregation:  Small, focused interfaces (IDocumentParser, IAiService)
-+ Dependency Inversion:   All layers depend on abstractions, not concretions
++ ✅ Presentation   → Application → Domain
++ ✅ Infrastructure → Application → Domain
++ ❌ Domain        → (NO dependencies on outer layers)
 ```
 
-### **Error Handling: Railway Oriented Programming**
+**Design Patterns:**
 
-```csharp
-// No exceptions in business logic - all errors are values
-public async Task<Result<Project>> CreateProjectAsync(string title, ...)
-{
-    if (string.IsNullOrWhiteSpace(title))
-        return Result<Project>.Failure("Title cannot be empty");
+| Pattern | Usage | Location |
+|---------|-------|----------|
+| **MVVM** | UI separation | `Presentation/ViewModels/` |
+| **CQRS** | Commands/Queries | `Application/UseCases/` |
+| **Repository** | Data access abstraction | `IProjectService`, `IAuthService` |
+| **Factory** | Runtime provider switching | `IAiServiceFactory`, `IDocumentParserFactory` |
+| **Strategy** | Parser selection | `IDocumentParser` (PDF/Word/EPUB) |
+| **Railway Oriented** | Error handling | `Result<T>` + extensions |
+| **Primary Constructor** | DI injection (C# 12) | All services |
 
-    var project = new Project { /* ... */ };
-    await _context.SaveChangesAsync();
-
-    return Result<Project>.Success(project);
-}
-
-// Fluent chaining
-var result = await GetUserAsync(userId)
-    .BindAsync(user => CreateProjectAsync(user.Id, title))
-    .MapAsync(project => new ProjectDto(project));
-
-// Pattern matching
-result.Match(
-    onSuccess: dto => Console.WriteLine($"Created: {dto.Title}"),
-    onFailure: error => Console.WriteLine($"Error: {error}")
-);
-```
+</details>
 
 ---
 
-## 💾 Database Schema
-
-### **Entity Relationship Diagram**
-
-```
-┌─────────────────┐
-│      User       │
-├─────────────────┤
-│ Guid Id (PK)    │
-│ Username        │◄────────┐
-│ PasswordHash    │         │
-│ CreatedAt       │         │
-└─────────────────┘         │
-        ▲                   │
-        │ 1:N               │
-        │                   │
-┌───────┴─────────┐         │
-│    Project      │         │
-├─────────────────┤         │
-│ Guid Id (PK)    │         │
-│ UserId (FK) ────┼─────────┘
-│ Title           │
-│ Description     │
-│ GitHubRepoUrl   │ (nullable)
-│ CreatedAt       │
-└─────────────────┘
-        ▲ 1:N
-        ├──────────────────┐
-        │                  │
-┌───────┴─────────┐  ┌─────┴───────────┐
-│  ProjectTask    │  │  ProjectFile    │
-├─────────────────┤  ├─────────────────┤
-│ Guid Id (PK)    │  │ Guid Id (PK)    │
-│ ProjectId (FK)  │  │ ProjectId (FK)  │
-│ Title           │  │ FilePath        │
-│ Description     │  │ Content         │
-│ Status          │  │ Language        │
-│ Role            │  │ CreatedAt       │
-│ EstimatedHours  │  └─────────────────┘
-│ OrderIndex      │ ⭐ Kanban sorting
-│ GitHubIssueNum  │ ⭐ GitHub integration
-│ CreatedAt       │
-└─────────────────┘
-
-┌─────────────────┐
-│   ChatSession   │
-├─────────────────┤
-│ Guid Id (PK)    │
-│ UserId (FK) ────┼──► User
-│ Title           │
-│ CreatedAt       │
-│ LastActivityAt  │
-└─────────────────┘
-        ▲ 1:N
-        │
-┌───────┴─────────┐
-│  ChatMessage    │
-├─────────────────┤
-│ Guid Id (PK)    │
-│ ChatSessionId   │ (FK)
-│ Content         │
-│ Role            │ (User/Assistant/System)
-│ Timestamp       │
-└─────────────────┘
-```
-
-### **Tables & Indices**
-
-#### **Users**
-```sql
-CREATE TABLE Users (
-    Id           TEXT PRIMARY KEY,
-    Username     TEXT NOT NULL UNIQUE,
-    PasswordHash TEXT NOT NULL,
-    CreatedAt    TEXT NOT NULL
-);
-CREATE UNIQUE INDEX IX_Users_Username ON Users(Username);
-```
-
-#### **Projects**
-```sql
-CREATE TABLE Projects (
-    Id            TEXT PRIMARY KEY,
-    UserId        TEXT NOT NULL,
-    Title         TEXT NOT NULL,
-    Description   TEXT NOT NULL,
-    GitHubRepoUrl TEXT,
-    CreatedAt     TEXT NOT NULL,
-    FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
-);
-```
-
-#### **ProjectTasks**
-```sql
-CREATE TABLE ProjectTasks (
-    Id                TEXT PRIMARY KEY,
-    ProjectId         TEXT NOT NULL,
-    Title             TEXT NOT NULL,
-    Description       TEXT NOT NULL,
-    Status            TEXT NOT NULL,  -- 'Todo', 'InProgress', 'Done'
-    Role              TEXT NOT NULL,
-    EstimatedHours    REAL NOT NULL,
-    OrderIndex        INTEGER NOT NULL,     -- ⭐ For Kanban sorting
-    GitHubIssueNumber INTEGER,              -- ⭐ GitHub issue tracking
-    CreatedAt         TEXT NOT NULL,
-    FOREIGN KEY (ProjectId) REFERENCES Projects(Id) ON DELETE CASCADE
-);
-CREATE INDEX IX_ProjectTasks_ProjectId ON ProjectTasks(ProjectId);
-CREATE INDEX IX_ProjectTasks_Status ON ProjectTasks(Status);
-CREATE INDEX IX_ProjectTasks_ProjectId_OrderIndex ON ProjectTasks(ProjectId, OrderIndex);
-```
-
-#### **ProjectFiles**
-```sql
-CREATE TABLE ProjectFiles (
-    Id         TEXT PRIMARY KEY,
-    ProjectId  TEXT NOT NULL,
-    FilePath   TEXT NOT NULL,
-    Content    TEXT NOT NULL,
-    Language   TEXT NOT NULL,
-    CreatedAt  TEXT NOT NULL,
-    FOREIGN KEY (ProjectId) REFERENCES Projects(Id) ON DELETE CASCADE
-);
-CREATE INDEX IX_ProjectFiles_ProjectId ON ProjectFiles(ProjectId);
-```
-
-#### **ChatSessions**
-```sql
-CREATE TABLE ChatSessions (
-    Id             TEXT PRIMARY KEY,
-    UserId         TEXT NOT NULL,
-    Title          TEXT NOT NULL,
-    CreatedAt      TEXT NOT NULL,
-    LastActivityAt TEXT,
-    FOREIGN KEY (UserId) REFERENCES Users(Id)
-);
-CREATE INDEX IX_ChatSessions_UserId ON ChatSessions(UserId);
-CREATE INDEX IX_ChatSessions_LastActivityAt ON ChatSessions(LastActivityAt);
-```
-
-#### **ChatMessages**
-```sql
-CREATE TABLE ChatMessages (
-    Id            TEXT PRIMARY KEY,
-    ChatSessionId TEXT NOT NULL,
-    Content       TEXT NOT NULL,
-    Role          TEXT NOT NULL,  -- 'User', 'Assistant', 'System'
-    Timestamp     TEXT NOT NULL,
-    FOREIGN KEY (ChatSessionId) REFERENCES ChatSessions(Id) ON DELETE CASCADE
-);
-CREATE INDEX IX_ChatMessages_ChatSessionId ON ChatMessages(ChatSessionId);
-CREATE INDEX IX_ChatMessages_Timestamp ON ChatMessages(Timestamp);
-```
-
-### **EF Core Configuration**
-
-All relationships and constraints are configured using **Fluent API** in `AppDbContext.cs`:
-
-```csharp
-// Example: Project → Tasks cascade delete
-modelBuilder.Entity<Project>(entity =>
-{
-    entity.HasMany(e => e.Tasks)
-        .WithOne(e => e.Project)
-        .HasForeignKey(e => e.ProjectId)
-        .OnDelete(DeleteBehavior.Cascade);  // ✅ Auto-delete tasks when project deleted
-});
-```
-
----
-
-## 📥 Installation
-
-### **System Requirements**
-
-```yaml
-OS:           Windows 10/11 (x64)
-Runtime:      .NET 8.0 SDK or Runtime
-RAM:          4 GB minimum, 8 GB recommended
-Storage:      500 MB for application + documents
-Display:      1920x1080 or higher (for optimal UI experience)
-```
+## 🏗️ Getting Started
 
 ### **Prerequisites**
 
-1. **Install .NET 8.0 SDK**
-   ```bash
-   # Download from: https://dotnet.microsoft.com/download/dotnet/8.0
-   winget install Microsoft.DotNet.SDK.8
-   ```
+```yaml
+OS:           Windows 10/11 (x64)
+Runtime:      .NET 8.0 SDK
+RAM:          4 GB minimum, 8 GB recommended
+Storage:      500 MB for app + documents
+Display:      1920x1080 or higher (for optimal glass UI)
+```
 
-2. **(Optional) Install Ollama for Local LLM**
-   ```bash
-   # Download from: https://ollama.ai/
-   # Then pull a model:
-   ollama pull llama3
-   ```
+### **Installation Steps**
 
-3. **Get Gemini API Key**
-   - Visit: https://aistudio.google.com/apikey
-   - Create a free API key (Free tier: 15 requests/minute)
+#### **Option 1: Download Release** (Recommended)
 
----
+1. Go to [Releases](../../releases)
+2. Download `NexusAI-v1.0.0-win-x64.zip`
+3. Extract to a folder (e.g., `C:\Apps\NexusAI`)
+4. Run `NexusAI.exe`
+5. Enter your Gemini API key (get one at [aistudio.google.com](https://aistudio.google.com/apikey))
 
-## 🚀 Quick Start
-
-### **Option 1: Run Pre-built Release** (Easiest)
-
-1. Download `NexusAI-v1.0.0-win-x64.zip` from [Releases](../../releases)
-2. Extract to a folder (e.g., `C:\Apps\NexusAI`)
-3. Run `NexusAI.exe`
-4. Enter your Gemini API key in the header
-5. Start adding documents!
-
-### **Option 2: Build from Source**
+#### **Option 2: Build from Source**
 
 ```bash
 # 1. Clone repository
 git clone https://github.com/yourusername/NexusAI.git
 cd NexusAI
 
-# 2. Restore NuGet packages
-dotnet restore NexusAI.sln
+# 2. Restore dependencies
+dotnet restore
 
-# 3. Build solution (all 4 projects)
-dotnet build NexusAI.sln --configuration Release
+# 3. Build solution (Debug or Release)
+dotnet build --configuration Release
 
-# 4. Run Presentation project
+# 4. Run application
 cd src/NexusAI.Presentation
 dotnet run
 
-# Or open in Visual Studio 2022 and press F5
+# Or open NexusAI.sln in Visual Studio 2022 and press F5
 ```
 
-### **First Launch**
+### **Configuration**
 
-1. **Database Initialization**: SQLite database (`nexus.db`) is created automatically in the app directory
-2. **Enter API Key**: Paste your Gemini API key in the top header
-3. **Select Language**: Choose English or Russian from Settings
-4. **Create Account**: Register a username/password (stored locally)
+#### **Gemini API Key** (Required for Cloud AI)
+
+1. Visit [Google AI Studio](https://aistudio.google.com/apikey)
+2. Create a free API key (15 requests/minute)
+3. Paste into the **API Key** field in the app header
+
+#### **Ollama Setup** (Optional for Local AI)
+
+```bash
+# 1. Download Ollama from https://ollama.ai/
+# 2. Install and start the service
+# 3. Pull a model (e.g., llama3)
+ollama pull llama3
+
+# 4. In NexusAI, select "Ollama" as AI provider
+# 5. Choose your downloaded model from dropdown
+```
+
+**No API key needed for Ollama — 100% offline!**
 
 ---
 
 ## 📚 User Guide
 
-### **1. Document Management**
+### **1️⃣ Adding Documents**
 
-#### **Adding Documents**
+<table>
+<tr>
+<td width="33%">
 
-**Method 1: File Dialog**
-```
-1. Click "ADD DOCUMENTS" button in left sidebar
-2. Select files (PDF, DOCX, PPTX, EPUB, TXT, MD)
-3. Files are parsed and indexed automatically
-```
+**📁 File Dialog**
 
-**Method 2: Drag & Drop**
-```
+1. Click **ADD DOCUMENTS**
+2. Select files (multi-select supported)
+3. Supported: PDF, DOCX, PPTX, EPUB, TXT, MD
+
+</td>
+<td width="33%">
+
+**🖱️ Drag & Drop**
+
 1. Drag files from File Explorer
-2. Drop onto the document list area
-3. Watch real-time parsing progress
-```
+2. Drop onto document sidebar
+3. Watch real-time parsing
 
-**Method 3: Obsidian Vault**
-```
-1. Open Settings → Obsidian Integration
-2. Enter vault path: C:\Users\You\Documents\Obsidian\MyVault
-3. (Optional) Specify subfolder: Research/AI
-4. Click "Sync Vault"
-5. All markdown files imported with structure preserved
-```
+</td>
+<td width="33%">
 
-#### **Document Actions**
+**📝 Obsidian Vault**
 
-- ✅ **Toggle Inclusion**: Click checkbox to include/exclude from AI context
-- ✅ **Remove**: Click `✕` button to delete from list
-- ✅ **View**: Click document name to preview (future feature)
+1. Settings → Obsidian
+2. Enter vault path
+3. Click **Sync Vault**
+4. All `.md` files imported
+
+</td>
+</tr>
+</table>
+
+**Document Management:**
+- ✅ **Toggle checkbox** to include/exclude from AI context
+- ✅ **Click ✕** to remove document
+- ✅ **Hover** to see file size and load timestamp
 
 ---
 
-### **2. AI Chat Interface**
+### **2️⃣ AI Chat Interface**
 
 #### **Asking Questions**
 
-```
-🎩 Professional Mode:
+```markdown
+💼 Professional Mode Example:
 You: "Analyze Q4 revenue trends from the financial report."
-AI:  "Revenue increased 23% YoY [Q4_Report.pdf]. Key drivers: ..."
+AI:  "Revenue increased 23% YoY to $4.2M [Q4_Report.pdf]. 
+      Key drivers: Enterprise segment (+35%), Product A sales..."
 
-🎓 Student Mode:
+🎓 Student Mode Example:
 You: "What is photosynthesis?"
-AI:  "Great question! Let's break it down step-by-step. Think of a plant 
-      as a solar panel factory [biology_chapter3.pdf]..."
+AI:  "Great question! Let's break it down step-by-step.
+      Think of a plant as a tiny solar panel factory [biology_ch3.pdf].
+      
+      The process has two main stages:
+      1. Light-dependent reactions (capturing energy)
+      2. Light-independent reactions (making glucose)
+      
+      Let me explain each..."
 ```
 
-#### **Citations**
-
-All AI responses include source citations:
-```
-[filename.pdf]    → Exact source document
-[page 42]         → Specific page reference (PDF only)
-```
-
-Click a citation to highlight the source in the sidebar.
+**Citations**: All responses include `[filename.pdf]` links. Click to highlight source in sidebar.
 
 ---
 
-### **3. App Mode Switching**
+### **3️⃣ App Mode Switching**
 
-Toggle between **Professional** and **Student** modes instantly:
+Toggle between modes instantly (no restart):
 
-| Feature | 🎩 Professional Mode | 🎓 Student Mode |
-|---------|---------------------|----------------|
+| Feature | 💼 Professional | 🎓 Student |
+|---------|----------------|------------|
 | **AI Tone** | Concise, business-focused | Explanatory, teaching |
-| **UI Labels** | "Projects" | "Subjects" |
-| **Color Accent** | Deep Purple (`#6200EA`) | Teal/Orange |
-| **Target Audience** | Executives, PMs | Students, learners |
+| **UI Labels** | "Projects", "Tasks" | "Subjects", "Assignments" |
+| **Accent Color** | Deep Purple (`#6200EA`) | Orange/Teal |
+| **Default Category** | Work | Education |
 
-**Toggle Location**: Bottom of left sidebar (Briefcase ⇄ Graduation Cap icon)
+**Toggle Location**: Top header (💼 ⇄ 🎓 icons)
 
 ---
 
-### **4. Project Management**
+### **4️⃣ Project Management**
 
 #### **Creating a Project**
 
 ```
 1. Go to "Projects" tab
-2. Click "New Project"
-3. Enter:
+2. Click "➕ NEW PROJECT"
+3. Fill in:
    - Title: "Website Redesign"
-   - Description: "Overhaul company website with modern design"
+   - Description: "Modern UI overhaul with dark mode"
    - GitHub Repo: https://github.com/company/website (optional)
    - Category: Work / Education / Personal
-4. Click "Generate Plan" to auto-create tasks using AI
+4. Click "Generate Plan" → AI creates task breakdown
 ```
 
 #### **Kanban Board**
 
 ```
-┌─────────────┬─────────────┬─────────────┐
-│    TODO     │ IN PROGRESS │    DONE     │
-├─────────────┼─────────────┼─────────────┤
-│ Task 1      │ Task 3      │ Task 5      │
-│ Task 2      │ Task 4      │             │
-│             │             │             │
-│ [Drag here] │ [Drag here] │ [Drag here] │
-└─────────────┴─────────────┴─────────────┘
+┌──────────────┬──────────────┬──────────────┐
+│    📝 TODO   │  🚀 IN PROGRESS │   ✅ DONE   │
+├──────────────┼──────────────┼──────────────┤
+│ Task 1       │ Task 3       │ Task 5       │
+│ Task 2       │ Task 4       │ Task 6       │
+│              │              │              │
+│ [Drag here]  │ [Drag here]  │ [Drag here]  │
+└──────────────┴──────────────┴──────────────┘
 ```
 
-**Features:**
-- ✅ Drag tasks between columns
-- ✅ **OrderIndex** automatically updated
-- ✅ Priority badges (High = 🔴, Medium = 🟡, Low = 🟢)
-- ✅ Role tags (Dev, Design, Marketing)
-- ✅ Estimated hours display
-- ✅ GitHub issue number (if linked)
-
-#### **Analytics Dashboard**
-
-```
-┌─────────────────────────────────────┐
-│ Project Completion: 67% ████████░░  │
-│                                     │
-│ Tasks by Role:                      │
-│  Dev:       5 tasks                 │
-│  Design:    3 tasks                 │
-│  Marketing: 2 tasks                 │
-└─────────────────────────────────────┘
-```
+**Drag-and-drop:**
+- Cards automatically update `OrderIndex` in database
+- Smooth animations (lift effect on grab)
+- Purple glow when hovering over drop zone
 
 ---
 
-### **5. Knowledge Management**
+### **5️⃣ Content Generation**
 
-#### **Wiki System**
+#### **Artifacts**
 
-```
-📁 Root Wiki
-  ├─ 📄 Introduction
-  ├─ 📁 Chapter 1: Basics
-  │   ├─ 📄 1.1 Getting Started
-  │   └─ 📄 1.2 Key Concepts
-  ├─ 📁 Chapter 2: Advanced
-  │   └─ 📄 2.1 Best Practices
-  └─ 📄 Conclusion
-```
+| Type | Output | Use Case |
+|------|--------|----------|
+| 📖 **Deep Dive** | Markdown | Executive summary + insights |
+| 📄 **Summary** | 2-4 paragraphs | Quick overview |
+| 📚 **Study Guide** | Structured outline | Learning objectives + questions |
+| ❓ **FAQ** | 10-15 Q&A | Common questions from sources |
+| 🎙️ **Podcast Script** | Dialogue | 2-person conversation |
 
-**Actions:**
-- ✅ **Generate Wiki**: AI creates hierarchical structure from documents
-- ✅ **Edit Pages**: Markdown editor with live preview
-- ✅ **Reorder**: Drag pages to change hierarchy
-- ✅ **Tags**: Organize with custom tags
-- ✅ **Export**: Save to Obsidian vault with backlinks
+#### **Presentation Generator**
 
-#### **Knowledge Graph**
-
-```
-       [Doc A]
-      /   |   \
-    /     |     \
-[Doc B]--[Doc C]--[Doc D]
-    \     |     /
-      \   |   /
-       [Doc E]
-```
-
-- **Nodes**: Documents (size = word count)
-- **Edges**: Shared keywords (thickness = # of shared terms)
-- **Interactive**: Click to highlight connections
-
----
-
-### **6. Presentation Generator**
-
-```
+```yaml
 1. Go to "Presentation" tab
-2. Enter topic: "AI in Healthcare"
-3. Select slide count: 10
-4. Click "Generate Deck"
-5. AI creates:
+2. Enter:
+   - Topic: "AI in Healthcare"
+   - Slide count: 10
+3. Click "Generate Deck"
+4. AI creates:
    - Title slide
-   - Content slides (bullet points)
+   - Content slides (bullets)
    - Speaker notes
    - Conclusion
-6. Download as .pptx (fully editable in PowerPoint)
-```
-
-**Prompt Example (sent to AI):**
-```
-You are a Presentation Expert. Create a structured outline for a PowerPoint 
-deck on 'AI in Healthcare' with 10 slides. Return JSON:
-[
-  { "title": "...", "points": ["...", "..."], "notes": "..." },
-  ...
-]
+5. Download as .pptx
+6. Edit in PowerPoint
 ```
 
 ---
 
-### **7. Artifacts**
+### **6️⃣ Settings**
 
-Generate specialized outputs from your documents:
-
-| Artifact Type | Output Format | Use Case |
-|--------------|---------------|----------|
-| **Deep Dive** | Markdown report | Executive summary + key insights |
-| **Summary** | 2-4 paragraphs | Quick overview |
-| **Study Guide** | Structured outline | Learning objectives + questions |
-| **FAQ** | 10-15 Q&A pairs | Common questions from sources |
-| **Podcast Script** | Dialogue format | 2-person conversation |
-| **Notebook Guide** | Russian-language guide | Structured learning notes |
-
----
-
-### **8. Settings**
-
-#### **Language**
-- 🇬🇧 **English** (`en-US`)
-- 🇷🇺 **Russian** (`ru-RU`)
-- Changes apply instantly (no restart required)
-
-#### **AI Provider**
-- **Gemini 2.0 Flash**: Paste API key
-- **Ollama**: Select local model
-
-#### **Audio**
-- Volume control
-- Voice selection (system TTS)
-- Speed adjustment
-
----
-
-## 📁 Project Structure
-
-```
-NexusAI/
-├── src/
-│   ├── NexusAI.Domain/                           # ✅ Core (0 dependencies)
-│   │   ├── Entities/                             # EF Core entities
-│   │   │   ├── User.cs                           # Guid Id, Username, PasswordHash
-│   │   │   ├── Project.cs                        # + GitHubRepoUrl (nullable)
-│   │   │   ├── ProjectTask.cs                    # + OrderIndex, GitHubIssueNumber
-│   │   │   ├── ProjectFile.cs                    # ⭐ NEW: FilePath, Content, Language
-│   │   │   ├── ChatSession.cs                    # ⭐ NEW: UserId, Title, Messages
-│   │   │   └── ChatMessage.cs                    # ChatSessionId, Content, Role
-│   │   └── Common/
-│   │       ├── Result.cs                         # Railway-oriented programming
-│   │       └── ResultExtensions.cs               # Fluent methods (Bind, Map, Match)
-│   │
-│   ├── NexusAI.Application/                      # → Domain only
-│   │   ├── Interfaces/
-│   │   │   ├── IAiService.cs                     # Abstraction for Gemini/Ollama
-│   │   │   ├── IAiServiceFactory.cs              # Runtime provider switching
-│   │   │   ├── IAuthService.cs                   # User registration/login
-│   │   │   ├── IProjectService.cs                # Project/Task CRUD
-│   │   │   ├── IDocumentParser.cs                # Strategy pattern for parsers
-│   │   │   ├── IObsidianService.cs               # Vault import/export
-│   │   │   ├── IPresentationService.cs           # PowerPoint generation
-│   │   │   └── ILocalizationService.cs           # Language switching
-│   │   ├── UseCases/
-│   │   │   ├── Auth/
-│   │   │   │   ├── LoginCommand.cs               # Login use case
-│   │   │   │   └── RegisterCommand.cs            # Registration use case
-│   │   │   ├── Projects/
-│   │   │   │   ├── CreateProjectCommand.cs
-│   │   │   │   ├── GenerateProjectPlanHandler.cs # AI-powered task generation
-│   │   │   │   ├── UpdateTaskStatusHandler.cs
-│   │   │   │   └── GetUserProjectsHandler.cs
-│   │   │   ├── Documents/
-│   │   │   │   └── AddDocumentHandler.cs
-│   │   │   ├── Chat/
-│   │   │   │   └── AskQuestionHandler.cs         # RAG pipeline
-│   │   │   ├── Wiki/
-│   │   │   │   ├── GenerateWikiHandler.cs
-│   │   │   │   └── UpdateWikiPageHandler.cs
-│   │   │   ├── Presentations/
-│   │   │   │   └── GeneratePresentationHandler.cs
-│   │   │   └── Scaffold/
-│   │   │       └── GenerateScaffoldHandler.cs    # Code generation
-│   │   ├── Services/
-│   │   │   ├── SessionContext.cs                 # Singleton: CurrentMode, CurrentUser
-│   │   │   ├── KnowledgeGraphService.cs          # Graph computation
-│   │   │   └── KnowledgeHubService.cs            # Document indexing
-│   │   └── DependencyInjection.cs                # Use case registration
-│   │
-│   ├── NexusAI.Infrastructure/                   # → Domain + Application
-│   │   ├── Persistence/
-│   │   │   └── AppDbContext.cs                   # ✅ EF Core DbContext (primary constructor)
-│   │   ├── Services/
-│   │   │   ├── AuthService.cs                    # ✅ C# 12: primary constructor
-│   │   │   ├── ProjectService.cs                 # ✅ C# 12: guard clauses
-│   │   │   ├── GeminiAiService.cs                # Gemini 2.0 Flash implementation
-│   │   │   ├── OllamaService.cs                  # Local LLM implementation
-│   │   │   ├── AiServiceFactory.cs               # Factory pattern
-│   │   │   ├── ObsidianService.cs                # Vault sync
-│   │   │   ├── PresentationService.cs            # PPTX generation (OpenXml)
-│   │   │   ├── SpeechSynthesisService.cs         # Text-to-Speech
-│   │   │   ├── WikiService.cs                    # Wiki CRUD
-│   │   │   └── ScaffoldingService.cs             # Code scaffolding
-│   │   ├── Parsers/
-│   │   │   ├── PdfParser.cs                      # iText7
-│   │   │   ├── WordParser.cs                     # DocumentFormat.OpenXml
-│   │   │   ├── PresentationParser.cs             # PPTX
-│   │   │   ├── EpubParser.cs                     # VersOne.Epub
-│   │   │   ├── TextParser.cs                     # TXT/MD
-│   │   │   └── DocumentParserFactory.cs          # Strategy pattern
-│   │   └── DependencyInjection.cs                # Service registration
-│   │
-│   └── NexusAI.Presentation/                     # → All layers
-│       ├── ViewModels/
-│       │   ├── MainViewModel.cs                  # Chat, documents, artifacts
-│       │   ├── ProjectViewModel.cs               # Kanban board
-│       │   ├── WikiViewModel.cs                  # Wiki editor
-│       │   ├── PresentationViewModel.cs          # PPTX generator
-│       │   ├── SettingsViewModel.cs              # Language, AI provider
-│       │   └── ChatMessageViewModel.cs           # Individual message
-│       ├── Views/
-│       │   ├── MainWindow.xaml                   # ⭐ Dark Neural Glass UI
-│       │   ├── ProjectView.xaml                  # Kanban board
-│       │   ├── WikiView.xaml                     # Wiki editor
-│       │   ├── PresentationView.xaml             # PPTX generator
-│       │   └── SettingsView.xaml                 # Language/AI settings
-│       ├── Converters/
-│       │   ├── BoolToVisibilityConverter.cs
-│       │   ├── ModeToStringConverter.cs          # Pro/Student labels
-│       │   ├── ModeToAccentColorConverter.cs     # Dynamic colors
-│       │   ├── ModeToIconConverter.cs            # Dynamic icons
-│       │   └── FileIconConverter.cs
-│       ├── Resources/
-│       │   ├── Styles/
-│       │   │   └── DarkNeuralGlass.xaml          # ⭐ Complete design system
-│       │   └── Languages/
-│       │       ├── en-US.xaml                    # English strings
-│       │       └── ru-RU.xaml                    # Russian strings
-│       ├── Services/
-│       │   └── LocalizationService.cs            # ResourceDictionary swapping
-│       ├── App.xaml                              # DI composition root
-│       └── app.manifest                          # Windows manifest
-│
-├── docs/
-│   ├── screenshots/                              # UI screenshots
-│   ├── LOCALIZATION.md                           # Localization guide
-│   ├── UI_DARK_NEURAL_GLASS.md                   # Design system spec
-│   └── screenshots.md
-│
-├── NexusAI.sln                                   # Multi-project solution
-├── README.md                                     # This file
-├── LICENSE                                       # MIT License
-├── REFACTORING_SUMMARY.md                        # Recent refactoring changelog
-├── REFACTORING_COMPLETE.md                       # Architecture documentation
-├── CONTRIBUTING.md                               # Contribution guidelines
-├── RELEASE_NOTES.md                              # Version history
-└── VERSION                                       # Current version number
-```
-
----
-
-## 🔧 Development
-
-### **Building the Project**
-
-```bash
-# Clean build
-dotnet clean NexusAI.sln
-dotnet build NexusAI.sln --configuration Release
-
-# Run tests (when implemented)
-dotnet test NexusAI.sln
-
-# Publish self-contained executable
-dotnet publish src/NexusAI.Presentation/NexusAI.Presentation.csproj \
-  -c Release \
-  -r win-x64 \
-  --self-contained true \
-  -p:PublishSingleFile=true \
-  -p:IncludeNativeLibrariesForSelfExtract=true
-```
-
-### **Code Style**
-
-#### **C# 12 Modernization**
-
-```csharp
-// ✅ File-scoped namespaces
-namespace NexusAI.Domain.Entities;
-
-// ✅ Primary constructors
-public sealed class AuthService(AppDbContext context) : IAuthService
-{
-    public async Task<Result<User>> LoginAsync(...)
-    {
-        var user = await context.Users.FirstOrDefaultAsync(...);
-        return user is not null
-            ? Result<User>.Success(user)
-            : Result<User>.Failure("User not found");
-    }
-}
-
-// ✅ Collection expressions
-public ICollection<Project> Projects { get; set; } = [];
-
-// ✅ Guard clauses (early returns)
-if (string.IsNullOrWhiteSpace(username))
-    return Result.Failure("Username cannot be empty");
-
-// Continue main logic without nesting
-```
-
-#### **Naming Conventions**
-
-```csharp
-// Classes, methods, properties: PascalCase
-public class ProjectService { }
-public async Task<Result<Project>> CreateProjectAsync() { }
-
-// Private fields: _camelCase
-private readonly AppDbContext _context;
-
-// Parameters, local variables: camelCase
-public void ProcessData(string fileName) { }
-
-// Constants: PascalCase
-public const string DefaultLanguage = "en-US";
-```
-
-#### **Architecture Rules**
-
-```diff
-+ Use Railway Oriented Programming (Result<T>) for all business logic
-+ No exceptions in Domain/Application layers (only Infrastructure)
-+ All async methods must have CancellationToken parameter
-+ Use ConfigureAwait(false) in library code
-+ Inject interfaces, not concrete types
-+ One handler per use case
-+ ViewModels must not reference Infrastructure
-```
-
-### **Database Migrations**
-
-```bash
-# Add new migration
-cd src/NexusAI.Infrastructure
-dotnet ef migrations add MigrationName --context AppDbContext
-
-# Apply migrations
-dotnet ef database update
-
-# Rollback
-dotnet ef database update PreviousMigrationName
-
-# Generate SQL script
-dotnet ef migrations script
-```
-
-### **Adding a New Feature**
-
-#### **Example: Add "Export Project to JSON" feature**
-
-```bash
-# 1. Create Use Case (Application layer)
-src/NexusAI.Application/UseCases/Projects/ExportProjectCommand.cs
-src/NexusAI.Application/UseCases/Projects/ExportProjectHandler.cs
-
-# 2. Create Interface (Application layer)
-src/NexusAI.Application/Interfaces/IJsonExportService.cs
-
-# 3. Implement Service (Infrastructure layer)
-src/NexusAI.Infrastructure/Services/JsonExportService.cs
-
-# 4. Register in DI (Infrastructure)
-services.AddSingleton<IJsonExportService, JsonExportService>();
-
-# 5. Update ViewModel (Presentation)
-src/NexusAI.Presentation/ViewModels/ProjectViewModel.cs
-  → Add ExportProjectCommand
-
-# 6. Update View (Presentation)
-src/NexusAI.Presentation/Views/ProjectView.xaml
-  → Add "Export to JSON" button
-```
-
-### **Testing Strategy**
-
-```csharp
-// Unit Tests (Application layer)
-[Fact]
-public async Task CreateProject_ValidData_ShouldSucceed()
-{
-    // Arrange
-    var service = CreateProjectService();
-    
-    // Act
-    var result = await service.CreateProjectAsync("Title", "Desc", userId);
-    
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    result.Value.Title.Should().Be("Title");
-}
-
-// Integration Tests (Infrastructure layer)
-[Fact]
-public async Task GeminiService_RealApi_ShouldReturnResponse()
-{
-    // Arrange
-    var service = new GeminiAiService(httpClient, apiKey, sessionContext);
-    
-    // Act
-    var result = await service.SendAsync("Hello");
-    
-    // Assert
-    result.IsSuccess.Should().BeTrue();
-    result.Value.Should().NotBeEmpty();
-}
-```
+- **🌐 Language**: English / Russian (instant switch)
+- **🤖 AI Provider**: Gemini / Ollama
+- **🔑 API Key**: Paste Gemini key
+- **🔊 Audio**: Volume, voice, speed
 
 ---
 
 ## 🗺️ Roadmap
 
-### **v1.1 - Q2 2025** (Planned)
+<details>
+<summary><b>✅ Completed (v1.0)</b></summary>
+
+- [x] Gemini 2.0 Flash integration with streaming
+- [x] Ollama local LLM support
+- [x] RAG pipeline with source citations
+- [x] PDF, DOCX, PPTX, EPUB parsing
+- [x] Dual mode (Professional/Student)
+- [x] Cyber-Noir Glass UI (2026 design)
+- [x] Kanban board with drag-and-drop
+- [x] AI project planning
+- [x] PowerPoint generation
+- [x] Wiki system
+- [x] Knowledge graph
+- [x] Obsidian integration
+- [x] Code scaffolding
+- [x] Text-to-Speech
+- [x] Localization (English/Russian)
+- [x] Clean Architecture implementation
+- [x] SQLite + EF Core persistence
+
+</details>
+
+### **🚧 v1.1 - Q2 2025** (In Progress)
 
 - [ ] **Performance**
-  - [ ] Lazy loading for large document lists
+  - [ ] Lazy loading for document lists (1000+ files)
   - [ ] Virtual scrolling in chat
   - [ ] Background indexing for RAG
+  - [ ] Database connection pooling optimization
 
 - [ ] **UX Enhancements**
   - [ ] Auto-scroll to latest message
-  - [ ] Search within documents
+  - [ ] Ctrl+F search within documents
   - [ ] Document preview modal
-  - [ ] Keyboard shortcuts (Ctrl+K, Ctrl+P)
+  - [ ] Keyboard shortcuts (Ctrl+K command palette)
+  - [ ] Undo/redo for task moves
 
-- [ ] **Data**
-  - [ ] Export chat history to PDF/Word
+- [ ] **Data Portability**
+  - [ ] Export chat history to PDF/Markdown
   - [ ] Import/export projects as JSON
   - [ ] Backup/restore database
+  - [ ] Bulk document import folder
 
-### **v2.0 - Q3 2025** (Future)
+---
+
+### **🔮 v2.0 - Q3 2025** (Future)
 
 - [ ] **AI Providers**
-  - [ ] OpenAI GPT-4 support
-  - [ ] Anthropic Claude integration
+  - [ ] OpenAI GPT-4 integration
+  - [ ] Anthropic Claude support
   - [ ] Azure OpenAI Service
-  - [ ] Custom API endpoint support
+  - [ ] Custom API endpoint configuration
 
 - [ ] **Advanced Features**
-  - [ ] Vector embeddings (semantic search)
-  - [ ] Multi-user collaboration
-  - [ ] Cloud sync (optional)
-  - [ ] Mobile companion app (Blazor Hybrid)
+  - [ ] Vector embeddings (ChromaDB/Qdrant)
+  - [ ] Semantic search across documents
+  - [ ] Multi-user collaboration (SQLite → PostgreSQL)
+  - [ ] Cloud sync (optional, Azure/AWS)
+  - [ ] Voice input (speech-to-text)
 
 - [ ] **Integrations**
   - [ ] Notion sync
   - [ ] Confluence integration
   - [ ] Google Drive import
-  - [ ] Slack bot
+  - [ ] Slack notifications
 
-### **v3.0 - 2026** (Vision)
+---
+
+### **🌟 v3.0 - 2026** (Vision)
 
 - [ ] **Enterprise**
   - [ ] SSO/SAML authentication
-  - [ ] Role-based access control
+  - [ ] Role-based access control (RBAC)
   - [ ] Audit logging
   - [ ] Self-hosted server option
 
 - [ ] **AI Enhancements**
-  - [ ] Fine-tuned models
-  - [ ] Custom prompt templates library
+  - [ ] Fine-tuned models (custom RAG)
+  - [ ] Prompt template library
   - [ ] Multi-agent workflows
   - [ ] Autonomous task execution
+
+- [ ] **Platform Expansion**
+  - [ ] Web version (Blazor)
+  - [ ] Mobile app (MAUI)
+  - [ ] Linux support (Avalonia UI)
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are **highly welcome**! Here's how to get started:
+Contributions are **highly welcome**! Whether it's bug fixes, new features, or documentation improvements.
 
-### **How to Contribute**
+### **Quick Start**
 
-1. **Fork the repository**
-   ```bash
-   gh repo fork yourusername/NexusAI
-   ```
+```bash
+# 1. Fork repository
+gh repo fork yourusername/NexusAI
 
-2. **Create a feature branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
+# 2. Create feature branch
+git checkout -b feature/amazing-feature
 
-3. **Make your changes**
-   - Follow C# 12 coding style
-   - Respect Clean Architecture layers
-   - Add tests (when test infrastructure is set up)
+# 3. Make changes (follow C# 12 style)
 
-4. **Commit with conventional commits**
-   ```bash
-   git commit -m "feat: add export to JSON functionality"
-   git commit -m "fix: resolve null reference in ProjectService"
-   git commit -m "docs: update README with new feature"
-   ```
+# 4. Commit with conventional commits
+git commit -m "feat: add export to JSON"
 
-5. **Push to your fork**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-
-6. **Open a Pull Request**
-   - Describe changes clearly
-   - Link related issues
-   - Wait for code review
+# 5. Push and open PR
+git push origin feature/amazing-feature
+```
 
 ### **Contribution Guidelines**
 
-#### **Code Style**
+<details>
+<summary><b>📝 Code Style (Click to expand)</b></summary>
 
 ```csharp
 ✅ DO:
-- Use file-scoped namespaces
-- Use primary constructors for services
-- Use collection expressions []
+- Use file-scoped namespaces (namespace X;)
+- Use primary constructors for DI (public class Service(IRepo repo))
+- Use collection expressions (List<int> x = [];)
 - Use guard clauses (early returns)
 - Return Result<T> from business logic
 - Add XML documentation for public APIs
 
 ❌ DON'T:
-- Throw exceptions in Domain/Application
-- Reference Infrastructure from Application
-- Use magic strings (use constants)
+- Throw exceptions in Domain/Application layers
+- Reference Infrastructure from Application layer
+- Use magic strings (use constants/resources)
 - Add "AI comments" that explain what code does
+- Nest logic more than 3 levels deep
 ```
 
-#### **Commit Message Format**
+**Example:**
+
+```csharp
+// ✅ GOOD: Primary constructor, guard clauses, Result<T>
+public sealed class ProjectService(AppDbContext context) : IProjectService
+{
+    public async Task<Result<Project>> CreateAsync(string title, ...)
+    {
+        // Guard clause (early return)
+        if (string.IsNullOrWhiteSpace(title))
+            return Result<Project>.Failure("Title cannot be empty");
+        
+        var project = new Project { Title = title, ... };
+        context.Projects.Add(project);
+        await context.SaveChangesAsync();
+        
+        return Result<Project>.Success(project);
+    }
+}
+```
+
+</details>
+
+<details>
+<summary><b>🎯 Commit Message Format</b></summary>
 
 ```
-feat:     New feature
-fix:      Bug fix
-docs:     Documentation changes
-style:    Code style (formatting, no logic change)
-refactor: Code restructuring
+feat:     New feature (e.g., "feat: add Notion integration")
+fix:      Bug fix (e.g., "fix: resolve null ref in ProjectService")
+docs:     Documentation (e.g., "docs: update README with Docker setup")
+style:    Code style/formatting (no logic change)
+refactor: Code restructuring (no behavior change)
 perf:     Performance improvement
-test:     Adding tests
+test:     Adding/updating tests
 chore:    Build process, dependencies
 ```
 
-#### **Pull Request Template**
-
-```markdown
-## Description
-Brief description of changes
-
-## Type of Change
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
-
-## Testing
-How was this tested?
-
-## Checklist
-- [ ] Code follows project style
-- [ ] Self-review completed
-- [ ] Documentation updated
-- [ ] No new warnings
-```
+</details>
 
 ### **Areas Needing Help**
 
-- 🧪 **Testing**: Unit tests, integration tests
-- 🌐 **Localization**: Translations (German, Spanish, French)
-- 🎨 **UI/UX**: Design improvements, accessibility
-- 📚 **Documentation**: Tutorials, API docs
-- 🐛 **Bug Fixes**: Check [Issues](../../issues)
+- 🧪 **Testing**: Unit tests, integration tests (xUnit, FluentAssertions)
+- 🌐 **Localization**: German, Spanish, French translations
+- 🎨 **UI/UX**: Design improvements, accessibility (WCAG)
+- 📚 **Documentation**: Tutorials, video guides, API docs
+- 🐛 **Bug Fixes**: See [Issues](../../issues)
+
+**Before contributing, please read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.**
 
 ---
 
@@ -1454,7 +1052,7 @@ This project is licensed under the **MIT License**.
 ```
 MIT License
 
-Copyright (c) 2024-2025 NexusAI Contributors
+Copyright (c) 2026 NexusAI Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1475,37 +1073,49 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-**TL;DR**: You can freely use, modify, and distribute this software. Just include the original copyright notice.
+**TL;DR**: Free to use, modify, and distribute. Just include the copyright notice.
 
 ---
 
 ## 🙏 Acknowledgments
 
-Special thanks to the open-source community and these amazing projects:
+Built with ❤️ using these amazing open-source projects:
 
-- **[Google Gemini](https://ai.google.dev/)** - Powerful multimodal AI
-- **[Ollama](https://ollama.ai/)** - Local LLM runtime
-- **[MaterialDesignInXaml](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)** - Beautiful WPF components
-- **[iText7](https://itextpdf.com/)** - PDF processing
-- **[DocumentFormat.OpenXml](https://github.com/OfficeDev/Open-XML-SDK)** - Office file manipulation
-- **[CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet)** - MVVM helpers
-- **[Entity Framework Core](https://github.com/dotnet/efcore)** - ORM framework
-
-### **Contributors**
-
-<!-- ALL-CONTRIBUTORS-LIST:START -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
 <table>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/yourusername"><img src="https://github.com/yourusername.png" width="100px;" alt="Your Name"/><br /><sub><b>Your Name</b></sub></a><br />💻 🎨 📖</td>
-    </tr>
-  </tbody>
+<tr>
+<td>
+
+**AI & ML**
+- [Google Gemini](https://ai.google.dev/) - Multimodal AI
+- [Ollama](https://ollama.ai/) - Local LLM runtime
+
+</td>
+<td>
+
+**UI & Design**
+- [MaterialDesignInXaml](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit) - WPF components
+- [CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet) - MVVM helpers
+
+</td>
+</tr>
+<tr>
+<td>
+
+**Document Processing**
+- [iText7](https://itextpdf.com/) - PDF library
+- [DocumentFormat.OpenXml](https://github.com/OfficeDev/Open-XML-SDK) - Office files
+- [VersOne.Epub](https://github.com/vers-one/EpubReader) - EPUB reader
+
+</td>
+<td>
+
+**Data & Infrastructure**
+- [Entity Framework Core](https://github.com/dotnet/efcore) - ORM
+- [SQLite](https://www.sqlite.org/) - Embedded database
+
+</td>
+</tr>
 </table>
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ---
 
@@ -1515,21 +1125,14 @@ Special thanks to the open-source community and these amazing projects:
 
 - 📖 **Documentation**: [Wiki](../../wiki)
 - 💬 **Discussions**: [GitHub Discussions](../../discussions)
-- 🐛 **Bug Reports**: [GitHub Issues](../../issues)
-- 📧 **Email**: your.email@example.com
+- 🐛 **Bug Reports**: [Issues](../../issues)
+- 📧 **Contact**: [your.email@example.com](mailto:your.email@example.com)
 
 ### **Stay Updated**
 
-- ⭐ **Star this repo** to receive updates
+- ⭐ **Star this repo** to receive notifications
 - 👀 **Watch releases** for new versions
-- 🐦 **Follow on Twitter**: [@NexusAI](https://twitter.com/nexusai) (example)
-
-### **Community Guidelines**
-
-We're committed to a welcoming community:
-- Be respectful and constructive
-- Help others learn
-- Follow the [Code of Conduct](CODE_OF_CONDUCT.md)
+- 🔔 **Subscribe to Discussions** for announcements
 
 ---
 
@@ -1537,10 +1140,12 @@ We're committed to a welcoming community:
 
 ![GitHub stars](https://img.shields.io/github/stars/yourusername/NexusAI?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/yourusername/NexusAI?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/yourusername/NexusAI?style=social)
+
 ![GitHub issues](https://img.shields.io/github/issues/yourusername/NexusAI)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/NexusAI)
 ![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/NexusAI)
-![Lines of code](https://img.shields.io/tokei/lines/github/yourusername/NexusAI)
+![Code size](https://img.shields.io/github/languages/code-size/yourusername/NexusAI)
 
 ---
 
@@ -1552,10 +1157,18 @@ We're committed to a welcoming community:
 
 ---
 
-**Built with ❤️ using .NET 8 LTS and modern C# 12**
+**Built with ❤️ using .NET 8 LTS and Modern C# 12**
 
 *NexusAI — Your Intelligent Workspace Companion*
 
-[⬆️ Back to Top](#-nexusai) · [Download](../../releases) · [Documentation](../../wiki) · [Report Bug](../../issues)
+**v1.0.0** • [Download](../../releases) • [Documentation](../../wiki) • [Report Bug](../../issues) • [Request Feature](../../issues/new?template=feature_request.md)
+
+[⬆️ Back to Top](#-nexusai)
+
+---
+
+**Made with** 🧠 **by developers, for developers**
+
+© 2026 NexusAI Contributors • [MIT License](LICENSE)
 
 </div>

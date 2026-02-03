@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using NexusAI.Application.UseCases.Presentations;
 using NexusAI.Domain.Models;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
+using MessageBox = System.Windows.MessageBox;
 
 namespace NexusAI.Presentation.ViewModels;
 

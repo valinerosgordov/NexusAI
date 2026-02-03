@@ -2,6 +2,8 @@ using MaterialDesignThemes.Wpf;
 using NexusAI.Domain.Models;
 using NexusAI.Presentation.ViewModels;
 using System.Windows;
+using System.Windows.Controls;
+using MessageBox = System.Windows.MessageBox;
 
 namespace NexusAI.Presentation.Views;
 
@@ -34,18 +36,12 @@ public partial class ProjectView : System.Windows.Controls.UserControl
             Owner = Window.GetWindow(this)
         };
 
-        if (scaffoldDialog.ShowDialog() == true)
+        if (scaffoldDialog.ShowDialog() == true && ViewModel is not null)
         {
-            var result = await ViewModel?.GenerateScaffoldCommand.ExecuteAsync(
+            await ViewModel.GenerateScaffoldCommand.ExecuteAsync(
                 (scaffoldDialog.ProjectDescription, 
                  scaffoldDialog.Technologies, 
-                 scaffoldDialog.TargetPath))!;
-
-            if (result != null)
-            {
-                ShowToast($"✅ Created {result.CreatedFiles} files and {result.CreatedDirectories} directories!", 
-                         MessageBoxImage.Information);
-            }
+                 scaffoldDialog.TargetPath));
         }
     }
 
@@ -105,7 +101,7 @@ public partial class ProjectView : System.Windows.Controls.UserControl
 
         // Find and select the linked document
         var linkedDoc = mainViewModel.Sources
-            .FirstOrDefault(s => s.Document.Id == task.SourceDocumentId);
+            .FirstOrDefault(s => task.SourceDocumentId.HasValue && s.Document.Id.Value == task.SourceDocumentId.Value);
 
         if (linkedDoc != null)
         {

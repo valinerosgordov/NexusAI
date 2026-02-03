@@ -13,15 +13,22 @@
     <!-- Background Base: Almost pure black -->
     <SolidColorBrush x:Key="BackgroundBase" Color="#050505"/>
     
-    <!-- Surface Layers -->
-    <SolidColorBrush x:Key="SurfaceLayer1" Color="#E6141416" Opacity="0.90"/>
+    <!-- Surface Layers: Obsidian Glass (Exact spec) -->
+    <SolidColorBrush x:Key="SurfaceLayer1" Color="#CC141416"/>
     <SolidColorBrush x:Key="SurfaceLayer2" Color="#1C1C1E"/>
+    <SolidColorBrush x:Key="ObsidianGlass" Color="#CC141416"/>
     
     <!-- Glassmorphism: Semi-transparent dark -->
     <SolidColorBrush x:Key="GlassSurface" Color="#CC0A0A0A"/>
     <SolidColorBrush x:Key="GlassSurfaceLight" Color="#99141416"/>
     
-    <!-- Primary Accent: Indigo to Electric Purple Gradient -->
+    <!-- Primary Accent: Neon Plasma Gradient (Deep Indigo → Electric Violet) -->
+    <LinearGradientBrush x:Key="NeonPlasmaGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#6200EA" Offset="0"/>
+        <GradientStop Color="#B500FF" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <!-- Legacy alias for compatibility -->
     <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#6200EA" Offset="0"/>
         <GradientStop Color="#B500FF" Offset="1"/>
@@ -33,23 +40,32 @@
         <GradientStop Color="#99B500FF" Offset="1"/>
     </LinearGradientBrush>
     
-    <!-- Purple Rim Light -->
+    <!-- Purple Rim Light (Frosted Edge Effect) -->
     <LinearGradientBrush x:Key="PurpleRimLight" StartPoint="0,0" EndPoint="1,0">
         <GradientStop Color="#33B500FF" Offset="0"/>
         <GradientStop Color="#00B500FF" Offset="0.5"/>
         <GradientStop Color="#33B500FF" Offset="1"/>
     </LinearGradientBrush>
     
-    <!-- Text Colors -->
+    <SolidColorBrush x:Key="FrostedEdge" Color="#33FFFFFF"/>
+    
+    <!-- Text Colors (Cyber-Noir Spec) -->
     <SolidColorBrush x:Key="TextPrimary" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="TextSecondary" Color="#A0A0B0"/>
+    <SolidColorBrush x:Key="TextSecondary" Color="#B0B0C0"/>
     <SolidColorBrush x:Key="TextTertiary" Color="#606070"/>
     
     <!-- Chat Bubble Colors -->
     <SolidColorBrush x:Key="AiBubbleBackground" Color="#CC2C2C2E"/>
     <SolidColorBrush x:Key="AiBubbleGlow" Color="#33FFFFFF"/>
     
-    <!-- Plasma Animation for User Bubble -->
+    <!-- Liquid Plasma Animation for User Bubble (Radial for "alive" effect) -->
+    <RadialGradientBrush x:Key="LiquidPlasmaGradient" RadiusX="1" RadiusY="1" Center="0.4,0.4">
+        <GradientStop Color="#6200EA" Offset="0"/>
+        <GradientStop Color="#8B00D4" Offset="0.5"/>
+        <GradientStop Color="#B500FF" Offset="1"/>
+    </RadialGradientBrush>
+    
+    <!-- Legacy alias -->
     <RadialGradientBrush x:Key="PlasmaGradient" RadiusX="0.8" RadiusY="0.8">
         <GradientStop Color="#996200EA" Offset="0"/>
         <GradientStop Color="#99B500FF" Offset="0.5"/>
@@ -81,7 +97,7 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Border"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="12"
+                            CornerRadius="16"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                         VerticalAlignment="Center"/>
@@ -182,9 +198,9 @@
         </Setter>
     </Style>
     
-    <!-- User Chat Bubble: Accent gradient with plasma animation -->
+    <!-- User Chat Bubble: Liquid Neon Plasma (The Hero Element) -->
     <Style x:Key="UserChatBubble" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+        <Setter Property="Background" Value="{StaticResource LiquidPlasmaGradient}"/>
         <Setter Property="CornerRadius" Value="20,20,4,20"/>
         <Setter Property="Padding" Value="20,16"/>
         <Setter Property="Margin" Value="120,0,0,16"/>
@@ -192,7 +208,13 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect Color="#B500FF" BlurRadius="20" ShadowDepth="0" Opacity="0.5"/>
+                <DropShadowEffect Color="#B500FF" BlurRadius="24" ShadowDepth="0" Opacity="0.6"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform Y="0"/>
             </Setter.Value>
         </Setter>
     </Style>
@@ -201,15 +223,22 @@
     <!-- 🃏 CARD STYLES: SURFACE LAYERS                             -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     
+    <!-- Kanban Task Card: Obsidian Glass Pill -->
     <Style x:Key="GlassCard" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource SurfaceLayer1}"/>
+        <Setter Property="Background" Value="{StaticResource ObsidianGlass}"/>
         <Setter Property="CornerRadius" Value="24"/>
-        <Setter Property="Padding" Value="24"/>
+        <Setter Property="Padding" Value="20"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="#1A6200EA"/>
+        <Setter Property="BorderBrush" Value="{StaticResource FrostedEdge}"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect Color="#000000" BlurRadius="30" ShadowDepth="0" Opacity="0.5"/>
+                <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="0" Opacity="0.4"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform Y="0"/>
             </Setter.Value>
         </Setter>
     </Style>
@@ -220,6 +249,32 @@
         <Setter Property="Effect">
             <Setter.Value>
                 <DropShadowEffect Color="#B500FF" BlurRadius="40" ShadowDepth="0" Opacity="0.3"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Modal/Dialog: Super-rounded corners (32px) -->
+    <Style x:Key="GlassModal" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource ObsidianGlass}"/>
+        <Setter Property="CornerRadius" Value="32"/>
+        <Setter Property="Padding" Value="32"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource FrostedEdge}"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" BlurRadius="48" ShadowDepth="0" Opacity="0.7"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Sidebar: Frosted glass pane -->
+    <Style x:Key="GlassSidebar" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource ObsidianGlass}"/>
+        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        <Setter Property="BorderBrush" Value="{StaticResource FrostedEdge}"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" BlurRadius="24" ShadowDepth="0" Opacity="0.3" Direction="0"/>
             </Setter.Value>
         </Setter>
     </Style>
@@ -290,7 +345,7 @@
     <!-- 🎭 ANIMATIONS: FLUID MOTION                                -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     
-    <!-- Message Entrance Animation: Slide up + Fade in -->
+    <!-- Message Entrance Animation: Slide up + Fade in (300ms) -->
     <Storyboard x:Key="MessageEntranceAnimation">
         <DoubleAnimation Storyboard.TargetProperty="Opacity"
                         From="0" To="1"
@@ -302,6 +357,51 @@
         <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.Y)"
                         From="20" To="0"
                         Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+    
+    <!-- Mode Switching Animation: Smooth color cross-fade (500ms) -->
+    <Storyboard x:Key="ModeSwitchAnimation">
+        <ColorAnimation Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)"
+                        Duration="0:0:0.5">
+            <ColorAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseInOut"/>
+            </ColorAnimation.EasingFunction>
+        </ColorAnimation>
+    </Storyboard>
+    
+    <!-- Card Lift Animation: Used when dragging Kanban cards -->
+    <Storyboard x:Key="CardLiftAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                        To="0.85"
+                        Duration="0:0:0.15">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.Y)"
+                        To="-8"
+                        Duration="0:0:0.15">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+    
+    <Storyboard x:Key="CardDropAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                        To="1"
+                        Duration="0:0:0.2">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.Y)"
+                        To="0"
+                        Duration="0:0:0.2">
             <DoubleAnimation.EasingFunction>
                 <CubicEase EasingMode="EaseOut"/>
             </DoubleAnimation.EasingFunction>
@@ -396,7 +496,7 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Border"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="12"
+                            CornerRadius="16"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center"
                                         VerticalAlignment="Center"/>

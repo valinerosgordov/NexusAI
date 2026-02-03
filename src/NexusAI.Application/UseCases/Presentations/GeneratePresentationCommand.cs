@@ -41,7 +41,7 @@ public sealed class GeneratePresentationHandler(
         if (aiResult.IsFailure)
             return Result.Failure<string>($"AI generation failed: {aiResult.Error}");
 
-        var deck = SlideDeck.Create(command.Topic, aiResult.Value);
+        var deck = new SlideDeck(command.Topic, aiResult.Value);
 
         var createResult = await presentationService.CreatePresentationAsync(
             deck,

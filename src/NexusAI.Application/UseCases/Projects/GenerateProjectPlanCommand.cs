@@ -51,7 +51,7 @@ public class GenerateProjectPlanHandler(
         var project = projectResult.Value;
 
         // Create tasks from AI-generated plan, linking to source document
-        var tasks = new List<ProjectTask>();
+        List<ProjectTask> tasks = [];
         foreach (var taskPlan in planResult.Value)
         {
             // Assign priority based on role (example logic)

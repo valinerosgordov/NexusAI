@@ -1,8 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NexusAI.Application.Interfaces;
 using NexusAI.Infrastructure.Parsers;
-using NexusAI.Infrastructure.Persistence;
 using NexusAI.Infrastructure.Services;
 
 namespace NexusAI.Infrastructure;
@@ -15,14 +13,7 @@ public static class DependencyInjection
     {
         services.AddHttpClient();
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite("Data Source=nexus.db"));
-        
-        // Auth & Project Services
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IProjectService, ProjectService>();
         services.AddSingleton<IScaffoldingService, ScaffoldingService>();
-        services.AddScoped<IWikiService, WikiService>();
 
         // AI Services
         services.AddSingleton<GeminiAiService>(sp =>
