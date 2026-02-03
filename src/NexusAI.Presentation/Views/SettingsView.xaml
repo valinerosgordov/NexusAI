@@ -4,9 +4,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:NexusAI.Presentation.Converters"
              mc:Ignorable="d"
              Background="#0D0D0D"
              d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:NullToVisibilityInverseConverter x:Key="NullToVisibilityInverseConverter"/>
+    </UserControl.Resources>
     <Grid Margin="32">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -56,7 +61,6 @@
 
                     <ComboBox ItemsSource="{Binding Languages}"
                               SelectedItem="{Binding SelectedLanguage}"
-                              DisplayMemberPath="DisplayName"
                               Style="{StaticResource MaterialDesignFilledComboBox}"
                               materialDesign:HintAssist.Hint="Select Language"
                               FontSize="14"
@@ -66,6 +70,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding DisplayName}"
                                               FontWeight="Medium"
+                                              Foreground="#F5F5F7"
                                               Margin="0,0,8,0"/>
                                     <TextBlock Text="{Binding NativeName}"
                                               Foreground="#98989D"

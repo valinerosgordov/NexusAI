@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 using NexusAI.Presentation.ViewModels;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -99,74 +100,92 @@ public partial class MainWindow : Window
 
     private void OpenSettings(object sender, RoutedEventArgs e)
     {
-        // Create localization service
-        var localizationService = new Services.LocalizationService();
-
-        var settingsWindow = new Window
+        try
         {
-            Title = "Settings - Language & Preferences",
-            Width = 900,
-            Height = 700,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Owner = this,
-            Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(5, 5, 5)),
-            WindowStyle = WindowStyle.None,
-            AllowsTransparency = true,
-            ResizeMode = ResizeMode.NoResize
-        };
+            // Get SettingsViewModel from DI container
+            if (App.Services == null)
+            {
+                MessageBox.Show("Service container not initialized", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-        // Create content with rounded border
-        var mainGrid = new System.Windows.Controls.Grid();
-        var border = new System.Windows.Controls.Border
+            var settingsViewModel = App.Services.GetService<ViewModels.SettingsViewModel>();
+            if (settingsViewModel == null)
+            {
+                MessageBox.Show("Settings service not available", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var settingsWindow = new Window
+            {
+                Title = "Settings - Language & Preferences",
+                Width = 900,
+                Height = 700,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(5, 5, 5)),
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                ResizeMode = ResizeMode.NoResize
+            };
+
+            // Create content with rounded border
+            var mainGrid = new System.Windows.Controls.Grid();
+            var border = new System.Windows.Controls.Border
+            {
+                Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(13, 13, 13)),
+                CornerRadius = new CornerRadius(24),
+                BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(98, 0, 234)),
+                BorderThickness = new Thickness(2)
+            };
+
+            var contentGrid = new System.Windows.Controls.Grid();
+            contentGrid.RowDefinitions.Add(new System.Windows.Controls.RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            contentGrid.RowDefinitions.Add(new System.Windows.Controls.RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+            // Header with close button
+            var header = new System.Windows.Controls.Grid
+            {
+                Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(204, 20, 20, 22)),
+                Height = 56
+            };
+            System.Windows.Controls.Grid.SetRow(header, 0);
+
+            var closeBtn = new System.Windows.Controls.Button
+            {
+                Content = "✕",
+                Width = 40,
+                Height = 40,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                Margin = new Thickness(8),
+                Background = System.Windows.Media.Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                Foreground = System.Windows.Media.Brushes.White,
+                FontSize = 20,
+                Cursor = System.Windows.Input.Cursors.Hand
+            };
+            closeBtn.Click += (s, ev) => settingsWindow.Close();
+            header.Children.Add(closeBtn);
+
+            var settingsView = new Views.SettingsView
+            {
+                DataContext = settingsViewModel
+            };
+
+            contentGrid.Children.Add(header);
+            System.Windows.Controls.Grid.SetRow(settingsView, 1);
+            contentGrid.Children.Add(settingsView);
+
+            border.Child = contentGrid;
+            mainGrid.Children.Add(border);
+            settingsWindow.Content = mainGrid;
+
+            settingsWindow.ShowDialog();
+        }
+        catch (Exception ex)
         {
-            Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(13, 13, 13)),
-            CornerRadius = new CornerRadius(24),
-            BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(98, 0, 234)),
-            BorderThickness = new Thickness(2)
-        };
-
-        var contentGrid = new System.Windows.Controls.Grid();
-        contentGrid.RowDefinitions.Add(new System.Windows.Controls.RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-        contentGrid.RowDefinitions.Add(new System.Windows.Controls.RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-        // Header with close button
-        var header = new System.Windows.Controls.Grid
-        {
-            Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(204, 20, 20, 22)),
-            Height = 56
-        };
-        System.Windows.Controls.Grid.SetRow(header, 0);
-
-        var closeBtn = new System.Windows.Controls.Button
-        {
-            Content = "✕",
-            Width = 40,
-            Height = 40,
-            HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-            Margin = new Thickness(8),
-            Background = System.Windows.Media.Brushes.Transparent,
-            BorderThickness = new Thickness(0),
-            Foreground = System.Windows.Media.Brushes.White,
-            FontSize = 20,
-            Cursor = System.Windows.Input.Cursors.Hand
-        };
-        closeBtn.Click += (s, ev) => settingsWindow.Close();
-        header.Children.Add(closeBtn);
-
-        var settingsView = new Views.SettingsView
-        {
-            DataContext = new ViewModels.SettingsViewModel(localizationService)
-        };
-
-        contentGrid.Children.Add(header);
-        System.Windows.Controls.Grid.SetRow(settingsView, 1);
-        contentGrid.Children.Add(settingsView);
-
-        border.Child = contentGrid;
-        mainGrid.Children.Add(border);
-        settingsWindow.Content = mainGrid;
-
-        settingsWindow.ShowDialog();
+            MessageBox.Show($"Error opening settings: {ex.Message}\n\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     // Drag & Drop handlers
@@ -215,11 +234,19 @@ public partial class MainWindow : Window
     // Tab switching
     private void ShowArtifactsTab(object sender, RoutedEventArgs e)
     {
-        // Handled by bindings
+        var artifactsTab = FindName("ArtifactsTabContent") as System.Windows.UIElement;
+        var graphTab = FindName("GraphTabContent") as System.Windows.UIElement;
+        
+        if (artifactsTab != null) artifactsTab.Visibility = Visibility.Visible;
+        if (graphTab != null) graphTab.Visibility = Visibility.Collapsed;
     }
 
     private void ShowGraphTab(object sender, RoutedEventArgs e)
     {
-        // Handled by bindings
+        var artifactsTab = FindName("ArtifactsTabContent") as System.Windows.UIElement;
+        var graphTab = FindName("GraphTabContent") as System.Windows.UIElement;
+        
+        if (artifactsTab != null) artifactsTab.Visibility = Visibility.Collapsed;
+        if (graphTab != null) graphTab.Visibility = Visibility.Visible;
     }
 }

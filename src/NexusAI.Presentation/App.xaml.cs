@@ -9,6 +9,8 @@ namespace NexusAI.Presentation;
 public partial class App : System.Windows.Application
 {
     private IServiceProvider? _serviceProvider;
+    
+    public static IServiceProvider? Services { get; private set; }
 
     private void OnStartup(object sender, StartupEventArgs e)
     {
@@ -74,12 +76,17 @@ public partial class App : System.Windows.Application
                     .ToArray());
         });
         
-        services.AddSingleton<SettingsViewModel>();
+        services.AddSingleton<SettingsViewModel>(sp => 
+        {
+            var localizationService = sp.GetRequiredService<NexusAI.Application.Interfaces.ILocalizationService>();
+            return new SettingsViewModel(localizationService);
+        });
         
         // Localization (Presentation layer service due to WPF dependencies)
         services.AddSingleton<NexusAI.Application.Interfaces.ILocalizationService, NexusAI.Presentation.Services.LocalizationService>();
 
         _serviceProvider = services.BuildServiceProvider();
+        Services = _serviceProvider;
 
         // Initialize database
         InitializeDatabase();

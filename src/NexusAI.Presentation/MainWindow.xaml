@@ -207,48 +207,52 @@
                             
                             <Border Background="{StaticResource ObsidianGlass}" 
                                     CornerRadius="16" 
-                                    Padding="12,8" 
+                                    Padding="12,10" 
                                     Margin="0,0,12,0"
                                     BorderThickness="1"
                                     BorderBrush="{StaticResource FrostedEdge}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="CloudOutline" Width="22" Height="22" 
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="CloudOutline" Width="20" Height="20" 
                                                          Foreground="#FFFFFF"
                                                          Margin="0,0,10,0" VerticalAlignment="Center"
                                                          Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}"/>
-                                <materialDesign:PackIcon Kind="ServerNetwork" Width="22" Height="22" 
+                                <materialDesign:PackIcon Kind="ServerNetwork" Width="20" Height="20" 
                                                          Foreground="#FFFFFF"
                                                          Margin="0,0,10,0" VerticalAlignment="Center"
                                                          Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}"/>
                                 <ComboBox ItemsSource="{Binding Source={StaticResource AiProviderValues}}"
                                           SelectedItem="{Binding SelectedAiProvider}"
                                           MinWidth="130"
-                                          FontSize="16"
-                                          FontWeight="SemiBold"
+                                          Height="50"
+                                          FontSize="15"
+                                          FontWeight="Medium"
                                           Foreground="#FFFFFF"
                                           Background="#2A2A2E"
                                           Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                           materialDesign:HintAssist.Hint="AI Provider"
-                                          materialDesign:HintAssist.Foreground="#E0E0E0"
+                                          materialDesign:HintAssist.Foreground="#B0B0B0"
                                           BorderBrush="#6200EA"
                                           BorderThickness="2"
                                           VerticalAlignment="Center"
-                                          Padding="12,8"
+                                          VerticalContentAlignment="Center"
+                                          Padding="16,10"
                                           Margin="0,0,12,0"/>
                                 <ComboBox ItemsSource="{Binding AvailableOllamaModels}"
                                           SelectedItem="{Binding SelectedOllamaModel}"
                                           MinWidth="150"
-                                          FontSize="16"
-                                          FontWeight="SemiBold"
+                                          Height="50"
+                                          FontSize="15"
+                                          FontWeight="Medium"
                                           Foreground="#FFFFFF"
                                           Background="#2A2A2E"
                                           Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                           materialDesign:HintAssist.Hint="Model"
-                                          materialDesign:HintAssist.Foreground="#E0E0E0"
+                                          materialDesign:HintAssist.Foreground="#B0B0B0"
                                           BorderBrush="#6200EA"
                                           BorderThickness="2"
-                                          Padding="12,8"
+                                          Padding="16,10"
                                           VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center"
                                           Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
@@ -271,30 +275,33 @@
                         </Border>
                         <Border Background="{StaticResource ObsidianGlass}" 
                                 CornerRadius="16" 
-                                Padding="12,8" 
+                                Padding="12,10" 
                                 Margin="0,0,12,0"
                                 BorderThickness="1"
                                 BorderBrush="{StaticResource FrostedEdge}"
                                 Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Key" Width="22" Height="22" 
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Key" Width="20" Height="20" 
                                                          Foreground="#FFFFFF"
                                                          Margin="0,0,10,0" VerticalAlignment="Center"/>
                                 <PasswordBox x:Name="ApiKeyBox" 
                                              Width="280"
-                                             FontSize="16"
-                                             FontWeight="SemiBold"
+                                             Height="50"
+                                             FontSize="15"
+                                             FontWeight="Medium"
                                              Foreground="#FFFFFF"
                                              Background="#2A2A2E"
-                                             materialDesign:HintAssist.Hint="Paste your Gemini API Key"
+                                             materialDesign:HintAssist.Hint="Gemini API Key"
                                              materialDesign:HintAssist.IsFloating="False"
-                                             materialDesign:HintAssist.Foreground="#E0E0E0"
+                                             materialDesign:HintAssist.Foreground="#B0B0B0"
                                              Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                                              BorderBrush="#6200EA"
                                              BorderThickness="2"
-                                             Padding="14,12"
+                                             Padding="16,10"
+                                             VerticalAlignment="Center"
+                                             VerticalContentAlignment="Center"
                                              PasswordChanged="ApiKeyBox_PasswordChanged"
-                                             ToolTip="Get your API key from aistudio.google.com"/>
+                                             ToolTip="Paste your Gemini API Key (get from aistudio.google.com)"/>
                             </StackPanel>
                         </Border>
                             <!-- Window Control Buttons: Minimal Glass Style -->
@@ -801,10 +808,39 @@
                                     <!-- Send Button: Neon Plasma Glow -->
                                     <Button Grid.Column="1"
                                             Command="{Binding AskQuestionCommand}"
-                                            Style="{StaticResource AccentButton}"
                                             Width="64" Height="64"
+                                            Cursor="Hand"
                                             ToolTip="Send message (Ctrl+Enter)">
-                                        <materialDesign:PackIcon Kind="Send" Width="28" Height="28" Foreground="#FFFFFF"/>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+                                                <Setter Property="BorderBrush" Value="#00D9FF"/>
+                                                <Setter Property="BorderThickness" Value="3"/>
+                                                <Setter Property="Effect">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect Color="#00D9FF" BlurRadius="24" ShadowDepth="0" Opacity="0.7"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}"
+                                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                                    CornerRadius="32">
+                                                                <ContentPresenter HorizontalAlignment="Center" 
+                                                                                VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                        <materialDesign:PackIcon Kind="Send" Width="32" Height="32" Foreground="#FFFFFF">
+                                            <materialDesign:PackIcon.Effect>
+                                                <DropShadowEffect Color="#FFFFFF" BlurRadius="8" ShadowDepth="0" Opacity="0.9"/>
+                                            </materialDesign:PackIcon.Effect>
+                                        </materialDesign:PackIcon>
                                     </Button>
                                 </Grid>
                             </Grid>
