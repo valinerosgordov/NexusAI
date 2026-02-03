@@ -1,0 +1,359 @@
+---
+description: NexusAI coding standards - Clean Architecture, Railway Oriented Programming, MVVM
+alwaysApply: true
+---
+
+# NexusAI Coding Standards
+
+## Role
+Senior .NET Architect & WPF Expert. Write clean, maintainable, pragmatic code.
+
+---
+
+## Modern C# (.NET 10 / C# 14)
+
+**Framework:** Target .NET 10. Use latest C# 14 features.
+
+```csharp
+// ✅ GOOD: Primary constructors, collection expressions, file-scoped namespace
+namespace NexusAI.Domain.Models;
+
+public record SourceDocument(
+    SourceDocumentId Id,
+    string Title,
+    string Content,
+    string[] Tags
+);
+
+// ❌ BAD: Old-style class
+namespace NexusAI.Domain.Models
+{
+    public class SourceDocument
+    {
+        public Guid Id { get; set; }
+        // ...
+    }
+}
+```
+
+---
+
+## Clean Architecture - Dependency Rule
+
+**All arrows point toward Domain.**
+
+```
+Presentation → Application → Domain ← Infrastructure
+```
+
+**Rules:**
+- ✅ Application depends ONLY on Domain
+- ✅ Infrastructure depends on Domain + Application
+- ✅ Presentation depends on all layers
+- ❌ NEVER: Application → Infrastructure
+- ❌ NEVER: Domain → anything
+
+```csharp
+// ✅ GOOD: Application uses interface
+namespace NexusAI.Application.UseCases.Chat;
+public class AskQuestionHandler(IAiService aiService) { }
+
+// ❌ BAD: Application depends on Infrastructure concrete type
+namespace NexusAI.Application.Services;
+using NexusAI.Infrastructure.Services; // ❌ VIOLATION!
+public class KnowledgeHubService(GeminiAiService gemini) { }
+```
+
+---
+
+## Railway Oriented Programming
+
+**Always return `Result<T>` for business logic. Never throw exceptions.**
+
+```csharp
+// ✅ GOOD: Result<T> pattern
+public async Task<Result<SourceDocument>> AddDocumentAsync(string path)
+{
+    if (string.IsNullOrWhiteSpace(path))
+        return Result<SourceDocument>.Failure("Path cannot be empty");
+    
+    var parsed = await _parser.ParseAsync(path);
+    return parsed.IsSuccess
+        ? Result<SourceDocument>.Success(parsed.Value)
+        : Result<SourceDocument>.Failure(parsed.Error);
+}
+
+// ❌ BAD: Throwing exceptions
+public async Task<SourceDocument> AddDocumentAsync(string path)
+{
+    if (string.IsNullOrWhiteSpace(path))
+        throw new ArgumentException("Path cannot be empty"); // ❌
+    // ...
+}
+```
+
+**Use ResultExtensions for fluent chaining:**
+
+```csharp
+return await command
+    .Validate()
+    .OnSuccessAsync(ExecuteAsync)
+    .OnFailureAsync(LogErrorAsync);
+```
+
+---
+
+## MVVM + CommunityToolkit
+
+**Use `[ObservableProperty]` and `[RelayCommand]` attributes.**
+
+```csharp
+// ✅ GOOD: CommunityToolkit.Mvvm
+public partial class MainViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private string _question;
+
+    [ObservableProperty]
+    private ObservableCollection<ChatMessageViewModel> _messages = [];
+
+    [RelayCommand]
+    private async Task AskQuestionAsync()
+    {
+        var result = await _askQuestionHandler.HandleAsync(new(Question));
+        if (result.IsSuccess)
+            Messages.Add(new ChatMessageViewModel(result.Value));
+    }
+}
+
+// ❌ BAD: Manual INotifyPropertyChanged
+private string _question;
+public string Question
+{
+    get => _question;
+    set
+    {
+        _question = value;
+        OnPropertyChanged(nameof(Question)); // ❌ Verbose
+    }
+}
+```
+
+---
+
+## Guard Clauses (No Deep Nesting)
+
+```csharp
+// ✅ GOOD: Guard clauses (early return)
+public Result<Document> Process(string path, string content)
+{
+    if (string.IsNullOrWhiteSpace(path))
+        return Result<Document>.Failure("Path is required");
+    
+    if (string.IsNullOrWhiteSpace(content))
+        return Result<Document>.Failure("Content is required");
+    
+    return Result<Document>.Success(new Document(path, content));
+}
+
+// ❌ BAD: Deep nesting
+public Result<Document> Process(string path, string content)
+{
+    if (!string.IsNullOrWhiteSpace(path))
+    {
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+            return Result<Document>.Success(new Document(path, content));
+        }
+        else
+        {
+            return Result<Document>.Failure("Content is required");
+        }
+    }
+    else
+    {
+        return Result<Document>.Failure("Path is required");
+    }
+}
+```
+
+---
+
+## Use Cases (Command/Handler Pattern)
+
+**One use case = one command + one handler.**
+
+```csharp
+// ✅ GOOD: Dedicated command + handler
+namespace NexusAI.Application.UseCases.Documents;
+
+public record AddDocumentCommand(string FilePath);
+
+public class AddDocumentHandler(
+    IDocumentParserFactory parserFactory,
+    ILogger<AddDocumentHandler> logger)
+{
+    public async Task<Result<SourceDocument>> HandleAsync(
+        AddDocumentCommand command,
+        CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(command.FilePath))
+            return Result<SourceDocument>.Failure("File path is required");
+
+        var parser = parserFactory.GetParser(command.FilePath);
+        return await parser.ParseAsync(command.FilePath, ct);
+    }
+}
+
+// ❌ BAD: God service with multiple responsibilities
+public class KnowledgeHubService
+{
+    public Task<Result<SourceDocument>> AddDocumentAsync(string path) { }
+    public Task<Result<AiResponse>> AskQuestionAsync(string q) { }
+    public Task<Result<Artifact>> GenerateArtifactAsync(ArtifactType type) { }
+    // ... 20 more methods ❌
+}
+```
+
+---
+
+## No Obvious Comments
+
+**Explain WHY, not WHAT. Self-documenting code is preferred.**
+
+```csharp
+// ✅ GOOD: Self-documenting code, comment explains WHY
+// Gemini 2.0 requires images in specific base64 format (not data URI)
+var base64Image = Convert.ToBase64String(imageBytes);
+
+// ❌ BAD: Comment explains WHAT (obvious)
+// Convert image to base64
+var base64Image = Convert.ToBase64String(imageBytes);
+```
+
+---
+
+## Strongly-Typed IDs
+
+```csharp
+// ✅ GOOD: Strongly-typed ID prevents mixing entity IDs
+public record ChatMessageId(Guid Value);
+public record ChatMessage(ChatMessageId Id, string Content);
+
+// ❌ BAD: Primitive obsession
+public record ChatMessage(Guid Id, string Content); // Which entity is this ID for?
+```
+
+---
+
+## Immutability by Default
+
+```csharp
+// ✅ GOOD: Immutable record
+public record SourceDocument(
+    SourceDocumentId Id,
+    string Title,
+    string Content,
+    string[] Tags
+);
+
+// ❌ BAD: Mutable class in Domain
+public class SourceDocument
+{
+    public Guid Id { get; set; } // ❌ Mutable
+    public string Title { get; set; }
+}
+```
+
+---
+
+## Nullable Reference Types
+
+**Always enabled. No nulls in return values - use `Result<T>` or `Option<T>`.**
+
+```csharp
+// ✅ GOOD: Result<T> instead of null
+public Result<SourceDocument> FindById(SourceDocumentId id)
+{
+    var doc = _sources.FirstOrDefault(x => x.Id == id);
+    return doc is not null
+        ? Result<SourceDocument>.Success(doc)
+        : Result<SourceDocument>.Failure("Document not found");
+}
+
+// ❌ BAD: Returning null
+public SourceDocument? FindById(Guid id) // ❌ Nullable
+{
+    return _sources.FirstOrDefault(x => x.Id == id);
+}
+```
+
+---
+
+## Thread Safety
+
+**Use `ConcurrentBag<T>` / `ConcurrentDictionary<K,V>` for shared state. NO manual locks.**
+
+```csharp
+// ✅ GOOD: Built-in thread safety
+private readonly ConcurrentBag<SourceDocument> _sources = [];
+
+public void AddDocument(SourceDocument doc)
+{
+    _sources.Add(doc); // Thread-safe by design
+}
+
+// ❌ BAD: Manual locks with ConcurrentBag
+private readonly ConcurrentBag<SourceDocument> _sources = [];
+private readonly object _lock = new();
+
+public void AddDocument(SourceDocument doc)
+{
+    lock (_lock) // ❌ Unnecessary, ConcurrentBag already thread-safe
+    {
+        _sources.Add(doc);
+    }
+}
+```
+
+---
+
+## ConfigureAwait(false) in Libraries
+
+**Use `ConfigureAwait(false)` in Application/Infrastructure layers.**
+
+```csharp
+// ✅ GOOD: Library code (Application/Infrastructure)
+public async Task<Result<AiResponse>> AskAsync(string question)
+{
+    var response = await _httpClient.PostAsync(url, content)
+        .ConfigureAwait(false);
+    return await ParseResponseAsync(response)
+        .ConfigureAwait(false);
+}
+
+// ✅ GOOD: UI code (Presentation) - no ConfigureAwait needed
+[RelayCommand]
+private async Task AskQuestionAsync()
+{
+    var result = await _handler.HandleAsync(new(Question));
+    Messages.Add(new ChatMessageViewModel(result.Value));
+}
+```
+
+---
+
+## File-Scoped Namespaces
+
+```csharp
+// ✅ GOOD
+namespace NexusAI.Domain.Models;
+
+public record ChatMessage(ChatMessageId Id, string Content);
+
+// ❌ BAD
+namespace NexusAI.Domain.Models
+{
+    public record ChatMessage(ChatMessageId Id, string Content);
+}
+```

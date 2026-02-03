@@ -12,6 +12,9 @@
                 <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Purple" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
                 
+                <!-- 🎨 Dark Neural Glass Design System 2026 -->
+                <ResourceDictionary Source="Resources/Styles/DarkNeuralGlass.xaml"/>
+                
                 <ResourceDictionary>
                     <SolidColorBrush x:Key="MaterialDesignPaper" Color="#0D0D0D"/>
                     <SolidColorBrush x:Key="MaterialDesignBackground" Color="#000000"/>
@@ -35,6 +38,10 @@
                     <converters:FileTypeIconConverter x:Key="FileTypeIconConverter"/>
                     <converters:FileIconConverter x:Key="FileIconConverter"/>
                     <converters:AiProviderToVisibilityConverter x:Key="AiProviderToVisibilityConverter"/>
+                    <converters:PriorityToVisibilityConverter x:Key="PriorityToVisibilityConverter"/>
+                    <converters:ModeToStringConverter x:Key="ModeToStringConverter"/>
+                    <converters:ModeToAccentColorConverter x:Key="ModeToAccentColorConverter"/>
+                    <converters:ModeToIconConverter x:Key="ModeToIconConverter"/>
                 </ResourceDictionary>
                 
                 <ResourceDictionary>

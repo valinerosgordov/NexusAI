@@ -1,0 +1,201 @@
+<UserControl x:Class="NexusAI.Presentation.Views.PresentationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="#0D0D0D">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Background="#1C1C1E" 
+                Padding="24,20"
+                BorderThickness="0,0,0,1"
+                BorderBrush="#2C2C2E">
+            <StackPanel>
+                <TextBlock Text="📊 Executive Assistant" 
+                           FontSize="24" 
+                           FontWeight="SemiBold"
+                           Foreground="#F5F5F7"
+                           Margin="0,0,0,8"/>
+                <TextBlock Text="Generate professional PowerPoint presentations from your documents using AI" 
+                           FontSize="13"
+                           Foreground="#98989D"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="24,24,24,0" MaxWidth="800">
+                
+                <!-- Topic Input -->
+                <Border Background="#1C1C1E" 
+                        CornerRadius="12" 
+                        Padding="20"
+                        Margin="0,0,0,16"
+                        BorderThickness="1"
+                        BorderBrush="#2C2C2E">
+                    <StackPanel>
+                        <TextBlock Text="Presentation Topic" 
+                                   FontSize="14" 
+                                   FontWeight="Medium"
+                                   Foreground="#F5F5F7"
+                                   Margin="0,0,0,12"/>
+                        <TextBox Text="{Binding Topic, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 materialDesign:HintAssist.Hint="e.g., Clean Architecture Best Practices"
+                                 FontSize="14"
+                                 Padding="12"
+                                 Background="#0D0D0D"
+                                 Foreground="#F5F5F7"
+                                 BorderBrush="#3A3A3C"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Slide Count -->
+                <Border Background="#1C1C1E" 
+                        CornerRadius="12" 
+                        Padding="20"
+                        Margin="0,0,0,16"
+                        BorderThickness="1"
+                        BorderBrush="#2C2C2E">
+                    <StackPanel>
+                        <TextBlock Text="Number of Slides" 
+                                   FontSize="14" 
+                                   FontWeight="Medium"
+                                   Foreground="#F5F5F7"
+                                   Margin="0,0,0,12"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Slider Grid.Column="0"
+                                    Value="{Binding SlideCount}"
+                                    Minimum="3"
+                                    Maximum="20"
+                                    TickFrequency="1"
+                                    IsSnapToTickEnabled="True"
+                                    Style="{StaticResource MaterialDesignDiscreteSlider}"
+                                    VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" 
+                                       Text="{Binding SlideCount}"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="#007AFF"
+                                       Margin="16,0,0,0"
+                                       VerticalAlignment="Center"
+                                       MinWidth="40"
+                                       TextAlignment="Center"/>
+                        </Grid>
+                        <TextBlock Text="💡 Recommended: 8-12 slides for standard presentations" 
+                                   FontSize="12"
+                                   Foreground="#98989D"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Info Box -->
+                <Border Background="#1C1C1E" 
+                        CornerRadius="12" 
+                        Padding="16"
+                        Margin="0,0,0,16"
+                        BorderThickness="1"
+                        BorderBrush="#3A3A3C">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <materialDesign:PackIcon Kind="InformationOutline" 
+                                                     Foreground="#007AFF"
+                                                     Width="20" Height="20"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,8,0"/>
+                            <TextBlock Text="How it works" 
+                                       FontSize="13" 
+                                       FontWeight="Medium"
+                                       Foreground="#F5F5F7"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Foreground="#98989D" 
+                                   FontSize="12" 
+                                   TextWrapping="Wrap"
+                                   LineHeight="18">
+                            <Run Text="1. AI analyzes your included documents"/>
+                            <LineBreak/>
+                            <Run Text="2. Generates a structured presentation outline"/>
+                            <LineBreak/>
+                            <Run Text="3. Creates a professional PowerPoint file (.pptx)"/>
+                            <LineBreak/>
+                            <Run Text="4. Includes speaker notes for each slide"/>
+                            <LineBreak/>
+                            <Run Text="5. Fully editable in Microsoft PowerPoint"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Generate Button -->
+                <Button Content="🚀 GENERATE PRESENTATION"
+                        Command="{Binding GeneratePresentationCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Height="50"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Background="#007AFF"
+                        BorderBrush="#007AFF"
+                        Margin="0,0,0,16"/>
+
+                <!-- Status Message -->
+                <Border Background="#1C1C1E" 
+                        CornerRadius="12" 
+                        Padding="16"
+                        Margin="0,0,0,16"
+                        BorderThickness="1"
+                        BorderBrush="#2C2C2E"
+                        Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibilityConverter}}">
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontSize="13"
+                               Foreground="#F5F5F7"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+                </Border>
+
+                <!-- Open File Button -->
+                <Button Content="📁 OPEN GENERATED FILE"
+                        Command="{Binding OpenGeneratedFileCommand}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Height="45"
+                        FontSize="13"
+                        FontWeight="Medium"
+                        BorderBrush="#3A3A3C"
+                        Foreground="#007AFF"
+                        Margin="0,0,0,16"
+                        Visibility="{Binding GeneratedFilePath, Converter={StaticResource NullToVisibilityConverter}}"/>
+
+                <!-- Busy Indicator -->
+                <Grid Height="100" 
+                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                     Width="48"
+                                     Height="48"
+                                     IsIndeterminate="True"
+                                     Foreground="#007AFF"
+                                     Margin="0,0,0,16"/>
+                        <TextBlock Text="Generating presentation..."
+                                   FontSize="13"
+                                   Foreground="#98989D"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

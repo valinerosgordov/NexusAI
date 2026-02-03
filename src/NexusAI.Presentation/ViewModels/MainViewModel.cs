@@ -5,6 +5,7 @@ using NexusAI.Application.Interfaces;
 using NexusAI.Application.Services;
 using NexusAI.Application.UseCases.Artifacts;
 using NexusAI.Application.UseCases.Chat;
+using NexusAI.Application.UseCases.Diagrams;
 using NexusAI.Application.UseCases.Documents;
 using NexusAI.Application.UseCases.Obsidian;
 using NexusAI.Domain.Models;
@@ -21,10 +22,12 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly LoadObsidianVaultHandler _loadObsidianVaultHandler;
     private readonly ExportToObsidianHandler _exportToObsidianHandler;
     private readonly GenerateFollowUpQuestionsHandler _generateFollowUpQuestionsHandler;
+    private readonly GenerateDiagramHandler _generateDiagramHandler;
     private readonly IDocumentParserFactory _parserFactory;
     private readonly KnowledgeGraphService _graphService;
     private readonly IAudioService _audioService;
     private readonly IAiServiceFactory _aiServiceFactory;
+    private readonly SessionContext _sessionContext;
 
     [ObservableProperty] private string _geminiApiKey = string.Empty;
     [ObservableProperty] private string _obsidianVaultPath = string.Empty;
@@ -43,6 +46,8 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool _isOllamaAvailable;
     [ObservableProperty] private bool _isPlayingAudio;
     [ObservableProperty] private string? _currentlySpeakingText;
+    [ObservableProperty] private string _currentMermaidDiagram = string.Empty;
+    [ObservableProperty] private string _selectedDiagramType = "architecture";
 
     public string[]? PendingImages { get; set; }
     public ObservableCollection<SourceDocumentViewModel> Sources { get; } = [];
@@ -59,10 +64,12 @@ public sealed partial class MainViewModel : ObservableObject
         LoadObsidianVaultHandler loadObsidianVaultHandler,
         ExportToObsidianHandler exportToObsidianHandler,
         GenerateFollowUpQuestionsHandler generateFollowUpQuestionsHandler,
+        GenerateDiagramHandler generateDiagramHandler,
         IDocumentParserFactory parserFactory,
         KnowledgeGraphService graphService,
         IAudioService audioService,
-        IAiServiceFactory aiServiceFactory)
+        IAiServiceFactory aiServiceFactory,
+        SessionContext sessionContext)
     {
         _addDocumentHandler = addDocumentHandler;
         _askQuestionHandler = askQuestionHandler;
@@ -70,12 +77,23 @@ public sealed partial class MainViewModel : ObservableObject
         _loadObsidianVaultHandler = loadObsidianVaultHandler;
         _exportToObsidianHandler = exportToObsidianHandler;
         _generateFollowUpQuestionsHandler = generateFollowUpQuestionsHandler;
+        _generateDiagramHandler = generateDiagramHandler;
         _parserFactory = parserFactory;
         _graphService = graphService;
         _audioService = audioService;
         _aiServiceFactory = aiServiceFactory;
+        _sessionContext = sessionContext;
         
         _ = CheckOllamaAvailabilityAsync();
+    }
+
+    public SessionContext SessionContext => _sessionContext;
+
+    [RelayCommand]
+    private void SwitchAppMode()
+    {
+        _sessionContext.SwitchMode();
+        StatusMessage = $"🔄 Switched to {_sessionContext.ModeDisplayName} mode";
     }
 
     [RelayCommand]
@@ -365,6 +383,51 @@ public sealed partial class MainViewModel : ObservableObject
             GraphEdges.Add(edge);
 
         StatusMessage = $"Graph: {nodes.Length} nodes, {edges.Length} connections";
+    }
+
+    [RelayCommand]
+    private async Task GenerateDiagramAsync()
+    {
+        IsBusy = true;
+        StatusMessage = "🎨 AI is generating diagram...";
+
+        try
+        {
+            var projectContext = BuildProjectContext();
+            var command = new GenerateDiagramCommand(projectContext, SelectedDiagramType);
+            var result = await _generateDiagramHandler.HandleAsync(command);
+
+            if (result.IsSuccess)
+            {
+                CurrentMermaidDiagram = result.Value;
+                StatusMessage = $"✅ {SelectedDiagramType} diagram generated";
+            }
+            else
+            {
+                ShowError($"Failed to generate diagram: {result.Error}");
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError($"Error: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private string BuildProjectContext()
+    {
+        var includedSources = Sources.Where(s => s.IsIncluded).ToArray();
+        
+        if (includedSources.Length > 0)
+        {
+            var docNames = string.Join(", ", includedSources.Select(s => s.Document.FileName));
+            return $"Project: NexusAI (Clean Architecture WPF app with AI capabilities). Documents: {docNames}";
+        }
+
+        return "Project: NexusAI - A Clean Architecture WPF application with AI-powered features including document analysis, project planning, code scaffolding, and knowledge graphs. Built with .NET 8, MaterialDesign, EF Core, and Gemini AI.";
     }
 
     private async Task GenerateFollowUpQuestionsInternalAsync(string question, string answer)

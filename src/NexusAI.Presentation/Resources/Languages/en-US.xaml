@@ -1,0 +1,92 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Application -->
+    <sys:String x:Key="S.AppTitle">NexusAI</sys:String>
+    <sys:String x:Key="S.AppSubtitle">Your AI Research Assistant</sys:String>
+    
+    <!-- Menu & Navigation -->
+    <sys:String x:Key="S.Menu.Projects">Projects</sys:String>
+    <sys:String x:Key="S.Menu.Wiki">Wiki</sys:String>
+    <sys:String x:Key="S.Menu.Presentation">Presentation</sys:String>
+    <sys:String x:Key="S.Menu.Settings">Settings</sys:String>
+    
+    <!-- Sidebar -->
+    <sys:String x:Key="S.Sidebar.KnowledgeBase">Knowledge Base</sys:String>
+    <sys:String x:Key="S.Sidebar.StudyLibrary">Study Library</sys:String>
+    <sys:String x:Key="S.Sidebar.DragDrop">Drag &amp; drop files or click to add</sys:String>
+    <sys:String x:Key="S.Sidebar.AddMaterials">Add your course materials &amp; textbooks</sys:String>
+    <sys:String x:Key="S.Sidebar.AddDocuments">ADD DOCUMENTS</sys:String>
+    <sys:String x:Key="S.Sidebar.AddStudyMaterials">ADD STUDY MATERIALS</sys:String>
+    <sys:String x:Key="S.Sidebar.ObsidianVault">Obsidian Vault</sys:String>
+    <sys:String x:Key="S.Sidebar.SyncVault">SYNC VAULT</sys:String>
+    
+    <!-- App Mode -->
+    <sys:String x:Key="S.Mode.AppMode">APP MODE</sys:String>
+    <sys:String x:Key="S.Mode.Professional">Professional</sys:String>
+    <sys:String x:Key="S.Mode.ExecutiveAssistant">Executive Assistant</sys:String>
+    <sys:String x:Key="S.Mode.Student">Student</sys:String>
+    <sys:String x:Key="S.Mode.SocraticTutor">Socratic Tutor</sys:String>
+    
+    <!-- Chat -->
+    <sys:String x:Key="S.Chat.Welcome">Welcome to Nexus AI</sys:String>
+    <sys:String x:Key="S.Chat.WelcomeProMessage">I am your AI research assistant powered by Gemini 2.0 Flash. Load documents to start asking questions.</sys:String>
+    <sys:String x:Key="S.Chat.WelcomeStudentMessage">I am your Socratic tutor powered by Gemini 2.0 Flash. Upload your study materials and let us learn together!</sys:String>
+    <sys:String x:Key="S.Chat.InputPlaceholder">Type a message...</sys:String>
+    <sys:String x:Key="S.Chat.Send">SEND</sys:String>
+    <sys:String x:Key="S.Chat.ThinkingProcess">Thinking Process...</sys:String>
+    <sys:String x:Key="S.Chat.ReadAloud">Read Aloud</sys:String>
+    <sys:String x:Key="S.Chat.Copy">Copy</sys:String>
+    <sys:String x:Key="S.Chat.PlayingAudio">Playing audio...</sys:String>
+    
+    <!-- Artifacts -->
+    <sys:String x:Key="S.Artifacts.Title">Artifacts</sys:String>
+    <sys:String x:Key="S.Artifacts.Graph">Graph</sys:String>
+    <sys:String x:Key="S.Artifacts.Research">RESEARCH</sys:String>
+    <sys:String x:Key="S.Artifacts.Analysis">ANALYSIS</sys:String>
+    <sys:String x:Key="S.Artifacts.DeepDive">Deep Dive</sys:String>
+    <sys:String x:Key="S.Artifacts.DetailedExplanation">Detailed Explanation</sys:String>
+    <sys:String x:Key="S.Artifacts.Summary">Summary</sys:String>
+    <sys:String x:Key="S.Artifacts.QuickNotes">Quick Notes</sys:String>
+    <sys:String x:Key="S.Artifacts.Learning">LEARNING</sys:String>
+    <sys:String x:Key="S.Artifacts.StudyTools">STUDY TOOLS</sys:String>
+    <sys:String x:Key="S.Artifacts.NotebookGuide">Notebook Guide</sys:String>
+    <sys:String x:Key="S.Artifacts.LectureNotes">Lecture Notes</sys:String>
+    <sys:String x:Key="S.Artifacts.StudyGuide">Study Guide</sys:String>
+    <sys:String x:Key="S.Artifacts.Flashcards">Flashcards</sys:String>
+    <sys:String x:Key="S.Artifacts.FAQ">FAQ</sys:String>
+    <sys:String x:Key="S.Artifacts.Content">CONTENT</sys:String>
+    <sys:String x:Key="S.Artifacts.Creative">CREATIVE</sys:String>
+    <sys:String x:Key="S.Artifacts.PodcastScript">Podcast Script</sys:String>
+    
+    <!-- Projects -->
+    <sys:String x:Key="S.Projects.Title">Manager's Dashboard</sys:String>
+    <sys:String x:Key="S.Projects.NewProject">NEW PROJECT</sys:String>
+    <sys:String x:Key="S.Projects.GeneratePlan">GENERATE PLAN</sys:String>
+    <sys:String x:Key="S.Projects.Scaffold">SCAFFOLD</sys:String>
+    <sys:String x:Key="S.Projects.ToDo">TO DO</sys:String>
+    <sys:String x:Key="S.Projects.InProgress">IN PROGRESS</sys:String>
+    <sys:String x:Key="S.Projects.Done">DONE</sys:String>
+    <sys:String x:Key="S.Projects.Completion">Project Completion</sys:String>
+    <sys:String x:Key="S.Projects.TasksByRole">Tasks by Role</sys:String>
+    
+    <!-- Settings -->
+    <sys:String x:Key="S.Settings.Title">Settings</sys:String>
+    <sys:String x:Key="S.Settings.Language">Language</sys:String>
+    <sys:String x:Key="S.Settings.SelectLanguage">Select Language</sys:String>
+    <sys:String x:Key="S.Settings.Theme">Theme</sys:String>
+    <sys:String x:Key="S.Settings.ApiKeys">API Keys</sys:String>
+    <sys:String x:Key="S.Settings.Save">Save</sys:String>
+    <sys:String x:Key="S.Settings.Cancel">Cancel</sys:String>
+    
+    <!-- Common -->
+    <sys:String x:Key="S.Common.Loading">Loading...</sys:String>
+    <sys:String x:Key="S.Common.Ready">Ready</sys:String>
+    <sys:String x:Key="S.Common.Error">Error</sys:String>
+    <sys:String x:Key="S.Common.Success">Success</sys:String>
+    <sys:String x:Key="S.Common.Close">Close</sys:String>
+    <sys:String x:Key="S.Common.Minimize">Minimize</sys:String>
+    <sys:String x:Key="S.Common.Maximize">Maximize</sys:String>
+    
+</ResourceDictionary>

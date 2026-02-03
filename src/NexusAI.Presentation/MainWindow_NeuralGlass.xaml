@@ -1,0 +1,427 @@
+<Window x:Class="NexusAI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        mc:Ignorable="d"
+        Title="Nexus AI" 
+        Height="900" Width="1600"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBase}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize"
+        FontFamily="Segoe UI Variable Display, Segoe UI, -apple-system"
+        TextElement.Foreground="{StaticResource TextPrimary}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType">
+    
+    <Window.Resources>
+        <!-- Plasma Animation for User Bubbles -->
+        <Storyboard x:Key="PlasmaAnimation" RepeatBehavior="Forever">
+            <PointAnimation Storyboard.TargetProperty="(RadialGradientBrush.Center)"
+                           From="0.3,0.3" To="0.7,0.7"
+                           Duration="0:0:4" AutoReverse="True">
+                <PointAnimation.EasingFunction>
+                    <SineEase EasingMode="EaseInOut"/>
+                </PointAnimation.EasingFunction>
+            </PointAnimation>
+        </Storyboard>
+    </Window.Resources>
+    
+    <Border BorderBrush="{StaticResource PurpleRimLight}" 
+            BorderThickness="1" 
+            CornerRadius="16"
+            Background="{StaticResource BackgroundBase}">
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="52"/> <!-- Custom Window Chrome -->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- 🪟 CUSTOM WINDOW CHROME - DRAGGABLE GLASS HEADER           -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <Border Grid.Row="0" 
+                    Background="{StaticResource GlassSurface}"
+                    CornerRadius="16,16,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- App Icon + Title -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
+                        <Border Width="28" Height="28" CornerRadius="8" Margin="0,0,12,0"
+                                Background="{StaticResource AccentGradient}">
+                            <TextBlock Text="🧠" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{DynamicResource S.AppTitle}" 
+                                  FontSize="16" 
+                                  FontWeight="Bold"
+                                  Foreground="{StaticResource TextPrimary}"
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Center: API Key Input -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="API Key:" 
+                                  Foreground="{StaticResource TextSecondary}" 
+                                  FontSize="12"
+                                  VerticalAlignment="Center" 
+                                  Margin="0,0,8,0"/>
+                        <PasswordBox x:Name="ApiKeyBox"
+                                    Width="220"
+                                    Height="32"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    Background="{StaticResource SurfaceLayer1}"
+                                    Foreground="{StaticResource TextPrimary}"
+                                    BorderBrush="#33B500FF"
+                                    BorderThickness="1"
+                                    materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                    PasswordChanged="ApiKeyBox_PasswordChanged"/>
+                        
+                        <ComboBox x:Name="AiProviderComboBox"
+                                 ItemsSource="{Binding Source={StaticResource AiProviderValues}}"
+                                 SelectedItem="{Binding SelectedProvider}"
+                                 Width="100"
+                                 Height="32"
+                                 FontSize="12"
+                                 Margin="8,0,0,0"
+                                 Background="{StaticResource SurfaceLayer1}"
+                                 Foreground="{StaticResource TextPrimary}"
+                                 BorderBrush="#33B500FF"/>
+                    </StackPanel>
+                    
+                    <!-- Window Control Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="&#xE921;" Style="{StaticResource ChromeButton}" 
+                               ToolTip="{DynamicResource S.Common.Minimize}"
+                               Click="MinimizeWindow"/>
+                        <Button Content="&#xE922;" Style="{StaticResource ChromeButton}"
+                               ToolTip="{DynamicResource S.Common.Maximize}"
+                               Click="MaximizeWindow"/>
+                        <Button Content="&#xE8BB;" Style="{StaticResource ChromeCloseButton}"
+                               ToolTip="{DynamicResource S.Common.Close}"
+                               Click="CloseWindow"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- 📐 MAIN LAYOUT - GLASS SIDEBAR + CONTENT                   -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280"/> <!-- Glass Sidebar -->
+                    <ColumnDefinition Width="*"/> <!-- Main Content -->
+                </Grid.ColumnDefinitions>
+                
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <!-- 🥃 GLASS SIDEBAR - GLASSMORPHISM EFFECT                    -->
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <Border Grid.Column="0" 
+                        Background="{StaticResource GlassSurface}"
+                        CornerRadius="0,0,0,16"
+                        BorderBrush="{StaticResource PurpleRimLight}"
+                        BorderThickness="0,0,1,0">
+                    <Border.Effect>
+                        <BlurEffect Radius="0"/> <!-- Simulated glass - WPF limitation -->
+                    </Border.Effect>
+                    
+                    <Grid Margin="16">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Knowledge Base Section -->
+                            <RowDefinition Height="*"/> <!-- Document List -->
+                            <RowDefinition Height="Auto"/> <!-- Mode Toggle -->
+                            <RowDefinition Height="Auto"/> <!-- Navigation -->
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Knowledge Base Header -->
+                        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                            <TextBlock FontSize="11" FontWeight="Bold" 
+                                      Foreground="{StaticResource TextTertiary}"
+                                      Margin="0,0,0,16">
+                                <Run Text="{DynamicResource S.Sidebar.KnowledgeBase}"/>
+                            </TextBlock>
+                            
+                            <!-- Drop Zone with Glass Card -->
+                            <Border Style="{StaticResource GlassCard}" 
+                                    MinHeight="140"
+                                    AllowDrop="True"
+                                    Drop="Sidebar_Drop"
+                                    DragEnter="Sidebar_DragEnter"
+                                    DragLeave="Sidebar_DragLeave">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="CloudUpload" 
+                                                            Width="48" Height="48"
+                                                            Foreground="{StaticResource AccentGradient}"
+                                                            HorizontalAlignment="Center"
+                                                            Margin="0,0,0,12"/>
+                                    <TextBlock Text="{DynamicResource S.Sidebar.DragDrop}"
+                                              FontSize="12"
+                                              Foreground="{StaticResource TextSecondary}"
+                                              TextAlignment="Center"
+                                              TextWrapping="Wrap"
+                                              LineHeight="18"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Add Documents Button -->
+                            <Button Content="{DynamicResource S.Sidebar.AddDocuments}"
+                                   Style="{StaticResource AccentButton}"
+                                   Margin="0,16,0,0"
+                                   Click="AddDocuments_Click"/>
+                        </StackPanel>
+                        
+                        <!-- Document List with Glass Scroll -->
+                        <ScrollViewer Grid.Row="1" 
+                                     VerticalScrollBarVisibility="Auto"
+                                     Margin="0,0,-8,0">
+                            <ItemsControl ItemsSource="{Binding Sources}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource GlassCard}"
+                                               Padding="12"
+                                               Margin="0,0,0,8"
+                                               Cursor="Hand">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <materialDesign:PackIcon Grid.Column="0"
+                                                                        Kind="{Binding Document.FileType, Converter={StaticResource FileTypeIconConverter}}"
+                                                                        Width="20" Height="20"
+                                                                        Foreground="{StaticResource AccentGradient}"
+                                                                        VerticalAlignment="Center"
+                                                                        Margin="0,0,12,0"/>
+                                                
+                                                <TextBlock Grid.Column="1"
+                                                          Text="{Binding Document.Name}"
+                                                          FontSize="13"
+                                                          Foreground="{StaticResource TextPrimary}"
+                                                          TextTrimming="CharacterEllipsis"
+                                                          VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        
+                        <!-- Mode Toggle Section -->
+                        <Border Grid.Row="2" 
+                               Style="{StaticResource GlassCardElevated}"
+                               Margin="0,24,0,16"
+                               Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource S.Mode.AppMode}"
+                                          FontSize="10"
+                                          FontWeight="Bold"
+                                          Foreground="{StaticResource TextTertiary}"
+                                          Margin="0,0,0,12"/>
+                                
+                                <!-- Professional Mode Button -->
+                                <RadioButton GroupName="AppMode"
+                                            IsChecked="{Binding SessionContext.IsProfessionalMode}"
+                                            Command="{Binding SwitchAppModeCommand}"
+                                            Style="{StaticResource MaterialDesignTabRadioButton}"
+                                            Margin="0,0,0,8">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Briefcase" 
+                                                                Width="20" Height="20"
+                                                                Margin="0,0,12,0"/>
+                                        <StackPanel>
+                                            <TextBlock Text="{DynamicResource S.Mode.Professional}" 
+                                                      FontWeight="SemiBold"
+                                                      FontSize="13"/>
+                                            <TextBlock Text="{DynamicResource S.Mode.ExecutiveAssistant}" 
+                                                      FontSize="10"
+                                                      Foreground="{StaticResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </RadioButton>
+                                
+                                <!-- Student Mode Button -->
+                                <RadioButton GroupName="AppMode"
+                                            IsChecked="{Binding SessionContext.IsStudentMode}"
+                                            Command="{Binding SwitchAppModeCommand}"
+                                            Style="{StaticResource MaterialDesignTabRadioButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="SchoolOutline" 
+                                                                Width="20" Height="20"
+                                                                Margin="0,0,12,0"/>
+                                        <StackPanel>
+                                            <TextBlock Text="{DynamicResource S.Mode.Student}" 
+                                                      FontWeight="SemiBold"
+                                                      FontSize="13"/>
+                                            <TextBlock Text="{DynamicResource S.Mode.SocraticTutor}" 
+                                                      FontSize="10"
+                                                      Foreground="{StaticResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </RadioButton>
+                            </StackPanel>
+                        </Border>
+                        
+                        <!-- Navigation Buttons -->
+                        <StackPanel Grid.Row="3">
+                            <Button Style="{StaticResource GlassNavButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ViewDashboard" 
+                                                            Width="20" Height="20" 
+                                                            Margin="0,0,12,0"/>
+                                    <TextBlock Text="{DynamicResource S.Menu.Projects}"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource GlassNavButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="BookOpenPageVariant" 
+                                                            Width="20" Height="20" 
+                                                            Margin="0,0,12,0"/>
+                                    <TextBlock Text="{DynamicResource S.Menu.Wiki}"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource GlassNavButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="PresentationPlay" 
+                                                            Width="20" Height="20" 
+                                                            Margin="0,0,12,0"/>
+                                    <TextBlock Text="{DynamicResource S.Menu.Presentation}"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource GlassNavButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Settings" 
+                                                            Width="20" Height="20" 
+                                                            Margin="0,0,12,0"/>
+                                    <TextBlock Text="{DynamicResource S.Menu.Settings}"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <!-- 💬 MAIN CONTENT - FLOATING CHAT INTERFACE                  -->
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <Grid Grid.Column="1" Margin="32">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/> <!-- Chat Messages -->
+                        <RowDefinition Height="Auto"/> <!-- Input Area -->
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Chat Container - Floating Glass Card -->
+                    <Border Grid.Row="0" 
+                            Style="{StaticResource GlassCard}"
+                            Margin="0,0,0,24">
+                        <ScrollViewer x:Name="ChatScrollViewer" 
+                                     VerticalScrollBarVisibility="Auto"
+                                     Padding="0,0,12,0">
+                            <ItemsControl x:Name="ChatMessagesControl" ItemsSource="{Binding ChatMessages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border x:Name="MessageBorder"
+                                               Opacity="0"
+                                               RenderTransformOrigin="0.5,0.5">
+                                            <Border.RenderTransform>
+                                                <TranslateTransform Y="20"/>
+                                            </Border.RenderTransform>
+                                            <Border.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard Storyboard="{StaticResource MessageEntranceAnimation}"/>
+                                                </EventTrigger>
+                                            </Border.Triggers>
+                                            
+                                            <!-- AI Bubble -->
+                                            <Border Visibility="{Binding IsUser, Converter={StaticResource InverseBoolConverter}}">
+                                                <Border Style="{StaticResource AiChatBubble}">
+                                                    <TextBlock Text="{Binding Content}" 
+                                                              TextWrapping="Wrap" 
+                                                              FontSize="14" 
+                                                              LineHeight="22" 
+                                                              Foreground="{StaticResource TextPrimary}"/>
+                                                </Border>
+                                            </Border>
+                                            
+                                            <!-- User Bubble with Plasma Effect -->
+                                            <Border Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <Border Style="{StaticResource UserChatBubble}">
+                                                    <Border.Background>
+                                                        <RadialGradientBrush x:Name="PlasmaBackground" 
+                                                                            Center="0.5,0.5" 
+                                                                            RadiusX="0.8" 
+                                                                            RadiusY="0.8">
+                                                            <GradientStop Color="#996200EA" Offset="0"/>
+                                                            <GradientStop Color="#99B500FF" Offset="0.5"/>
+                                                            <GradientStop Color="#996200EA" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Border.Background>
+                                                    <Border.Triggers>
+                                                        <EventTrigger RoutedEvent="Loaded">
+                                                            <BeginStoryboard>
+                                                                <Storyboard RepeatBehavior="Forever">
+                                                                    <PointAnimation Storyboard.TargetName="PlasmaBackground"
+                                                                                  Storyboard.TargetProperty="Center"
+                                                                                  From="0.3,0.3" To="0.7,0.7"
+                                                                                  Duration="0:0:4" AutoReverse="True">
+                                                                        <PointAnimation.EasingFunction>
+                                                                            <SineEase EasingMode="EaseInOut"/>
+                                                                        </PointAnimation.EasingFunction>
+                                                                    </PointAnimation>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </EventTrigger>
+                                                    </Border.Triggers>
+                                                    <TextBlock Text="{Binding Content}" 
+                                                              TextWrapping="Wrap" 
+                                                              FontSize="14" 
+                                                              LineHeight="22" 
+                                                              Foreground="{StaticResource TextPrimary}"/>
+                                                </Border>
+                                            </Border>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                    
+                    <!-- Glass Capsule Input Area -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBox x:Name="ChatInputTextBox"
+                                Grid.Column="0"
+                                Style="{StaticResource GlassCapsuleTextBox}"
+                                Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="{DynamicResource S.Chat.InputPlaceholder}"
+                                AllowDrop="True"
+                                Drop="ChatInput_Drop"/>
+                        
+                        <Button Grid.Column="1"
+                               Content="{DynamicResource S.Chat.Send}"
+                               Style="{StaticResource AccentButton}"
+                               Command="{Binding SendMessageCommand}"
+                               Margin="16,0,0,0"
+                               Padding="32,14"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,92 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Application -->
+    <sys:String x:Key="S.AppTitle">NexusAI</sys:String>
+    <sys:String x:Key="S.AppSubtitle">Ваш ИИ-ассистент для исследований</sys:String>
+    
+    <!-- Menu & Navigation -->
+    <sys:String x:Key="S.Menu.Projects">Проекты</sys:String>
+    <sys:String x:Key="S.Menu.Wiki">Вики</sys:String>
+    <sys:String x:Key="S.Menu.Presentation">Презентация</sys:String>
+    <sys:String x:Key="S.Menu.Settings">Настройки</sys:String>
+    
+    <!-- Sidebar -->
+    <sys:String x:Key="S.Sidebar.KnowledgeBase">База знаний</sys:String>
+    <sys:String x:Key="S.Sidebar.StudyLibrary">Учебная библиотека</sys:String>
+    <sys:String x:Key="S.Sidebar.DragDrop">Перетащите файлы или нажмите для добавления</sys:String>
+    <sys:String x:Key="S.Sidebar.AddMaterials">Добавьте учебные материалы и учебники</sys:String>
+    <sys:String x:Key="S.Sidebar.AddDocuments">ДОБАВИТЬ ДОКУМЕНТЫ</sys:String>
+    <sys:String x:Key="S.Sidebar.AddStudyMaterials">ДОБАВИТЬ МАТЕРИАЛЫ</sys:String>
+    <sys:String x:Key="S.Sidebar.ObsidianVault">Хранилище Obsidian</sys:String>
+    <sys:String x:Key="S.Sidebar.SyncVault">СИНХРОНИЗАЦИЯ</sys:String>
+    
+    <!-- App Mode -->
+    <sys:String x:Key="S.Mode.AppMode">РЕЖИМ ПРИЛОЖЕНИЯ</sys:String>
+    <sys:String x:Key="S.Mode.Professional">Профессиональный</sys:String>
+    <sys:String x:Key="S.Mode.ExecutiveAssistant">Бизнес-ассистент</sys:String>
+    <sys:String x:Key="S.Mode.Student">Студент</sys:String>
+    <sys:String x:Key="S.Mode.SocraticTutor">Сократовский наставник</sys:String>
+    
+    <!-- Chat -->
+    <sys:String x:Key="S.Chat.Welcome">Добро пожаловать в Nexus AI</sys:String>
+    <sys:String x:Key="S.Chat.WelcomeProMessage">Я ваш ИИ-ассистент для исследований на базе Gemini 2.0 Flash. Загрузите документы, чтобы начать задавать вопросы.</sys:String>
+    <sys:String x:Key="S.Chat.WelcomeStudentMessage">Я ваш Сократовский наставник на базе Gemini 2.0 Flash. Загрузите учебные материалы, и давайте учиться вместе!</sys:String>
+    <sys:String x:Key="S.Chat.InputPlaceholder">Введите сообщение...</sys:String>
+    <sys:String x:Key="S.Chat.Send">ОТПРАВИТЬ</sys:String>
+    <sys:String x:Key="S.Chat.ThinkingProcess">Процесс размышления...</sys:String>
+    <sys:String x:Key="S.Chat.ReadAloud">Прочитать вслух</sys:String>
+    <sys:String x:Key="S.Chat.Copy">Копировать</sys:String>
+    <sys:String x:Key="S.Chat.PlayingAudio">Воспроизведение аудио...</sys:String>
+    
+    <!-- Artifacts -->
+    <sys:String x:Key="S.Artifacts.Title">Артефакты</sys:String>
+    <sys:String x:Key="S.Artifacts.Graph">Граф</sys:String>
+    <sys:String x:Key="S.Artifacts.Research">ИССЛЕДОВАНИЕ</sys:String>
+    <sys:String x:Key="S.Artifacts.Analysis">АНАЛИЗ</sys:String>
+    <sys:String x:Key="S.Artifacts.DeepDive">Глубокий анализ</sys:String>
+    <sys:String x:Key="S.Artifacts.DetailedExplanation">Подробное объяснение</sys:String>
+    <sys:String x:Key="S.Artifacts.Summary">Краткое изложение</sys:String>
+    <sys:String x:Key="S.Artifacts.QuickNotes">Быстрые заметки</sys:String>
+    <sys:String x:Key="S.Artifacts.Learning">ОБУЧЕНИЕ</sys:String>
+    <sys:String x:Key="S.Artifacts.StudyTools">УЧЕБНЫЕ ИНСТРУМЕНТЫ</sys:String>
+    <sys:String x:Key="S.Artifacts.NotebookGuide">Руководство по конспектам</sys:String>
+    <sys:String x:Key="S.Artifacts.LectureNotes">Конспекты лекций</sys:String>
+    <sys:String x:Key="S.Artifacts.StudyGuide">Учебное пособие</sys:String>
+    <sys:String x:Key="S.Artifacts.Flashcards">Карточки</sys:String>
+    <sys:String x:Key="S.Artifacts.FAQ">Частые вопросы</sys:String>
+    <sys:String x:Key="S.Artifacts.Content">КОНТЕНТ</sys:String>
+    <sys:String x:Key="S.Artifacts.Creative">КРЕАТИВНОЕ</sys:String>
+    <sys:String x:Key="S.Artifacts.PodcastScript">Скрипт подкаста</sys:String>
+    
+    <!-- Projects -->
+    <sys:String x:Key="S.Projects.Title">Панель управления</sys:String>
+    <sys:String x:Key="S.Projects.NewProject">НОВЫЙ ПРОЕКТ</sys:String>
+    <sys:String x:Key="S.Projects.GeneratePlan">СОЗДАТЬ ПЛАН</sys:String>
+    <sys:String x:Key="S.Projects.Scaffold">КАРКАС</sys:String>
+    <sys:String x:Key="S.Projects.ToDo">СДЕЛАТЬ</sys:String>
+    <sys:String x:Key="S.Projects.InProgress">В РАБОТЕ</sys:String>
+    <sys:String x:Key="S.Projects.Done">ГОТОВО</sys:String>
+    <sys:String x:Key="S.Projects.Completion">Завершение проекта</sys:String>
+    <sys:String x:Key="S.Projects.TasksByRole">Задачи по ролям</sys:String>
+    
+    <!-- Settings -->
+    <sys:String x:Key="S.Settings.Title">Настройки</sys:String>
+    <sys:String x:Key="S.Settings.Language">Язык</sys:String>
+    <sys:String x:Key="S.Settings.SelectLanguage">Выберите язык</sys:String>
+    <sys:String x:Key="S.Settings.Theme">Тема</sys:String>
+    <sys:String x:Key="S.Settings.ApiKeys">API-ключи</sys:String>
+    <sys:String x:Key="S.Settings.Save">Сохранить</sys:String>
+    <sys:String x:Key="S.Settings.Cancel">Отмена</sys:String>
+    
+    <!-- Common -->
+    <sys:String x:Key="S.Common.Loading">Загрузка...</sys:String>
+    <sys:String x:Key="S.Common.Ready">Готово</sys:String>
+    <sys:String x:Key="S.Common.Error">Ошибка</sys:String>
+    <sys:String x:Key="S.Common.Success">Успешно</sys:String>
+    <sys:String x:Key="S.Common.Close">Закрыть</sys:String>
+    <sys:String x:Key="S.Common.Minimize">Свернуть</sys:String>
+    <sys:String x:Key="S.Common.Maximize">Развернуть</sys:String>
+    
+</ResourceDictionary>

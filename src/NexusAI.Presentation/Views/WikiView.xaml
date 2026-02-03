@@ -1,0 +1,213 @@
+<UserControl x:Class="NexusAI.Presentation.Views.WikiView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mdxam="clr-namespace:MdXaml;assembly=MdXaml"
+             xmlns:vm="clr-namespace:NexusAI.Presentation.ViewModels"
+             Background="#0D0D0D">
+    <UserControl.Resources>
+        <Style x:Key="WikiTreeItemStyle" TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Background="#1C1C1E" 
+                Padding="20,16"
+                BorderBrush="#2C2C2E"
+                BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="BookOpenVariant" 
+                                             Width="28" Height="28"
+                                             Foreground="#10B981"
+                                             VerticalAlignment="Center"
+                                             Margin="0,0,12,0"/>
+                    <TextBlock Text="Knowledge Base" 
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Foreground="#F5F5F7"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusMessage}" 
+                               FontSize="13"
+                               Foreground="#98989D"
+                               VerticalAlignment="Center"
+                               Margin="16,0,0,0"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Content="📚 GENERATE KNOWLEDGE BASE"
+                        FontWeight="SemiBold"
+                        Background="#10B981"
+                        Foreground="White"
+                        Height="40"
+                        Padding="20,0"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        materialDesign:ButtonAssist.CornerRadius="8"
+                        Click="GenerateButton_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Panel - TreeView -->
+            <Border Grid.Column="0" 
+                    Background="#1C1C1E"
+                    BorderBrush="#2C2C2E"
+                    BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" 
+                            Background="#0D0D0D" 
+                            Padding="16,12"
+                            BorderBrush="#2C2C2E"
+                            BorderThickness="0,0,0,1">
+                        <TextBlock Text="📑 Pages" 
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="#98989D"/>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  Padding="8">
+                        <TreeView x:Name="WikiTreeView"
+                                  ItemsSource="{Binding RootNodes}"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  SelectedItemChanged="WikiTreeView_SelectedItemChanged">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type vm:WikiPageTreeNode}" 
+                                                          ItemsSource="{Binding Children}">
+                                    <StackPanel Orientation="Horizontal" Margin="4">
+                                        <materialDesign:PackIcon Kind="FileDocument" 
+                                                                 Width="16" Height="16"
+                                                                 Foreground="#8B5CF6"
+                                                                 VerticalAlignment="Center"
+                                                                 Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding Page.Title}" 
+                                                   Foreground="#F5F5F7"
+                                                   FontSize="13"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="TreeViewItem" BasedOn="{StaticResource WikiTreeItemStyle}"/>
+                            </TreeView.ItemContainerStyle>
+                        </TreeView>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" 
+                          Width="4"
+                          Background="#2C2C2E"
+                          HorizontalAlignment="Stretch"/>
+
+            <!-- Right Panel - Content Viewer -->
+            <Grid Grid.Column="2" Background="#0D0D0D">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Page Title -->
+                <Border Grid.Row="0" 
+                        Background="#1C1C1E" 
+                        Padding="24,16"
+                        BorderBrush="#2C2C2E"
+                        BorderThickness="0,0,0,1">
+                    <TextBlock Text="{Binding CurrentPageTitle}" 
+                               FontSize="22"
+                               FontWeight="SemiBold"
+                               Foreground="#F5F5F7"
+                               TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Markdown Content -->
+                <ScrollViewer Grid.Row="1" 
+                              VerticalScrollBarVisibility="Auto"
+                              Padding="24">
+                    <mdxam:MarkdownScrollViewer Markdown="{Binding CurrentPageContent}"
+                                                Background="Transparent"
+                                                Foreground="#F5F5F7"/>
+                </ScrollViewer>
+
+                <!-- Action Buttons -->
+                <Border Grid.Row="2" 
+                        Background="#1C1C1E" 
+                        Padding="24,12"
+                        BorderBrush="#2C2C2E"
+                        BorderThickness="0,1,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="💾 SAVE CHANGES"
+                                Command="{Binding SaveCurrentPageCommand}"
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Height="36"
+                                Padding="16,0"
+                                materialDesign:ButtonAssist.CornerRadius="6"
+                                Margin="0,0,12,0"/>
+                        <Button Content="🗑️ DELETE PAGE"
+                                Command="{Binding DeleteCurrentPageCommand}"
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Height="36"
+                                Padding="16,0"
+                                Foreground="#EF4444"
+                                BorderBrush="#EF4444"
+                                materialDesign:ButtonAssist.CornerRadius="6"
+                                Margin="0,0,12,0"/>
+                        <Button Content="🔄 RELOAD"
+                                Command="{Binding LoadWikiTreeCommand}"
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Height="36"
+                                Padding="16,0"
+                                materialDesign:ButtonAssist.CornerRadius="6"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Busy Indicator -->
+                <Border Grid.RowSpan="3" 
+                        Background="#B3000000"
+                        Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                     IsIndeterminate="True"
+                                     Width="64" Height="64"
+                                     Foreground="#10B981"
+                                     Margin="0,0,0,16"/>
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   FontSize="16"
+                                   Foreground="#F5F5F7"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

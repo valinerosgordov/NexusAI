@@ -199,4 +199,49 @@ public sealed class OllamaService : IAiService
         [property: JsonPropertyName("name")] string Name,
         [property: JsonPropertyName("size")] long Size
     );
+
+    public Task<Result<ProjectPlanTask[]>> GeneratePlanAsync(
+        string idea,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(
+            Result.Failure<ProjectPlanTask[]>("Project plan generation is only supported with Gemini AI"));
+    }
+
+    public Task<Result<ScaffoldFile[]>> GenerateScaffoldAsync(
+        string projectDescription,
+        string[] technologies,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(
+            Result.Failure<ScaffoldFile[]>("Project scaffolding is only supported with Gemini AI"));
+    }
+
+    public Task<Result<string>> GenerateMermaidDiagramAsync(
+        string projectContext,
+        string diagramType,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(
+            Result.Failure<string>("Mermaid diagram generation is only supported with Gemini AI"));
+    }
+
+    public Task<Result<WikiStructure[]>> GenerateWikiStructureAsync(
+        string topic,
+        SourceDocument[] sources,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(
+            Result.Failure<WikiStructure[]>("Wiki generation is only supported with Gemini AI"));
+    }
+
+    public Task<Result<SlideContent[]>> GeneratePresentationStructureAsync(
+        string topic,
+        int slideCount,
+        SourceDocument[] sources,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(
+            Result.Failure<SlideContent[]>("Presentation generation is only supported with Gemini AI"));
+    }
 }

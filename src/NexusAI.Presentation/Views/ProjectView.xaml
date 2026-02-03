@@ -1,0 +1,560 @@
+<UserControl x:Class="NexusAI.Presentation.Views.ProjectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="#0D0D0D">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Background="#1C1C1E" 
+                Padding="24,20"
+                BorderThickness="0,0,0,1"
+                BorderBrush="#2C2C2E">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="📋 Manager's Dashboard" 
+                               FontSize="24" 
+                               FontWeight="SemiBold"
+                               Foreground="#F5F5F7"
+                               Margin="0,0,0,8"/>
+                    <TextBlock Text="AI-powered project management" 
+                               FontSize="13"
+                               Foreground="#98989D"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Content="➕ NEW PROJECT"
+                        Command="{Binding GenerateProjectFromIdeaCommand}"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Height="40"
+                        Padding="20,0"
+                        Background="#007AFF"
+                        BorderBrush="#007AFF"/>
+            </Grid>
+        </Border>
+
+        <!-- Analytics Widget -->
+        <Border Grid.Row="1" 
+                Background="#1C1C1E" 
+                Padding="24,16"
+                BorderThickness="0,0,0,1"
+                BorderBrush="#2C2C2E">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Completion Stats -->
+                <materialDesign:Card Grid.Column="0" 
+                                     Background="#0D0D0D"
+                                     Padding="20"
+                                     Margin="0,0,12,0">
+                    <StackPanel>
+                        <TextBlock Text="🎯 Project Completion" 
+                                   FontSize="13"
+                                   FontWeight="Medium"
+                                   Foreground="#98989D"
+                                   Margin="0,0,0,12"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0">
+                                <TextBlock FontSize="32" 
+                                           FontWeight="Bold"
+                                           Foreground="#34C759"
+                                           Margin="0,0,0,4">
+                                    <Run Text="{Binding CompletionPercentage, StringFormat={}{0:F0}}"/>
+                                    <Run Text="%" FontSize="20"/>
+                                </TextBlock>
+                                <TextBlock Foreground="#98989D" FontSize="12">
+                                    <Run Text="{Binding CompletedTasks}"/>
+                                    <Run Text=" of "/>
+                                    <Run Text="{Binding TotalTasks}"/>
+                                    <Run Text=" tasks completed"/>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <ProgressBar Grid.Column="1"
+                                         Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                         Value="{Binding CompletionPercentage}"
+                                         Width="60" Height="60"
+                                         Foreground="#34C759"/>
+                        </Grid>
+                    </StackPanel>
+                </materialDesign:Card>
+
+                <!-- Divider -->
+                <Border Grid.Column="1" Width="1" Background="#2C2C2E" Margin="12,0"/>
+
+                <!-- Tasks by Role -->
+                <materialDesign:Card Grid.Column="2" 
+                                     Background="#0D0D0D"
+                                     Padding="20"
+                                     Margin="12,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="👥 Tasks by Role" 
+                                   FontSize="13"
+                                   FontWeight="Medium"
+                                   Foreground="#98989D"
+                                   Margin="0,0,0,12"/>
+                        <ItemsControl ItemsSource="{Binding RoleDistribution}"
+                                      MaxHeight="80">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Border Grid.Column="0"
+                                                Background="{Binding Color}"
+                                                CornerRadius="4"
+                                                Padding="8,4"
+                                                HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding Role}" 
+                                                       FontSize="11"
+                                                       FontWeight="Medium"
+                                                       Foreground="White"/>
+                                        </Border>
+
+                                        <ProgressBar Grid.Column="1"
+                                                     Value="{Binding Count}"
+                                                     Maximum="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=DataContext.TotalTasks}"
+                                                     Height="8"
+                                                     Margin="8,0"
+                                                     VerticalAlignment="Center"
+                                                     Foreground="{Binding Color}"
+                                                     Background="#2C2C2E"/>
+
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding Count}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#F5F5F7"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </materialDesign:Card>
+            </Grid>
+        </Border>
+
+        <!-- Kanban Board -->
+        <ScrollViewer Grid.Row="2" 
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="24">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="360"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="360"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="360"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- TO DO Column -->
+                <Border Grid.Column="0" 
+                        Background="#1C1C1E"
+                        CornerRadius="12"
+                        Padding="16">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="📝 TO DO" 
+                                       FontSize="14" 
+                                       FontWeight="SemiBold"
+                                       Foreground="#98989D"/>
+                            <Border Grid.Column="1"
+                                    Background="#2C2C2E"
+                                    CornerRadius="10"
+                                    Padding="8,4"
+                                    MinWidth="28">
+                                <TextBlock Text="{Binding TodoTasks.Count}"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#F5F5F7"
+                                           HorizontalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+
+                        <ItemsControl ItemsSource="{Binding TodoTasks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <materialDesign:Card Margin="0,0,0,12"
+                                                         Background="#0D0D0D"
+                                                         Padding="16"
+                                                         MouseDoubleClick="TaskCard_MouseDoubleClick"
+                                                         Tag="{Binding}">
+                                        <StackPanel>
+                                            <!-- Task Header -->
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Priority Badge -->
+                                                <Border Grid.Column="0"
+                                                        Background="{Binding PriorityColor}"
+                                                        CornerRadius="4"
+                                                        Padding="6,3"
+                                                        HorizontalAlignment="Left">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock FontSize="10"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="White"
+                                                                   Margin="0,0,2,0"
+                                                                   Visibility="{Binding Priority, Converter={StaticResource PriorityToVisibilityConverter}, ConverterParameter=High}"
+                                                                   Text="⬆️"/>
+                                                        <TextBlock FontSize="10"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="White"
+                                                                   Margin="0,0,2,0"
+                                                                   Visibility="{Binding Priority, Converter={StaticResource PriorityToVisibilityConverter}, ConverterParameter=Medium}"
+                                                                   Text="➡️"/>
+                                                        <TextBlock FontSize="10"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="White"
+                                                                   Margin="0,0,2,0"
+                                                                   Visibility="{Binding Priority, Converter={StaticResource PriorityToVisibilityConverter}, ConverterParameter=Low}"
+                                                                   Text="⬇️"/>
+                                                        <TextBlock FontSize="10"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="White"
+                                                                   Text="{Binding Priority}"/>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <!-- Avatar Circle -->
+                                                <Border Grid.Column="1"
+                                                        Width="32" Height="32"
+                                                        CornerRadius="16"
+                                                        Background="#007AFF">
+                                                    <TextBlock Text="{Binding Initials}"
+                                                               FontSize="12"
+                                                               FontWeight="Bold"
+                                                               Foreground="White"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <!-- Task Title -->
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="14"
+                                                       FontWeight="Medium"
+                                                       Foreground="#F5F5F7"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,12"/>
+
+                                            <!-- Task Footer -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Role Badge -->
+                                                <Border Grid.Column="0"
+                                                        Background="{Binding RoleBadgeColor}"
+                                                        CornerRadius="4"
+                                                        Padding="8,4"
+                                                        HorizontalAlignment="Left"
+                                                        Visibility="{Binding Role, Converter={StaticResource NullToVisibilityConverter}}">
+                                                    <TextBlock Text="{Binding Role}"
+                                                               FontSize="11"
+                                                               FontWeight="Medium"
+                                                               Foreground="White"/>
+                                                </Border>
+
+                                                <!-- Hours Badge -->
+                                                <Border Grid.Column="1"
+                                                        Background="#2C2C2E"
+                                                        CornerRadius="4"
+                                                        Padding="8,4">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <materialDesign:PackIcon Kind="ClockOutline"
+                                                                                 Width="12" Height="12"
+                                                                                 Foreground="#98989D"
+                                                                                 VerticalAlignment="Center"
+                                                                                 Margin="0,0,4,0"/>
+                                                        <TextBlock Text="{Binding Hours, StringFormat={}{0:F1}h}"
+                                                                   FontSize="11"
+                                                                   Foreground="#98989D"
+                                                                   VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- IN PROGRESS Column -->
+                <Border Grid.Column="2" 
+                        Background="#1C1C1E"
+                        CornerRadius="12"
+                        Padding="16">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="🚀 IN PROGRESS" 
+                                       FontSize="14" 
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF9500"/>
+                            <Border Grid.Column="1"
+                                    Background="#2C2C2E"
+                                    CornerRadius="10"
+                                    Padding="8,4"
+                                    MinWidth="28">
+                                <TextBlock Text="{Binding InProgressTasks.Count}"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#F5F5F7"
+                                           HorizontalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+
+                        <ItemsControl ItemsSource="{Binding InProgressTasks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <materialDesign:Card Margin="0,0,0,12"
+                                                         Background="#0D0D0D"
+                                                         Padding="16"
+                                                         MouseDoubleClick="TaskCard_MouseDoubleClick"
+                                                         Tag="{Binding}">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Grid.Column="0"
+                                                        Background="{Binding PriorityColor}"
+                                                        CornerRadius="4"
+                                                        Padding="6,3"
+                                                        HorizontalAlignment="Left">
+                                                    <TextBlock FontSize="10"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="White"
+                                                               Text="{Binding Priority}"/>
+                                                </Border>
+
+                                                <Border Grid.Column="1"
+                                                        Width="32" Height="32"
+                                                        CornerRadius="16"
+                                                        Background="#FF9500">
+                                                    <TextBlock Text="{Binding Initials}"
+                                                               FontSize="12"
+                                                               FontWeight="Bold"
+                                                               Foreground="White"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="14"
+                                                       FontWeight="Medium"
+                                                       Foreground="#F5F5F7"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,12"/>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Grid.Column="0"
+                                                        Background="{Binding RoleBadgeColor}"
+                                                        CornerRadius="4"
+                                                        Padding="8,4"
+                                                        HorizontalAlignment="Left"
+                                                        Visibility="{Binding Role, Converter={StaticResource NullToVisibilityConverter}}">
+                                                    <TextBlock Text="{Binding Role}"
+                                                               FontSize="11"
+                                                               FontWeight="Medium"
+                                                               Foreground="White"/>
+                                                </Border>
+
+                                                <Border Grid.Column="1"
+                                                        Background="#2C2C2E"
+                                                        CornerRadius="4"
+                                                        Padding="8,4">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <materialDesign:PackIcon Kind="ClockOutline"
+                                                                                 Width="12" Height="12"
+                                                                                 Foreground="#98989D"
+                                                                                 VerticalAlignment="Center"
+                                                                                 Margin="0,0,4,0"/>
+                                                        <TextBlock Text="{Binding Hours, StringFormat={}{0:F1}h}"
+                                                                   FontSize="11"
+                                                                   Foreground="#98989D"
+                                                                   VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- DONE Column -->
+                <Border Grid.Column="4" 
+                        Background="#1C1C1E"
+                        CornerRadius="12"
+                        Padding="16">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="✅ DONE" 
+                                       FontSize="14" 
+                                       FontWeight="SemiBold"
+                                       Foreground="#34C759"/>
+                            <Border Grid.Column="1"
+                                    Background="#2C2C2E"
+                                    CornerRadius="10"
+                                    Padding="8,4"
+                                    MinWidth="28">
+                                <TextBlock Text="{Binding DoneTasks.Count}"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#F5F5F7"
+                                           HorizontalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+
+                        <ItemsControl ItemsSource="{Binding DoneTasks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <materialDesign:Card Margin="0,0,0,12"
+                                                         Background="#0D0D0D"
+                                                         Padding="16"
+                                                         Opacity="0.7"
+                                                         MouseDoubleClick="TaskCard_MouseDoubleClick"
+                                                         Tag="{Binding}">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Grid.Column="0"
+                                                        Background="{Binding PriorityColor}"
+                                                        CornerRadius="4"
+                                                        Padding="6,3"
+                                                        HorizontalAlignment="Left">
+                                                    <TextBlock FontSize="10"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="White"
+                                                               Text="{Binding Priority}"/>
+                                                </Border>
+
+                                                <Border Grid.Column="1"
+                                                        Width="32" Height="32"
+                                                        CornerRadius="16"
+                                                        Background="#34C759">
+                                                    <TextBlock Text="{Binding Initials}"
+                                                               FontSize="12"
+                                                               FontWeight="Bold"
+                                                               Foreground="White"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="14"
+                                                       FontWeight="Medium"
+                                                       Foreground="#F5F5F7"
+                                                       TextWrapping="Wrap"
+                                                       TextDecorations="Strikethrough"
+                                                       Margin="0,0,0,12"/>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Grid.Column="0"
+                                                        Background="{Binding RoleBadgeColor}"
+                                                        CornerRadius="4"
+                                                        Padding="8,4"
+                                                        HorizontalAlignment="Left"
+                                                        Visibility="{Binding Role, Converter={StaticResource NullToVisibilityConverter}}">
+                                                    <TextBlock Text="{Binding Role}"
+                                                               FontSize="11"
+                                                               FontWeight="Medium"
+                                                               Foreground="White"/>
+                                                </Border>
+
+                                                <Border Grid.Column="1"
+                                                        Background="#2C2C2E"
+                                                        CornerRadius="4"
+                                                        Padding="8,4">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <materialDesign:PackIcon Kind="ClockOutline"
+                                                                                 Width="12" Height="12"
+                                                                                 Foreground="#98989D"
+                                                                                 VerticalAlignment="Center"
+                                                                                 Margin="0,0,4,0"/>
+                                                        <TextBlock Text="{Binding Hours, StringFormat={}{0:F1}h}"
+                                                                   FontSize="11"
+                                                                   Foreground="#98989D"
+                                                                   VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

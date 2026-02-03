@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
         Title="Nexus AI" 
         Height="900" Width="1600"
@@ -161,13 +162,39 @@
                                                          VerticalAlignment="Center" HorizontalAlignment="Center"
                                                          Foreground="White"/>
                             </Border>
-                            <TextBlock Text="Nexus AI" 
+                            <TextBlock Text="{DynamicResource S.AppTitle}" 
                                        FontSize="18" 
                                        FontWeight="SemiBold"
                                        Foreground="#F5F5F7"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- App Mode Switcher -->
+                            <materialDesign:Card Background="#1C1C1E" 
+                                                 Padding="4"
+                                                 Margin="0,0,12,0"
+                                                 UniformCornerRadius="8">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Content="💼"
+                                                 ToolTip="Professional Mode"
+                                                 IsChecked="{Binding SessionContext.IsProfessionalMode}"
+                                                 Command="{Binding SwitchAppModeCommand}"
+                                                 Style="{StaticResource MaterialDesignTabRadioButton}"
+                                                 Foreground="#007AFF"
+                                                 FontSize="18"
+                                                 Width="44" Height="36"
+                                                 Margin="0,0,4,0"/>
+                                    <RadioButton Content="🎓"
+                                                 ToolTip="Student Mode"
+                                                 IsChecked="{Binding SessionContext.IsStudentMode}"
+                                                 Command="{Binding SwitchAppModeCommand}"
+                                                 Style="{StaticResource MaterialDesignTabRadioButton}"
+                                                 Foreground="#34C759"
+                                                 FontSize="18"
+                                                 Width="44" Height="36"/>
+                                </StackPanel>
+                            </materialDesign:Card>
+                            
                             <Border Background="#1C1C1E" 
                                     CornerRadius="10" Padding="12,8" Margin="0,0,12,0">
                             <StackPanel Orientation="Horizontal">
@@ -226,18 +253,18 @@
                                 <Button Style="{StaticResource IconButtonStyle}" 
                                         Click="MinimizeWindow" 
                                         Margin="0,0,8,0"
-                                        ToolTip="Minimize">
+                                        ToolTip="{DynamicResource S.Common.Minimize}">
                                     <materialDesign:PackIcon Kind="WindowMinimize" Width="16" Height="16"/>
                                 </Button>
                                 <Button Style="{StaticResource IconButtonStyle}" 
                                         Click="MaximizeWindow"
                                         Margin="0,0,8,0"
-                                        ToolTip="Maximize">
+                                        ToolTip="{DynamicResource S.Common.Maximize}">
                                     <materialDesign:PackIcon Kind="WindowMaximize" Width="16" Height="16"/>
                                 </Button>
                                 <Button Style="{StaticResource IconButtonStyle}" 
                                         Click="CloseWindow"
-                                        ToolTip="Close">
+                                        ToolTip="{DynamicResource S.Common.Close}">
                                     <materialDesign:PackIcon Kind="Close" Width="16" Height="16"/>
                                 </Button>
                             </StackPanel>
@@ -268,14 +295,17 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Margin="20,24,20,16">
-                            <TextBlock Text="📚 Knowledge Base" 
-                                       FontSize="16"
+                            <TextBlock FontSize="16"
                                        FontWeight="SemiBold"
-                                       Foreground="#F5F5F7"/>
-                            <TextBlock Text="Drag &amp; drop files or click to add" 
-                                       FontSize="12"
+                                       Foreground="#F5F5F7">
+                                <Run Text="📚 "/>
+                                <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Knowledge Base / Study Library'}"/>
+                            </TextBlock>
+                            <TextBlock FontSize="12"
                                        Foreground="#98989D"
-                                       Margin="0,6,0,0"/>
+                                       Margin="0,6,0,0">
+                                <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Drag &amp; drop files or click to add / Add your course materials &amp; textbooks'}"/>
+                            </TextBlock>
                         </StackPanel>
                         <Grid Grid.Row="1">
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -425,7 +455,76 @@
                             </ScrollViewer>
                         </Grid>
                         <StackPanel Grid.Row="2" Margin="20,8,20,20">
-                            <Expander Header="Obsidian Vault" Margin="0,0,0,12"
+                            <!-- Mode Toggle Section -->
+                            <Border Background="#0D0D0D" 
+                                    CornerRadius="12" 
+                                    Padding="16"
+                                    Margin="0,0,0,16"
+                                    BorderThickness="1"
+                                    BorderBrush="#2C2C2E">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource S.Mode.AppMode}"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="#98989D"
+                                               Margin="0,0,0,12"/>
+                                    
+                                    <ToggleButton x:Name="ModeToggle"
+                                                  IsChecked="{Binding SessionContext.IsStudentMode}"
+                                                  Command="{Binding SwitchAppModeCommand}"
+                                                  Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                                  HorizontalAlignment="Stretch"
+                                                  Height="56">
+                                        <ToggleButton.Content>
+                                            <Grid>
+                                                <StackPanel Orientation="Horizontal" 
+                                                           HorizontalAlignment="Left"
+                                                           VerticalAlignment="Center"
+                                                           Margin="8,0,0,0">
+                                                    <materialDesign:PackIcon Kind="Briefcase" 
+                                                                            Width="24" Height="24" 
+                                                                            Margin="0,0,12,0"
+                                                                            VerticalAlignment="Center"
+                                                                            Foreground="#007AFF"/>
+                                                    <StackPanel VerticalAlignment="Center">
+                                                        <TextBlock Text="{DynamicResource S.Mode.Professional}" 
+                                                                  FontWeight="SemiBold"
+                                                                  FontSize="13"
+                                                                  Foreground="#F5F5F7"/>
+                                                        <TextBlock Text="{DynamicResource S.Mode.ExecutiveAssistant}" 
+                                                                  FontSize="11"
+                                                                  Foreground="#98989D"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                
+                                                <StackPanel Orientation="Horizontal" 
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,48,0"
+                                                           Visibility="{Binding IsChecked, ElementName=ModeToggle, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                    <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                                                        <TextBlock Text="{DynamicResource S.Mode.Student}" 
+                                                                  FontWeight="SemiBold"
+                                                                  FontSize="13"
+                                                                  Foreground="#F5F5F7"
+                                                                  TextAlignment="Right"/>
+                                                        <TextBlock Text="{DynamicResource S.Mode.SocraticTutor}" 
+                                                                  FontSize="11"
+                                                                  Foreground="#98989D"
+                                                                  TextAlignment="Right"/>
+                                                    </StackPanel>
+                                                    <materialDesign:PackIcon Kind="SchoolOutline" 
+                                                                            Width="24" Height="24"
+                                                                            VerticalAlignment="Center"
+                                                                            Foreground="#FF9500"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </ToggleButton.Content>
+                                    </ToggleButton>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Expander Header="{DynamicResource S.Sidebar.ObsidianVault}" Margin="0,0,0,12"
                                       materialDesign:ExpanderAssist.HorizontalHeaderPadding="12">
                                 <StackPanel Margin="12,8">
                                     <TextBox Text="{Binding ObsidianVaultPath, UpdateSourceTrigger=PropertyChanged}"
@@ -436,7 +535,7 @@
                                              materialDesign:HintAssist.Hint="Subfolder (optional)"
                                              Style="{StaticResource MaterialDesignFilledTextBox}"
                                              Margin="0,0,0,12"/>
-                                    <Button Content="SYNC VAULT" 
+                                    <Button Content="{DynamicResource S.Sidebar.SyncVault}" 
                                             Style="{StaticResource MaterialDesignOutlinedButton}"
                                             Command="{Binding LoadObsidianVaultCommand}"
                                             HorizontalAlignment="Stretch"
@@ -444,23 +543,41 @@
                                 </StackPanel>
                             </Expander>
                             <Button Command="{Binding AddDocumentCommand}"
-                                    Style="{StaticResource ModernButton}"
                                     HorizontalAlignment="Stretch">
-                                <Button.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="#A78BFA" Offset="0"/>
-                                        <GradientStop Color="#8B5CF6" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Button.Background>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ModernButton}">
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Color="#A78BFA" Offset="0"/>
+                                                    <GradientStop Color="#8B5CF6" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SessionContext.IsStudentMode}" Value="True">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                            <GradientStop Color="#FFB340" Offset="0"/>
+                                                            <GradientStop Color="#FF9500" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <materialDesign:PackIcon Kind="FileUpload" 
                                                              Width="18" Height="18" 
                                                              Margin="0,0,10,0"
                                                              VerticalAlignment="Center"/>
-                                    <TextBlock Text="ADD DOCUMENTS" 
-                                               FontWeight="SemiBold"
+                                    <TextBlock FontWeight="SemiBold"
                                                FontSize="13"
-                                               VerticalAlignment="Center"/>
+                                               VerticalAlignment="Center">
+                                        <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='ADD DOCUMENTS / ADD STUDY MATERIALS'}"/>
+                                    </TextBlock>
                                 </StackPanel>
                             </Button>
                             <ProgressBar IsIndeterminate="True"
@@ -508,16 +625,18 @@
                                         BorderBrush="#2C2C2E"
                                         Visibility="{Binding ChatMessages.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
                                     <StackPanel>
-                                        <TextBlock Text="👋 Welcome to Nexus AI" 
-                                                   FontSize="22"
+                                        <TextBlock FontSize="22"
                                                    FontWeight="SemiBold"
                                                    Foreground="#F5F5F7"
-                                                   Margin="0,0,0,12"/>
-                                        <TextBlock Text="I'm your AI research assistant powered by Gemini 2.0 Flash. Load documents to start asking questions."
-                                                   FontSize="14"
+                                                   Margin="0,0,0,12">
+                                            <Run Text="👋 Welcome to Nexus AI"/>
+                                        </TextBlock>
+                                        <TextBlock FontSize="14"
                                                    LineHeight="22"
                                                    TextWrapping="Wrap"
-                                                   Foreground="#98989D"/>
+                                                   Foreground="#98989D">
+                                            <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='I am your AI research assistant powered by Gemini 2.0 Flash. Load documents to start asking questions. / I am your Socratic tutor powered by Gemini 2.0 Flash. Upload your study materials and let us learn together!'}"/>
+                                        </TextBlock>
                                     </StackPanel>
                                 </Border>
                                 <ItemsControl ItemsSource="{Binding ChatMessages}">
@@ -527,9 +646,18 @@
                                                 <Border Margin="120,0,0,16" 
                                                         Padding="20,16"
                                                         HorizontalAlignment="Right"
-                                                        Background="#8B5CF6"
                                                         Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}}"
                                                         CornerRadius="20,20,4,20">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="#8B5CF6"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding DataContext.SessionContext.IsStudentMode, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                    <Setter Property="Background" Value="#FF9500"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
                                                     <TextBlock Text="{Binding Content}" 
                                                                TextWrapping="Wrap"
                                                                FontSize="14"
@@ -546,14 +674,14 @@
                                                         CornerRadius="20,20,20,4">
                                                     <Border.ContextMenu>
                                                         <ContextMenu>
-                                                            <MenuItem Header="Read Aloud" 
+                                                            <MenuItem Header="{DynamicResource S.Chat.ReadAloud}" 
                                                                       Command="{Binding DataContext.PlayAudioCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                       CommandParameter="{Binding Content}">
                                                                 <MenuItem.Icon>
                                                                     <materialDesign:PackIcon Kind="VolumeHigh"/>
                                                                 </MenuItem.Icon>
                                                             </MenuItem>
-                                                            <MenuItem Header="Copy" 
+                                                            <MenuItem Header="{DynamicResource S.Chat.Copy}" 
                                                                       Command="{Binding CopyCommand}">
                                                                 <MenuItem.Icon>
                                                                     <materialDesign:PackIcon Kind="ContentCopy"/>
@@ -562,9 +690,41 @@
                                                         </ContextMenu>
                                                     </Border.ContextMenu>
                                                 <StackPanel>
-                                                    <TextBlock Text="{Binding Content}" 
+                                                    <!-- Thinking Process Expander -->
+                                                    <Expander Header="{DynamicResource S.Chat.ThinkingProcess}"
+                                                              Visibility="{Binding HasThinkingSteps, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                              Margin="0,0,0,12"
+                                                              Background="#1C1C1E"
+                                                              Foreground="#10B981">
+                                                        <ItemsControl ItemsSource="{Binding ThinkingSteps}" Margin="8,8,0,0">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal" Margin="0,4">
+                                                                        <materialDesign:PackIcon Kind="LightbulbOnOutline" 
+                                                                                                 Width="14" Height="14"
+                                                                                                 Foreground="#10B981"
+                                                                                                 VerticalAlignment="Top"
+                                                                                                 Margin="0,2,8,0"/>
+                                                                        <TextBlock Text="{Binding}" 
+                                                                                   TextWrapping="Wrap"
+                                                                                   Foreground="#98989D"
+                                                                                   FontSize="12"
+                                                                                   FontStyle="Italic"
+                                                                                   MaxWidth="520"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Expander>
+                                                    
+                                                    <!-- Main Content -->
+                                                    <TextBlock Text="{Binding ContentWithoutSteps}"
                                                                TextWrapping="Wrap"
-                                                               Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                                                               FontSize="14"
+                                                               LineHeight="22"
+                                                               Foreground="#F5F5F7"/>
+                                                    
+                                                    <!-- Source Citations -->
                                                     <ItemsControl ItemsSource="{Binding SourceCitations}"
                                                                   Margin="0,12,0,0"
                                                                   Visibility="{Binding SourceCitations, Converter={StaticResource NullToVisibilityConverter}}">
@@ -643,7 +803,7 @@
                                                                      VerticalAlignment="Center"/>
                                         </Border>
                                         <TextBlock Grid.Column="1" 
-                                                   Text="Playing audio..."
+                                                   Text="{DynamicResource S.Chat.PlayingAudio}"
                                                    VerticalAlignment="Center"
                                                    FontSize="13"
                                                    Foreground="#F5F5F7"/>
@@ -732,7 +892,7 @@
                                 </Grid.ColumnDefinitions>
                                 
                                 <RadioButton Grid.Column="0"
-                                             Content="🎨 Artifacts" 
+                                             Content="{DynamicResource S.Artifacts.Title}" 
                                              Style="{StaticResource MaterialDesignTabRadioButton}"
                                              IsChecked="True"
                                              FontSize="13"
@@ -745,7 +905,7 @@
                                              Click="ShowArtifactsTab"/>
                                 
                                 <RadioButton Grid.Column="1"
-                                             Content="🕸️ Graph" 
+                                             Content="{DynamicResource S.Artifacts.Graph}" 
                                              Style="{StaticResource MaterialDesignTabRadioButton}"
                                              FontSize="13"
                                              FontWeight="SemiBold"
@@ -762,11 +922,21 @@
                                 <StackPanel VerticalAlignment="Top"
                                             Visibility="{Binding Artifacts.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
                                     
-                                    <TextBlock Text="📖 RESEARCH" 
-                                               FontSize="11"
+                                    <TextBlock FontSize="11"
                                                FontWeight="SemiBold"
-                                               Foreground="#8B5CF6"
-                                               Margin="0,0,0,12"/>
+                                               Margin="0,0,0,12">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#8B5CF6"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SessionContext.IsStudentMode}" Value="True">
+                                                        <Setter Property="Foreground" Value="#FF9500"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='📖 RESEARCH / 📖 ANALYSIS'}"/>
+                                    </TextBlock>
                                     
                                     <Button Style="{StaticResource SubtleButton}"
                                             Command="{Binding GenerateDeepDiveCommand}"
@@ -774,7 +944,9 @@
                                             Margin="0,0,0,8">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="Deep Dive" VerticalAlignment="Center"/>
+                                            <TextBlock VerticalAlignment="Center">
+                                                <Run Text="{Binding DataContext.SessionContext.CurrentMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Deep Dive / Detailed Explanation'}"/>
+                                            </TextBlock>
                                         </StackPanel>
                                     </Button>
                                     
@@ -784,15 +956,27 @@
                                             Margin="0,0,0,20">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="TextBoxOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="Summary" VerticalAlignment="Center"/>
+                                            <TextBlock VerticalAlignment="Center">
+                                                <Run Text="{Binding DataContext.SessionContext.CurrentMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Summary / Quick Notes'}"/>
+                                            </TextBlock>
                                         </StackPanel>
                                     </Button>
                                     
-                                    <TextBlock Text="📚 LEARNING" 
-                                               FontSize="11"
+                                    <TextBlock FontSize="11"
                                                FontWeight="SemiBold"
-                                               Foreground="#8B5CF6"
-                                               Margin="0,0,0,12"/>
+                                               Margin="0,0,0,12">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#8B5CF6"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SessionContext.IsStudentMode}" Value="True">
+                                                        <Setter Property="Foreground" Value="#FF9500"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='📚 LEARNING / 🎓 STUDY TOOLS'}"/>
+                                    </TextBlock>
                                     
                                     <Button Style="{StaticResource SubtleButton}"
                                             Command="{Binding GenerateNotebookGuideCommand}"
@@ -800,7 +984,9 @@
                                             Margin="0,0,0,8">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="NotebookOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="Notebook Guide" VerticalAlignment="Center"/>
+                                            <TextBlock VerticalAlignment="Center">
+                                                <Run Text="{Binding DataContext.SessionContext.CurrentMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ModeToStringConverter}, ConverterParameter='Notebook Guide / Lecture Notes'}"/>
+                                            </TextBlock>
                                         </StackPanel>
                                     </Button>
                                     
@@ -824,11 +1010,21 @@
                                         </StackPanel>
                                     </Button>
                                     
-                                    <TextBlock Text="🎙️ CONTENT" 
-                                               FontSize="11"
+                                    <TextBlock FontSize="11"
                                                FontWeight="SemiBold"
-                                               Foreground="#8B5CF6"
-                                               Margin="0,0,0,12"/>
+                                               Margin="0,0,0,12">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#8B5CF6"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SessionContext.IsStudentMode}" Value="True">
+                                                        <Setter Property="Foreground" Value="#FF9500"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <Run Text="{Binding SessionContext.CurrentMode, Converter={StaticResource ModeToStringConverter}, ConverterParameter='🎙️ CONTENT / 🎙️ CREATIVE'}"/>
+                                    </TextBlock>
                                     
                                     <Button Style="{StaticResource SubtleButton}"
                                             Command="{Binding GeneratePodcastScriptCommand}"
@@ -878,10 +1074,38 @@
                         <Grid x:Name="GraphTabContent" Grid.Row="1" Margin="12" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Button Style="{StaticResource ModernButton}"
-                                    Command="{Binding RefreshGraphCommand}"
+                            
+                            <!-- Diagram Type Selector -->
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                                <RadioButton Content="🏛️ Architecture" 
+                                             IsChecked="True"
+                                             Tag="architecture"
+                                             GroupName="DiagramType"
+                                             Style="{StaticResource MaterialDesignChoiceChipRadioButton}"
+                                             Margin="0,0,8,0"
+                                             Foreground="#F5F5F7"
+                                             Checked="DiagramType_Checked"/>
+                                <RadioButton Content="⚡ Flow" 
+                                             Tag="flow"
+                                             GroupName="DiagramType"
+                                             Style="{StaticResource MaterialDesignChoiceChipRadioButton}"
+                                             Margin="0,0,8,0"
+                                             Foreground="#F5F5F7"
+                                             Checked="DiagramType_Checked"/>
+                                <RadioButton Content="📊 Entity" 
+                                             Tag="entity"
+                                             GroupName="DiagramType"
+                                             Style="{StaticResource MaterialDesignChoiceChipRadioButton}"
+                                             Foreground="#F5F5F7"
+                                             Checked="DiagramType_Checked"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Row="1"
+                                    Style="{StaticResource ModernButton}"
+                                    Command="{Binding GenerateDiagramCommand}"
                                     HorizontalAlignment="Stretch"
                                     Margin="0,0,0,12">
                                 <Button.Background>
@@ -891,17 +1115,18 @@
                                     </LinearGradientBrush>
                                 </Button.Background>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <materialDesign:PackIcon Kind="GraphOutline" Width="18" Height="18" Margin="0,0,10,0"/>
-                                    <TextBlock Text="REFRESH GRAPH" FontWeight="SemiBold" FontSize="13"/>
+                                    <materialDesign:PackIcon Kind="AutoFix" Width="18" Height="18" Margin="0,0,10,0"/>
+                                    <TextBlock Text="GENERATE DIAGRAM" FontWeight="SemiBold" FontSize="13"/>
                                 </StackPanel>
                             </Button>
-                            <Border Grid.Row="1" 
+                            
+                            <Border Grid.Row="2" 
                                     Background="#0D0D0D"
                                     BorderBrush="#2C2C2E"
                                     BorderThickness="1"
                                     CornerRadius="10">
-                                <Canvas x:Name="GraphCanvas" Background="Transparent">
-                                </Canvas>
+                                <wv2:WebView2 x:Name="DiagramWebView" 
+                                              DefaultBackgroundColor="#0D0D0D"/>
                             </Border>
                         </Grid>
                     </Grid>
