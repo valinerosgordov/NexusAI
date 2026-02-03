@@ -1153,7 +1153,7 @@ Built with ❤️ using these amazing open-source projects:
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/NexusAI&type=Date)](https://star-history.com/#valinerosgordov/NexusAI&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=valinerosgordov/NexusAI&type=Date)](https://star-history.com/#valinerosgordov/NexusAI&Date)
 
 ---
 
