@@ -284,13 +284,14 @@
     <!-- ═══════════════════════════════════════════════════════════ -->
     
     <Style x:Key="GlassCapsuleTextBox" TargetType="TextBox">
-        <Setter Property="Background" Value="{StaticResource GlassSurfaceLight}"/>
-        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="#33B500FF"/>
-        <Setter Property="Padding" Value="20,14"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="CaretBrush" Value="{StaticResource AccentGradient}"/>
+        <Setter Property="Background" Value="#2A2A2E"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="#6200EA"/>
+        <Setter Property="Padding" Value="24,16"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="CaretBrush" Value="#B500FF"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
@@ -310,7 +311,7 @@
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="Border"
                                                       Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
-                                                      To="#66B500FF"
+                                                      To="#B500FF"
                                                       Duration="0:0:0.2">
                                             <ColorAnimation.EasingFunction>
                                                 <CubicEase EasingMode="EaseOut"/>
@@ -324,14 +325,14 @@
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="Border"
                                                       Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
-                                                      To="#33B500FF"
+                                                      To="#6200EA"
                                                       Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
                             <Setter TargetName="Border" Property="Effect">
                                 <Setter.Value>
-                                    <DropShadowEffect Color="#B500FF" BlurRadius="20" ShadowDepth="0" Opacity="0.4"/>
+                                    <DropShadowEffect Color="#B500FF" BlurRadius="32" ShadowDepth="0" Opacity="0.6"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>

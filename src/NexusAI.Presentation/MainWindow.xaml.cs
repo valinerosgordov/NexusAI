@@ -97,6 +97,78 @@ public partial class MainWindow : Window
 
     private void CloseWindow(object sender, RoutedEventArgs e) => Close();
 
+    private void OpenSettings(object sender, RoutedEventArgs e)
+    {
+        // Create localization service
+        var localizationService = new Services.LocalizationService();
+
+        var settingsWindow = new Window
+        {
+            Title = "Settings - Language & Preferences",
+            Width = 900,
+            Height = 700,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Owner = this,
+            Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(5, 5, 5)),
+            WindowStyle = WindowStyle.None,
+            AllowsTransparency = true,
+            ResizeMode = ResizeMode.NoResize
+        };
+
+        // Create content with rounded border
+        var mainGrid = new System.Windows.Controls.Grid();
+        var border = new System.Windows.Controls.Border
+        {
+            Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(13, 13, 13)),
+            CornerRadius = new CornerRadius(24),
+            BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(98, 0, 234)),
+            BorderThickness = new Thickness(2)
+        };
+
+        var contentGrid = new System.Windows.Controls.Grid();
+        contentGrid.RowDefinitions.Add(new System.Windows.Controls.RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+        contentGrid.RowDefinitions.Add(new System.Windows.Controls.RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+        // Header with close button
+        var header = new System.Windows.Controls.Grid
+        {
+            Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(204, 20, 20, 22)),
+            Height = 56
+        };
+        System.Windows.Controls.Grid.SetRow(header, 0);
+
+        var closeBtn = new System.Windows.Controls.Button
+        {
+            Content = "✕",
+            Width = 40,
+            Height = 40,
+            HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+            Margin = new Thickness(8),
+            Background = System.Windows.Media.Brushes.Transparent,
+            BorderThickness = new Thickness(0),
+            Foreground = System.Windows.Media.Brushes.White,
+            FontSize = 20,
+            Cursor = System.Windows.Input.Cursors.Hand
+        };
+        closeBtn.Click += (s, ev) => settingsWindow.Close();
+        header.Children.Add(closeBtn);
+
+        var settingsView = new Views.SettingsView
+        {
+            DataContext = new ViewModels.SettingsViewModel(localizationService)
+        };
+
+        contentGrid.Children.Add(header);
+        System.Windows.Controls.Grid.SetRow(settingsView, 1);
+        contentGrid.Children.Add(settingsView);
+
+        border.Child = contentGrid;
+        mainGrid.Children.Add(border);
+        settingsWindow.Content = mainGrid;
+
+        settingsWindow.ShowDialog();
+    }
+
     // Drag & Drop handlers
     private void Sidebar_Drop(object sender, System.Windows.DragEventArgs e) => OnDrop(sender, e);
 

@@ -332,7 +332,7 @@ public sealed partial class ProjectTaskViewModel : ObservableObject
     public string PriorityColor => Priority switch
     {
         TaskPriority.High => "#FF3B30",
-        TaskPriority.Medium => "#FF9500",
+        TaskPriority.Medium => "#00D9FF",
         TaskPriority.Low => "#34C759",
         _ => "#98989D"
     };
@@ -340,7 +340,7 @@ public sealed partial class ProjectTaskViewModel : ObservableObject
     {
         "backend" or "frontend" => "#007AFF",
         "design" or "ui/ux" => "#AF52DE",
-        "testing" or "qa" => "#FF9500",
+        "testing" or "qa" => "#00D9FF",
         "devops" or "infrastructure" => "#5856D6",
         "marketing" or "content" => "#FF2D55",
         _ => "#8E8E93"

@@ -15,7 +15,7 @@ public sealed class ModeToAccentColorConverter : IValueConverter
         return mode switch
         {
             AppMode.Professional => new SolidColorBrush(System.Windows.Media.Color.FromRgb(139, 92, 246)), // Deep Purple #8B5CF6
-            AppMode.Student => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 149, 0)),      // Orange #FF9500
+            AppMode.Student => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 217, 255)),      // Neon Blue #00D9FF
             _ => new SolidColorBrush(System.Windows.Media.Color.FromRgb(139, 92, 246))
         };
     }

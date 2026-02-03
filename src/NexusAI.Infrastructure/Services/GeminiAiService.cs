@@ -15,11 +15,9 @@ public sealed class GeminiAiService : IAiService
 
     public GeminiAiService(HttpClient httpClient, string apiKey, SessionContext sessionContext)
     {
-        if (string.IsNullOrWhiteSpace(apiKey))
-            throw new ArgumentException("API key cannot be empty", nameof(apiKey));
-
+        // Allow empty API key at startup - validation happens when making actual API calls
         const string modelName = "gemini-2.0-flash";
-        var geminiHttpClient = new GeminiHttpClient(httpClient, apiKey, modelName);
+        var geminiHttpClient = new GeminiHttpClient(httpClient, apiKey ?? string.Empty, modelName);
 
         _chatService = new GeminiChatService(geminiHttpClient, sessionContext);
         _codeGenService = new GeminiCodeGenService(geminiHttpClient);
