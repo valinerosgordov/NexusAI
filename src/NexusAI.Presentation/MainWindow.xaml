@@ -87,6 +87,7 @@
             <Setter Property="BorderBrush" Value="#2C2C2E"/>
             <Setter Property="Foreground" Value="#F5F5F7"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="8"/>
             <Setter Property="RenderTransform">
                 <Setter.Value>
@@ -1268,25 +1269,25 @@
                     <views:ProjectView Grid.Column="1"
                                        DataContext="{Binding Project}"
                                        Margin="12"
-                                       Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Projects}"/>
+                                       Visibility="{Binding DataContext.SelectedView, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Projects}"/>
 
                     <!-- ===== Wiki View ===== -->
                     <views:WikiView Grid.Column="1"
                                     DataContext="{Binding Wiki}"
                                     Margin="12"
-                                    Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Wiki}"/>
+                                    Visibility="{Binding DataContext.SelectedView, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Wiki}"/>
 
                     <!-- ===== Presentations View ===== -->
                     <views:PresentationView Grid.Column="1"
                                             DataContext="{Binding Presentation}"
                                             Margin="12"
-                                            Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Presentations}"/>
+                                            Visibility="{Binding DataContext.SelectedView, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Presentations}"/>
 
                     <!-- ===== Settings View ===== -->
                     <views:SettingsView Grid.Column="1"
                                         DataContext="{Binding Settings}"
                                         Margin="12"
-                                        Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Settings}"/>
+                                        Visibility="{Binding DataContext.SelectedView, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Settings}"/>
                 </Grid>
 
                 <!-- Status Bar -->

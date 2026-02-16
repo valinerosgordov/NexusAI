@@ -117,7 +117,7 @@ public sealed class LocalizationService : ILocalizationService
             if (app == null)
                 return Result<bool>.Failure("Application.Current is null");
 
-            var relativePath = string.Create(System.Globalization.CultureInfo.InvariantCulture, $"/NexusAI.Presentation;component/Resources/Languages/{cultureName}.xaml");
+            var relativePath = string.Create(System.Globalization.CultureInfo.InvariantCulture, $"/NexusAI;component/Resources/Languages/{cultureName}.xaml");
             var uri = new Uri(relativePath, UriKind.Relative);
 
             // Try to load the resource dictionary
