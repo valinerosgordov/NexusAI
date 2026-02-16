@@ -20,7 +20,7 @@ public static class AddDocumentCommandExtensions
     {
         logger($"Starting document load: {command.FilePath}");
 
-        var result = await handler.HandleAsync(command, cancellationToken);
+        var result = await handler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
 
         return result
             .OnSuccess(doc => logger($"✅ Successfully loaded: {doc.Name} ({doc.Content.Length} chars)"))
@@ -62,7 +62,7 @@ public static class AddDocumentCommandExtensions
     {
         var command = new AddDocumentCommand(filePath);
 
-        var result = await handler.ExecuteWithLogging(command, logger, cancellationToken);
+        var result = await handler.ExecuteWithLogging(command, logger, cancellationToken).ConfigureAwait(false);
         result = result.EnsureNotEmpty();
         result = result.EnsureMaxSize(10_000_000); // 10MB limit
         

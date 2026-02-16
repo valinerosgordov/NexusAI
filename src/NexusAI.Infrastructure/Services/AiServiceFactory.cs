@@ -26,7 +26,7 @@ public sealed class AiServiceFactory : IAiServiceFactory
     {
         return provider switch
         {
-            AiProvider.Ollama => await _ollamaService.IsOllamaRunningAsync(cancellationToken),
+            AiProvider.Ollama => await _ollamaService.IsOllamaRunningAsync(cancellationToken).ConfigureAwait(false),
             AiProvider.Gemini => true, // Always available if API key is set
             _ => false
         };
@@ -36,7 +36,7 @@ public sealed class AiServiceFactory : IAiServiceFactory
     {
         if (provider == AiProvider.Ollama)
         {
-            return await _ollamaService.GetAvailableModelsAsync(cancellationToken);
+            return await _ollamaService.GetAvailableModelsAsync(cancellationToken).ConfigureAwait(false);
         }
         
         return Result.Success(Array.Empty<string>());

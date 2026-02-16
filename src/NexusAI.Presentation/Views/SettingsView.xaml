@@ -129,34 +129,77 @@
                 </StackPanel>
             </materialDesign:Card>
 
-            <!-- API Keys (Placeholder) -->
+            <!-- AI Provider & API Keys -->
             <materialDesign:Card Background="#1C1C1E"
                                  Padding="24"
+                                 Margin="0,0,0,16"
                                  UniformCornerRadius="12">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <materialDesign:PackIcon Kind="Key"
+                        <materialDesign:PackIcon Kind="CloudOutline"
                                                 Width="24"
                                                 Height="24"
                                                 Foreground="#8B5CF6"
                                                 VerticalAlignment="Center"
                                                 Margin="0,0,12,0"/>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="{DynamicResource S.Settings.ApiKeys}"
+                            <TextBlock Text="{DynamicResource S.Header.AiProvider}"
                                       FontSize="16"
                                       FontWeight="SemiBold"
                                       Foreground="#F5F5F7"/>
-                            <TextBlock Text="Manage your API credentials"
+                            <TextBlock Text="{DynamicResource S.Settings.ApiKeys}"
                                       FontSize="12"
                                       Foreground="#98989D"
                                       Margin="0,4,0,0"/>
                         </StackPanel>
                     </StackPanel>
 
-                    <TextBlock Text="API key management is handled in the main window title bar"
-                              FontSize="13"
-                              Foreground="#98989D"
-                              FontStyle="Italic"/>
+                    <!-- AI Provider ComboBox -->
+                    <ComboBox ItemsSource="{Binding Source={StaticResource AiProviderValues}}"
+                              SelectedItem="{Binding DataContext.SelectedAiProvider, RelativeSource={RelativeSource AncestorType=Window}}"
+                              Style="{StaticResource MaterialDesignFilledComboBox}"
+                              materialDesign:HintAssist.Hint="{DynamicResource S.Header.AiProvider}"
+                              FontSize="14"
+                              Foreground="#F5F5F7"
+                              Margin="0,0,0,16"/>
+
+                    <!-- Gemini API Key -->
+                    <StackPanel Visibility="{Binding DataContext.SelectedAiProvider, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}">
+                        <PasswordBox x:Name="ApiKeyBox"
+                                     materialDesign:HintAssist.Hint="{DynamicResource S.Header.ApiKeyHint}"
+                                     materialDesign:HintAssist.IsFloating="True"
+                                     Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                                     FontSize="14"
+                                     Foreground="#F5F5F7"
+                                     Margin="0,0,0,8"
+                                     PasswordChanged="ApiKeyBox_PasswordChanged"
+                                     ToolTip="{DynamicResource S.Header.ApiKeyTooltip}"/>
+                    </StackPanel>
+
+                    <!-- Ollama Settings -->
+                    <StackPanel Visibility="{Binding DataContext.SelectedAiProvider, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0"
+                                      ItemsSource="{Binding DataContext.AvailableOllamaModels, RelativeSource={RelativeSource AncestorType=Window}}"
+                                      SelectedItem="{Binding DataContext.SelectedOllamaModel, RelativeSource={RelativeSource AncestorType=Window}}"
+                                      Style="{StaticResource MaterialDesignFilledComboBox}"
+                                      materialDesign:HintAssist.Hint="{DynamicResource S.Header.OllamaModel}"
+                                      FontSize="14"
+                                      Foreground="#F5F5F7"
+                                      Margin="0,0,8,0"/>
+                            <Button Grid.Column="1"
+                                    Style="{StaticResource MaterialDesignIconButton}"
+                                    Command="{Binding DataContext.LoadOllamaModelsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    ToolTip="{DynamicResource S.Header.RefreshModels}"
+                                    Foreground="#8B5CF6">
+                                <materialDesign:PackIcon Kind="Refresh"/>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
                 </StackPanel>
             </materialDesign:Card>
 

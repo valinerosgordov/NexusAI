@@ -42,6 +42,7 @@
                     <converters:ModeToStringConverter x:Key="ModeToStringConverter"/>
                     <converters:ModeToAccentColorConverter x:Key="ModeToAccentColorConverter"/>
                     <converters:ModeToIconConverter x:Key="ModeToIconConverter"/>
+                    <converters:AppViewToVisibilityConverter x:Key="AppViewToVisibilityConverter"/>
                 </ResourceDictionary>
                 
                 <ResourceDictionary>

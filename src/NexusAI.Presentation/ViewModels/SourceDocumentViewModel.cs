@@ -16,8 +16,8 @@ public sealed partial class SourceDocumentViewModel : ObservableObject
     public SourceDocumentId Id => Document.Id;
     public string Name => Document.Name;
     public string TypeDisplay => Document.Type.ToString();
-    public string LoadedAtDisplay => Document.LoadedAt.ToLocalTime().ToString("g");
-    public string TypeIcon => Document.Type == SourceType.Document ? "📄" : "📝";
+    public string LoadedAtDisplay => Document.LoadedAt.ToLocalTime().ToString("g", System.Globalization.CultureInfo.CurrentCulture);
+    public string TypeIcon => string.Equals(Document.Type, SourceType.Document, StringComparison.Ordinal) ? "📄" : "📝";
 
     public SourceDocumentViewModel(SourceDocument document)
     {

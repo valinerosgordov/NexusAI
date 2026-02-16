@@ -73,7 +73,7 @@ public sealed partial class SettingsViewModel(ILocalizationService localizationS
                         StatusMessage = $"⚠ {result.Error}";
                     }
                 });
-            });
+            }).ConfigureAwait(true);
         }
         catch (Exception ex)
         {
@@ -84,7 +84,7 @@ public sealed partial class SettingsViewModel(ILocalizationService localizationS
             IsBusy = false;
 
             // Clear status message after 3 seconds
-            await Task.Delay(3000);
+            await Task.Delay(3000).ConfigureAwait(true);
             if (!IsBusy)
                 StatusMessage = string.Empty;
         }
@@ -99,13 +99,4 @@ public sealed partial class SettingsViewModel(ILocalizationService localizationS
             _ => culture.DisplayName
         };
     }
-}
-
-public sealed class LanguageItem
-{
-    public required CultureInfo Culture { get; init; }
-    public required string DisplayName { get; init; }
-    public required string NativeName { get; init; }
-
-    public override string ToString() => DisplayName;
 }

@@ -4,6 +4,7 @@ namespace NexusAI.Infrastructure.Services.Gemini;
 
 internal sealed class GeminiDiagramService(GeminiHttpClient httpClient)
 {
+#pragma warning disable MA0051
     public async Task<Result<string>> GenerateMermaidDiagramAsync(
         string projectContext,
         string diagramType,
@@ -79,7 +80,7 @@ internal sealed class GeminiDiagramService(GeminiHttpClient httpClient)
             }
         };
 
-        var result = await httpClient.SendRequestAsync(body, cancellationToken);
+        var result = await httpClient.SendRequestAsync(body, cancellationToken).ConfigureAwait(false);
 
         if (!result.IsSuccess)
             return Result.Failure<string>(result.Error);
@@ -101,6 +102,7 @@ internal sealed class GeminiDiagramService(GeminiHttpClient httpClient)
 
         return Result.Success(cleanedSyntax);
     }
+#pragma warning restore MA0051
 
     private static string ExtractMermaidCode(string text)
     {

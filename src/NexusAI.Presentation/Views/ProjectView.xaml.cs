@@ -45,7 +45,7 @@ public partial class ProjectView : System.Windows.Controls.UserControl
         }
     }
 
-    private void ShowToast(string message, MessageBoxImage icon)
+    private static void ShowToast(string message)
     {
         var snackbar = new Snackbar
         {
@@ -113,8 +113,7 @@ public partial class ProjectView : System.Windows.Controls.UserControl
 
             // Switch to Chat tab (assuming TabControl.SelectedIndex navigation)
             // This would need MainWindow to expose the TabControl or use a navigation service
-            ShowToast($"📄 Navigated to source document: {linkedDoc.Document.Name}", 
-                     MessageBoxImage.Information);
+            ShowToast($"📄 Navigated to source document: {linkedDoc.Document.Name}");
         }
         else
         {

@@ -15,102 +15,86 @@ public partial class App : System.Windows.Application
     private void OnStartup(object sender, StartupEventArgs e)
     {
         var services = new ServiceCollection();
+        MainViewModel? mainViewModel = null;
 
-        // Infrastructure layer (external dependencies)
-        // API key will be set via ViewModel property binding
-        services.AddInfrastructure(sp => string.Empty);
+        ConfigureServices(services, () => mainViewModel?.GeminiApiKey ?? string.Empty);
 
-        // Application layer (use cases)
+        _serviceProvider = services.BuildServiceProvider();
+        Services = _serviceProvider;
+
+        InitializeDatabase();
+        InitializeLocalization();
+
+        mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+        mainViewModel.Project = _serviceProvider.GetRequiredService<ProjectViewModel>();
+        mainViewModel.Wiki = _serviceProvider.GetRequiredService<WikiViewModel>();
+        mainViewModel.Presentation = _serviceProvider.GetRequiredService<PresentationViewModel>();
+        mainViewModel.Settings = _serviceProvider.GetRequiredService<SettingsViewModel>();
+
+        var mainWindow = new MainWindow { DataContext = mainViewModel };
+        mainWindow.Show();
+    }
+
+    private static void ConfigureServices(ServiceCollection services, Func<string> apiKeyProvider)
+    {
+        services.AddInfrastructure(apiKeyProvider);
         services.AddApplication();
 
-        // Presentation layer (ViewModels)
+        // Core ViewModels
         services.AddSingleton<DocumentsViewModel>();
         services.AddSingleton<ChatViewModel>();
         services.AddSingleton<ArtifactsViewModel>();
         services.AddSingleton<GraphViewModel>();
         services.AddSingleton<MainViewModel>();
-        
+
+        // Localization
+        services.AddSingleton<NexusAI.Application.Interfaces.ILocalizationService, NexusAI.Presentation.Services.LocalizationService>();
+
+        RegisterComplexViewModels(services);
+    }
+
+    private static void RegisterComplexViewModels(ServiceCollection services)
+    {
         services.AddSingleton<ProjectViewModel>(sp =>
         {
-            var generatePlanHandler = sp.GetRequiredService<NexusAI.Application.UseCases.Projects.GenerateProjectPlanHandler>();
-            var getProjectsHandler = sp.GetRequiredService<NexusAI.Application.UseCases.Projects.GetUserProjectsHandler>();
-            var updateTaskStatusHandler = sp.GetRequiredService<NexusAI.Application.UseCases.Projects.UpdateTaskStatusHandler>();
-            var generateScaffoldHandler = sp.GetRequiredService<NexusAI.Application.UseCases.Scaffold.GenerateScaffoldHandler>();
-            var aiServiceFactory = sp.GetRequiredService<NexusAI.Application.Interfaces.IAiServiceFactory>();
-            var sessionContext = sp.GetRequiredService<NexusAI.Application.Services.SessionContext>();
-            
             var vm = new ProjectViewModel(
-                generatePlanHandler,
-                getProjectsHandler,
-                updateTaskStatusHandler,
-                generateScaffoldHandler,
-                aiServiceFactory,
-                sessionContext);
+                sp.GetRequiredService<NexusAI.Application.UseCases.Projects.GenerateProjectPlanHandler>(),
+                sp.GetRequiredService<NexusAI.Application.UseCases.Projects.GetUserProjectsHandler>(),
+                sp.GetRequiredService<NexusAI.Application.UseCases.Projects.UpdateTaskStatusHandler>(),
+                sp.GetRequiredService<NexusAI.Application.UseCases.Scaffold.GenerateScaffoldHandler>(),
+                sp.GetRequiredService<NexusAI.Application.Services.SessionContext>());
             vm.Initialize();
             return vm;
         });
-        
+
         services.AddSingleton<WikiViewModel>(sp =>
         {
-            var generateWikiHandler = sp.GetRequiredService<NexusAI.Application.UseCases.Wiki.GenerateWikiHandler>();
-            var getWikiTreeHandler = sp.GetRequiredService<NexusAI.Application.UseCases.Wiki.GetWikiTreeHandler>();
-            var updateWikiPageHandler = sp.GetRequiredService<NexusAI.Application.UseCases.Wiki.UpdateWikiPageHandler>();
-            var deleteWikiPageHandler = sp.GetRequiredService<NexusAI.Application.UseCases.Wiki.DeleteWikiPageHandler>();
-            var mainViewModel = sp.GetRequiredService<MainViewModel>();
-            
+            var mainVm = sp.GetRequiredService<MainViewModel>();
             return new WikiViewModel(
-                generateWikiHandler,
-                getWikiTreeHandler,
-                updateWikiPageHandler,
-                deleteWikiPageHandler,
-                () => mainViewModel.Sources
-                    .Where(s => s.IsIncluded)
-                    .Select(s => s.Document)
-                    .ToArray());
+                sp.GetRequiredService<NexusAI.Application.UseCases.Wiki.GenerateWikiHandler>(),
+                sp.GetRequiredService<NexusAI.Application.UseCases.Wiki.GetWikiTreeHandler>(),
+                sp.GetRequiredService<NexusAI.Application.UseCases.Wiki.UpdateWikiPageHandler>(),
+                sp.GetRequiredService<NexusAI.Application.UseCases.Wiki.DeleteWikiPageHandler>(),
+                () => mainVm.Sources.Where(s => s.IsIncluded).Select(s => s.Document).ToArray());
         });
 
         services.AddSingleton<PresentationViewModel>(sp =>
         {
-            var handler = sp.GetRequiredService<NexusAI.Application.UseCases.Presentations.GeneratePresentationHandler>();
-            var mainViewModel = sp.GetRequiredService<MainViewModel>();
-            
+            var mainVm = sp.GetRequiredService<MainViewModel>();
             return new PresentationViewModel(
-                handler,
-                () => mainViewModel.Sources
-                    .Where(s => s.IsIncluded)
-                    .Select(s => s.Document)
-                    .ToArray());
+                sp.GetRequiredService<NexusAI.Application.UseCases.Presentations.GeneratePresentationHandler>(),
+                () => mainVm.Sources.Where(s => s.IsIncluded).Select(s => s.Document).ToArray());
         });
-        
-        services.AddSingleton<SettingsViewModel>(sp => 
+
+        services.AddSingleton<SettingsViewModel>(sp =>
         {
-            var localizationService = sp.GetRequiredService<NexusAI.Application.Interfaces.ILocalizationService>();
-            var vm = new SettingsViewModel(localizationService);
+            var vm = new SettingsViewModel(sp.GetRequiredService<NexusAI.Application.Interfaces.ILocalizationService>());
             vm.Initialize();
             return vm;
         });
-        
-        // Localization (Presentation layer service due to WPF dependencies)
-        services.AddSingleton<NexusAI.Application.Interfaces.ILocalizationService, NexusAI.Presentation.Services.LocalizationService>();
-
-        _serviceProvider = services.BuildServiceProvider();
-        Services = _serviceProvider;
-
-        // Initialize database
-        InitializeDatabase();
-        
-        // Initialize localization - load saved language or default
-        InitializeLocalization();
-
-        var mainWindow = new MainWindow
-        {
-            DataContext = _serviceProvider.GetRequiredService<MainViewModel>()
-        };
-
-        mainWindow.Show();
     }
 
-    private void InitializeDatabase()
+    private static void InitializeDatabase()
     {
         // DB placeholder
     }

@@ -4,6 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:NexusAI.Presentation"
+        xmlns:views="clr-namespace:NexusAI.Presentation.Views"
+        xmlns:mdxam="clr-namespace:MdXaml;assembly=MdXaml"
         mc:Ignorable="d"
         Title="Nexus AI" 
         Height="900" Width="1600"
@@ -143,6 +146,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <!-- Custom Title Bar: Blends seamlessly into UI -->
                 <Border Grid.Row="0" 
@@ -205,116 +209,9 @@
                                 </StackPanel>
                             </Border>
                             
-                            <Border Background="{StaticResource ObsidianGlass}" 
-                                    CornerRadius="16" 
-                                    Padding="12,10" 
-                                    Margin="0,0,12,0"
-                                    BorderThickness="1"
-                                    BorderBrush="{StaticResource FrostedEdge}">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <materialDesign:PackIcon Kind="CloudOutline" Width="20" Height="20" 
-                                                         Foreground="#FFFFFF"
-                                                         Margin="0,0,10,0" VerticalAlignment="Center"
-                                                         Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}"/>
-                                <materialDesign:PackIcon Kind="ServerNetwork" Width="20" Height="20" 
-                                                         Foreground="#FFFFFF"
-                                                         Margin="0,0,10,0" VerticalAlignment="Center"
-                                                         Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}"/>
-                                <ComboBox ItemsSource="{Binding Source={StaticResource AiProviderValues}}"
-                                          SelectedItem="{Binding SelectedAiProvider}"
-                                          MinWidth="130"
-                                          Height="50"
-                                          FontSize="15"
-                                          FontWeight="Medium"
-                                          Foreground="#FFFFFF"
-                                          Background="#2A2A2E"
-                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                          materialDesign:HintAssist.Hint="{DynamicResource S.Header.AiProvider}"
-                                          materialDesign:HintAssist.Foreground="#B0B0B0"
-                                          BorderBrush="#6200EA"
-                                          BorderThickness="2"
-                                          VerticalAlignment="Center"
-                                          VerticalContentAlignment="Center"
-                                          Padding="16,10"
-                                          Margin="0,0,12,0"/>
-                                <ComboBox ItemsSource="{Binding AvailableOllamaModels}"
-                                          SelectedItem="{Binding SelectedOllamaModel}"
-                                          MinWidth="150"
-                                          Height="50"
-                                          FontSize="15"
-                                          FontWeight="Medium"
-                                          Foreground="#FFFFFF"
-                                          Background="#2A2A2E"
-                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                          materialDesign:HintAssist.Hint="{DynamicResource S.Header.OllamaModel}"
-                                          materialDesign:HintAssist.Foreground="#B0B0B0"
-                                          BorderBrush="#6200EA"
-                                          BorderThickness="2"
-                                          Padding="16,10"
-                                          VerticalAlignment="Center"
-                                          VerticalContentAlignment="Center"
-                                          Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding}" 
-                                                       Foreground="#FFFFFF"
-                                                       FontSize="15"
-                                                       FontWeight="Medium"
-                                                       TextTrimming="CharacterEllipsis"/>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <Button Style="{StaticResource MaterialDesignIconButton}"
-                                        Command="{Binding LoadOllamaModelsCommand}"
-                                        Foreground="#FFFFFF"
-                                        ToolTip="{DynamicResource S.Header.RefreshModels}"
-                                        Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}">
-                                    <materialDesign:PackIcon Kind="Refresh" Foreground="#FFFFFF"/>
-                                </Button>
-                            </StackPanel>
-                        </Border>
-                        <Border Background="{StaticResource ObsidianGlass}" 
-                                CornerRadius="16" 
-                                Padding="12,10" 
-                                Margin="0,0,12,0"
-                                BorderThickness="1"
-                                BorderBrush="{StaticResource FrostedEdge}"
-                                Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <materialDesign:PackIcon Kind="Key" Width="20" Height="20" 
-                                                         Foreground="#FFFFFF"
-                                                         Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <PasswordBox x:Name="ApiKeyBox" 
-                                             Width="280"
-                                             Height="50"
-                                             FontSize="15"
-                                             FontWeight="Medium"
-                                             Foreground="#FFFFFF"
-                                             Background="#2A2A2E"
-                                             materialDesign:HintAssist.Hint="Gemini API Key"
-                                             materialDesign:HintAssist.IsFloating="False"
-                                             materialDesign:HintAssist.Foreground="#B0B0B0"
-                                             Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
-                                             BorderBrush="#6200EA"
-                                             BorderThickness="2"
-                                             Padding="16,10"
-                                             VerticalAlignment="Center"
-                                             VerticalContentAlignment="Center"
-                                             PasswordChanged="ApiKeyBox_PasswordChanged"
-                                             ToolTip="{DynamicResource S.Header.ApiKeyTooltip}"/>
-                            </StackPanel>
-                        </Border>
-                            <!-- Window Control Buttons: Minimal Glass Style -->
+                            <!-- Window Control Buttons -->
                             <StackPanel Orientation="Horizontal">
-                                <!-- Settings Button -->
-                                <Button Style="{StaticResource ChromeButton}" 
-                                        Click="OpenSettings" 
-                                        Margin="0,0,16,0"
-                                        ToolTip="{DynamicResource S.Header.SettingsTooltip}">
-                                    <materialDesign:PackIcon Kind="Cog" Width="18" Height="18" Foreground="#FFFFFF"/>
-                                </Button>
-                                
-                                <Button Style="{StaticResource ChromeButton}" 
+                                <Button Style="{StaticResource ChromeButton}"
                                         Click="MinimizeWindow" 
                                         Margin="0,0,2,0"
                                         ToolTip="{DynamicResource S.Common.Minimize}">
@@ -335,7 +232,128 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-                <Grid Grid.Row="1" Margin="0,0,0,12">
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="64"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Navigation Rail -->
+                    <Border Grid.Column="0"
+                            Background="{StaticResource ObsidianGlass}"
+                            BorderThickness="0,0,1,0"
+                            BorderBrush="{StaticResource FrostedEdge}"
+                            CornerRadius="0,0,0,16"
+                            Padding="0,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" VerticalAlignment="Top">
+                                <!-- Chat -->
+                                <Button Command="{Binding NavigateToCommand}"
+                                        CommandParameter="{x:Static local:AppView.Chat}"
+                                        ToolTip="{DynamicResource S.Nav.Chat}"
+                                        Width="48" Height="48" Margin="8,4">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource GlassNavButton}">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedView}" Value="Chat">
+                                                    <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <materialDesign:PackIcon Kind="ChatOutline" Width="24" Height="24"/>
+                                </Button>
+                                <!-- Projects -->
+                                <Button Command="{Binding NavigateToCommand}"
+                                        CommandParameter="{x:Static local:AppView.Projects}"
+                                        ToolTip="{DynamicResource S.Nav.Projects}"
+                                        Width="48" Height="48" Margin="8,4">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource GlassNavButton}">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedView}" Value="Projects">
+                                                    <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <materialDesign:PackIcon Kind="ViewDashboardOutline" Width="24" Height="24"/>
+                                </Button>
+                                <!-- Wiki -->
+                                <Button Command="{Binding NavigateToCommand}"
+                                        CommandParameter="{x:Static local:AppView.Wiki}"
+                                        ToolTip="{DynamicResource S.Nav.Wiki}"
+                                        Width="48" Height="48" Margin="8,4">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource GlassNavButton}">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedView}" Value="Wiki">
+                                                    <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <materialDesign:PackIcon Kind="BookOpenPageVariantOutline" Width="24" Height="24"/>
+                                </Button>
+                                <!-- Presentations -->
+                                <Button Command="{Binding NavigateToCommand}"
+                                        CommandParameter="{x:Static local:AppView.Presentations}"
+                                        ToolTip="{DynamicResource S.Nav.Presentations}"
+                                        Width="48" Height="48" Margin="8,4">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource GlassNavButton}">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedView}" Value="Presentations">
+                                                    <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <materialDesign:PackIcon Kind="PresentationPlay" Width="24" Height="24"/>
+                                </Button>
+                            </StackPanel>
+                            <!-- Settings at bottom -->
+                            <Button Grid.Row="1"
+                                    Command="{Binding NavigateToCommand}"
+                                    CommandParameter="{x:Static local:AppView.Settings}"
+                                    ToolTip="{DynamicResource S.Nav.Settings}"
+                                    Width="48" Height="48" Margin="8,8">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource GlassNavButton}">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedView}" Value="Settings">
+                                                <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <materialDesign:PackIcon Kind="CogOutline" Width="24" Height="24"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- ===== Chat View ===== -->
+                    <Grid Grid.Column="1" Margin="0,0,0,12"
+                          Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Chat}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="360" MinWidth="320" MaxWidth="480"/>
                     <ColumnDefinition Width="Auto"/>
@@ -635,7 +653,7 @@
                                 <Border Style="{StaticResource GlassCard}"
                                         Padding="32" 
                                         Margin="0,0,0,24"
-                                        Visibility="{Binding ChatMessages.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
+                                        Visibility="{Binding Chat.Messages.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverted}">
                                     <StackPanel>
                                         <TextBlock FontSize="20"
                                                    FontWeight="Bold"
@@ -662,11 +680,25 @@
                                         </TextBlock>
                                     </StackPanel>
                                 </Border>
-                                <ItemsControl ItemsSource="{Binding ChatMessages}">
-                                    <ItemsControl.ItemTemplate>
+                                <ListBox x:Name="ChatMessagesListBox"
+                                         ItemsSource="{Binding Chat.Messages}"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <ContentPresenter/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
-                                                <!-- User Bubble: Liquid Neon Plasma (The Hero Element) -->
                                                 <Border Style="{StaticResource UserChatBubble}"
                                                         Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}}">
                                                     <TextBlock Text="{Binding Content}" 
@@ -676,19 +708,11 @@
                                                                Foreground="{StaticResource TextPrimary}"
                                                                FontWeight="Medium"/>
                                                 </Border>
-                                                <!-- AI Bubble: Obsidian Glass with white rim lighting -->
                                                 <Border Style="{StaticResource AiChatBubble}"
                                                         Visibility="{Binding IsUser, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}">
                                                     <Border.ContextMenu>
                                                         <ContextMenu>
-                                                            <MenuItem Header="{DynamicResource S.Chat.ReadAloud}" 
-                                                                      Command="{Binding DataContext.PlayAudioCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                      CommandParameter="{Binding Content}">
-                                                                <MenuItem.Icon>
-                                                                    <materialDesign:PackIcon Kind="VolumeHigh"/>
-                                                                </MenuItem.Icon>
-                                                            </MenuItem>
-                                                            <MenuItem Header="{DynamicResource S.Chat.Copy}" 
+                                                            <MenuItem Header="{DynamicResource S.Chat.Copy}"
                                                                       Command="{Binding CopyCommand}">
                                                                 <MenuItem.Icon>
                                                                     <materialDesign:PackIcon Kind="ContentCopy"/>
@@ -696,69 +720,63 @@
                                                             </MenuItem>
                                                         </ContextMenu>
                                                     </Border.ContextMenu>
-                                                <StackPanel>
-                                                    <!-- Thinking Process Expander -->
-                                                    <Expander Header="{DynamicResource S.Chat.ThinkingProcess}"
-                                                              Visibility="{Binding HasThinkingSteps, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                              Margin="0,0,0,12"
-                                                              Background="{StaticResource ObsidianGlass}"
-                                                              Foreground="{StaticResource NeonPlasmaGradient}">
-                                                        <ItemsControl ItemsSource="{Binding ThinkingSteps}" Margin="8,8,0,0">
+                                                    <StackPanel>
+                                                        <Expander Header="{DynamicResource S.Chat.ThinkingProcess}"
+                                                                  Visibility="{Binding HasThinkingSteps, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                                  Margin="0,0,0,12"
+                                                                  Background="{StaticResource ObsidianGlass}"
+                                                                  Foreground="{StaticResource NeonPlasmaGradient}">
+                                                            <ItemsControl ItemsSource="{Binding ThinkingSteps}" Margin="8,8,0,0">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <StackPanel Orientation="Horizontal" Margin="0,4">
+                                                                            <materialDesign:PackIcon Kind="LightbulbOnOutline" 
+                                                                                                     Width="14" Height="14"
+                                                                                                     Foreground="{StaticResource NeonPlasmaGradient}"
+                                                                                                     VerticalAlignment="Top"
+                                                                                                     Margin="0,2,8,0"/>
+                                                                            <TextBlock Text="{Binding}" 
+                                                                                       TextWrapping="Wrap"
+                                                                                       Foreground="{StaticResource TextSecondary}"
+                                                                                       FontSize="12"
+                                                                                       FontStyle="Italic"
+                                                                                       MaxWidth="520"/>
+                                                                        </StackPanel>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </Expander>
+                                                        <mdxam:MarkdownScrollViewer Markdown="{Binding ContentWithoutSteps}"
+                                                                                       Background="Transparent"
+                                                                                       Foreground="{StaticResource TextPrimary}"
+                                                                                       VerticalScrollBarVisibility="Disabled"/>
+                                                        <ItemsControl ItemsSource="{Binding SourceCitations}"
+                                                                      Margin="0,12,0,0"
+                                                                      Visibility="{Binding SourceCitations, Converter={StaticResource NullToVisibilityConverter}}">
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <StackPanel Orientation="Horizontal" Margin="0,4">
-                                                                        <materialDesign:PackIcon Kind="LightbulbOnOutline" 
-                                                                                                 Width="14" Height="14"
-                                                                                                 Foreground="{StaticResource NeonPlasmaGradient}"
-                                                                                                 VerticalAlignment="Top"
-                                                                                                 Margin="0,2,8,0"/>
-                                                                        <TextBlock Text="{Binding}" 
-                                                                                   TextWrapping="Wrap"
-                                                                                   Foreground="{StaticResource TextSecondary}"
-                                                                                   FontSize="12"
-                                                                                   FontStyle="Italic"
-                                                                                   MaxWidth="520"/>
-                                                                    </StackPanel>
+                                                                    <materialDesign:Chip Content="{Binding}" 
+                                                                                         Margin="0,0,8,4"
+                                                                                         IconBackground="{DynamicResource SecondaryHueMidBrush}"
+                                                                                         IconForeground="White">
+                                                                        <materialDesign:Chip.Icon>
+                                                                            <materialDesign:PackIcon Kind="FileDocument"/>
+                                                                        </materialDesign:Chip.Icon>
+                                                                    </materialDesign:Chip>
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <WrapPanel/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
                                                         </ItemsControl>
-                                                    </Expander>
-                                                    
-                                                    <!-- Main Content -->
-                                                    <TextBlock Text="{Binding ContentWithoutSteps}"
-                                                               TextWrapping="Wrap"
-                                                               FontSize="14"
-                                                               LineHeight="22"
-                                                               Foreground="{StaticResource TextPrimary}"/>
-                                                    
-                                                    <!-- Source Citations -->
-                                                    <ItemsControl ItemsSource="{Binding SourceCitations}"
-                                                                  Margin="0,12,0,0"
-                                                                  Visibility="{Binding SourceCitations, Converter={StaticResource NullToVisibilityConverter}}">
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <materialDesign:Chip Content="{Binding}" 
-                                                                                     Margin="0,0,8,4"
-                                                                                     IconBackground="{DynamicResource SecondaryHueMidBrush}"
-                                                                                     IconForeground="White">
-                                                                    <materialDesign:Chip.Icon>
-                                                                        <materialDesign:PackIcon Kind="FileDocument"/>
-                                                                    </materialDesign:Chip.Icon>
-                                                                </materialDesign:Chip>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                        <ItemsControl.ItemsPanel>
-                                                            <ItemsPanelTemplate>
-                                                                <WrapPanel/>
-                                                            </ItemsPanelTemplate>
-                                                        </ItemsControl.ItemsPanel>
-                                                    </ItemsControl>
-                                                </StackPanel>
-                                            </Border>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                                 <StackPanel HorizontalAlignment="Left" 
                                             Visibility="{Binding IsThinking, Converter={StaticResource BoolToVisibilityConverter}}"
                                             Margin="0,12">
@@ -771,6 +789,57 @@
                                                HorizontalAlignment="Center"
                                                Margin="0,8,0,0"/>
                                 </StackPanel>
+
+                                <!-- Follow-Up Questions Chips -->
+                                <ItemsControl ItemsSource="{Binding FollowUpQuestions}"
+                                              Visibility="{Binding Chat.HasFollowUpQuestions, Converter={StaticResource BoolToVisibilityConverter}}"
+                                              Margin="0,12,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding}"
+                                                    Command="{Binding DataContext.UseFollowUpQuestionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="0,0,8,8"
+                                                    Cursor="Hand">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Background" Value="{StaticResource ObsidianGlass}"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+                                                        <Setter Property="BorderBrush" Value="{StaticResource FrostedEdge}"/>
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                        <Setter Property="FontSize" Value="13"/>
+                                                        <Setter Property="Padding" Value="16,8"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                                            CornerRadius="16"
+                                                                            Padding="{TemplateBinding Padding}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#33B500FF"/>
+                                                                <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+                                                                <Setter Property="BorderBrush" Value="{StaticResource NeonPlasmaGradient}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </StackPanel>
                         </ScrollViewer>
                         <!-- Chat Input: Floating Glass Capsule -->
@@ -784,54 +853,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <Border Grid.Row="0" 
-                                        Style="{StaticResource GlassCard}"
-                                        Padding="16,12"
-                                        CornerRadius="20"
-                                        Margin="0,0,0,12"
-                                        Visibility="{Binding IsPlayingAudio, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" 
-                                                Background="{StaticResource NeonPlasmaGradient}" 
-                                                Width="32" Height="32" 
-                                                CornerRadius="10"
-                                                Margin="0,0,12,0"
-                                                VerticalAlignment="Center">
-                                            <materialDesign:PackIcon Kind="VolumeHigh" 
-                                                                     Width="16" Height="16"
-                                                                     Foreground="White"
-                                                                     HorizontalAlignment="Center"
-                                                                     VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBlock Grid.Column="1" 
-                                                   Text="{DynamicResource S.Chat.PlayingAudio}"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="13"
-                                                   Foreground="{StaticResource TextPrimary}"/>
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                            <Button Style="{StaticResource MaterialDesignIconButton}"
-                                                    Command="{Binding PauseAudioCommand}"
-                                                    Width="32" Height="32"
-                                                    ToolTip="{DynamicResource S.Chat.PauseTooltip}"
-                                                    Foreground="#98989D">
-                                                <materialDesign:PackIcon Kind="Pause" Width="16" Height="16"/>
-                                            </Button>
-                                            <Button Style="{StaticResource MaterialDesignIconButton}"
-                                                    Command="{Binding StopAudioCommand}"
-                                                    Width="32" Height="32"
-                                                    ToolTip="{DynamicResource S.Chat.StopTooltip}"
-                                                    Foreground="#98989D">
-                                                <materialDesign:PackIcon Kind="Stop" Width="16" Height="16"/>
-                                            </Button>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                                <Grid Grid.Row="1">
+                                <Grid Grid.Row="0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
@@ -964,24 +986,56 @@
                                         <Run Text="{DynamicResource S.Artifacts.Research}"/>
                                     </TextBlock>
                                     
-                                    <Button Style="{StaticResource SubtleButton}"
-                                            Command="{Binding GenerateDeepDiveCommand}"
+                                    <Button Command="{Binding GenerateSummaryCommand}"
                                             HorizontalAlignment="Stretch"
                                             Margin="0,0,0,8">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{DynamicResource S.Artifacts.DeepDive}" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource SubtleButton}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                            </Style>
+                                        </Button.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
+                                                    Background="{StaticResource NeonPlasmaGradient}">
+                                                <materialDesign:PackIcon Kind="TextBoxOutline" Width="18" Height="18"
+                                                                         Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource S.Artifacts.Summary}" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextPrimary}"/>
+                                                <TextBlock Text="{DynamicResource S.Artifacts.QuickNotes}" FontSize="11" Foreground="{StaticResource TextSecondary}"/>
+                                            </StackPanel>
+                                        </Grid>
                                     </Button>
-                                    
-                                    <Button Style="{StaticResource SubtleButton}"
-                                            Command="{Binding GenerateSummaryCommand}"
+
+                                    <Button Command="{Binding GenerateOutlineCommand}"
                                             HorizontalAlignment="Stretch"
                                             Margin="0,0,0,20">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="TextBoxOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{DynamicResource S.Artifacts.Summary}" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource SubtleButton}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                            </Style>
+                                        </Button.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
+                                                    Background="{StaticResource NeonPlasmaGradient}">
+                                                <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="18" Height="18"
+                                                                         Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource S.Artifacts.DetailedExplanation}" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextPrimary}"/>
+                                                <TextBlock Text="{DynamicResource S.Artifacts.Analysis}" FontSize="11" Foreground="{StaticResource TextSecondary}"/>
+                                            </StackPanel>
+                                        </Grid>
                                     </Button>
                                     
                                     <TextBlock FontSize="11"
@@ -1000,34 +1054,81 @@
                                         <Run Text="{DynamicResource S.Artifacts.Learning}"/>
                                     </TextBlock>
                                     
-                                    <Button Style="{StaticResource SubtleButton}"
-                                            Command="{Binding GenerateNotebookGuideCommand}"
+                                    <Button Command="{Binding GenerateNotebookGuideCommand}"
                                             HorizontalAlignment="Stretch"
                                             Margin="0,0,0,8">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="NotebookOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{DynamicResource S.Artifacts.NotebookGuide}" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource SubtleButton}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                            </Style>
+                                        </Button.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
+                                                    Background="{StaticResource NeonPlasmaGradient}">
+                                                <materialDesign:PackIcon Kind="NotebookOutline" Width="18" Height="18"
+                                                                         Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource S.Artifacts.NotebookGuide}" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextPrimary}"/>
+                                                <TextBlock Text="{DynamicResource S.Artifacts.LectureNotes}" FontSize="11" Foreground="{StaticResource TextSecondary}"/>
+                                            </StackPanel>
+                                        </Grid>
                                     </Button>
-                                    
-                                    <Button Style="{StaticResource SubtleButton}"
-                                            Command="{Binding GenerateStudyGuideCommand}"
+
+                                    <Button Command="{Binding GenerateStudyGuideCommand}"
                                             HorizontalAlignment="Stretch"
                                             Margin="0,0,0,8">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="SchoolOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{DynamicResource S.Artifacts.StudyGuide}" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource SubtleButton}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                            </Style>
+                                        </Button.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
+                                                    Background="{StaticResource NeonPlasmaGradient}">
+                                                <materialDesign:PackIcon Kind="SchoolOutline" Width="18" Height="18"
+                                                                         Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource S.Artifacts.StudyGuide}" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextPrimary}"/>
+                                                <TextBlock Text="{DynamicResource S.Artifacts.Flashcards}" FontSize="11" Foreground="{StaticResource TextSecondary}"/>
+                                            </StackPanel>
+                                        </Grid>
                                     </Button>
-                                    
-                                    <Button Style="{StaticResource SubtleButton}"
-                                            Command="{Binding GenerateFaqCommand}"
+
+                                    <Button Command="{Binding GenerateFaqCommand}"
                                             HorizontalAlignment="Stretch"
                                             Margin="0,0,0,20">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="HelpCircleOutline" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{DynamicResource S.Artifacts.FAQ}" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource SubtleButton}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                            </Style>
+                                        </Button.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
+                                                    Background="{StaticResource NeonPlasmaGradient}">
+                                                <materialDesign:PackIcon Kind="HelpCircleOutline" Width="18" Height="18"
+                                                                         Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource S.Artifacts.FAQ}" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextPrimary}"/>
+                                            </StackPanel>
+                                        </Grid>
                                     </Button>
                                     
                                     <TextBlock FontSize="11"
@@ -1046,13 +1147,28 @@
                                         <Run Text="{DynamicResource S.Artifacts.Content}"/>
                                     </TextBlock>
                                     
-                                    <Button Style="{StaticResource SubtleButton}"
-                                            Command="{Binding GeneratePodcastScriptCommand}"
+                                    <Button Command="{Binding GeneratePodcastScriptCommand}"
                                             HorizontalAlignment="Stretch">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="Microphone" Width="16" Height="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{DynamicResource S.Artifacts.PodcastScript}" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource SubtleButton}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                            </Style>
+                                        </Button.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
+                                                    Background="{StaticResource NeonPlasmaGradient}">
+                                                <materialDesign:PackIcon Kind="Microphone" Width="18" Height="18"
+                                                                         Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource S.Artifacts.PodcastScript}" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextPrimary}"/>
+                                            </StackPanel>
+                                        </Grid>
                                     </Button>
                                 </StackPanel>
                             </ScrollViewer>
@@ -1075,11 +1191,6 @@
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                                               Visibility="{Binding SelectedArtifact, Converter={StaticResource NullToVisibilityConverter}}">
                                     <StackPanel>
-                                        <Button Content="{DynamicResource S.Graph.ExportToObsidian}"
-                                                Style="{StaticResource MaterialDesignOutlinedButton}"
-                                                Command="{Binding ExportArtifactToObsidianCommand}"
-                                                HorizontalAlignment="Left"
-                                                Margin="0,0,0,16"/>
                                         <TextBlock Text="{Binding SelectedArtifact.Title}"
                                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                                                    FontWeight="Bold"
@@ -1151,7 +1262,80 @@
                         </Grid>
                     </Grid>
                 </Border>
-            </Grid>
+                    </Grid>
+
+                    <!-- ===== Projects View ===== -->
+                    <views:ProjectView Grid.Column="1"
+                                       DataContext="{Binding Project}"
+                                       Margin="12"
+                                       Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Projects}"/>
+
+                    <!-- ===== Wiki View ===== -->
+                    <views:WikiView Grid.Column="1"
+                                    DataContext="{Binding Wiki}"
+                                    Margin="12"
+                                    Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Wiki}"/>
+
+                    <!-- ===== Presentations View ===== -->
+                    <views:PresentationView Grid.Column="1"
+                                            DataContext="{Binding Presentation}"
+                                            Margin="12"
+                                            Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Presentations}"/>
+
+                    <!-- ===== Settings View ===== -->
+                    <views:SettingsView Grid.Column="1"
+                                        DataContext="{Binding Settings}"
+                                        Margin="12"
+                                        Visibility="{Binding SelectedView, Converter={StaticResource AppViewToVisibilityConverter}, ConverterParameter=Settings}"/>
+                </Grid>
+
+                <!-- Status Bar -->
+                <Border Grid.Row="2"
+                        Background="{StaticResource ObsidianGlass}"
+                        BorderThickness="0,1,0,0"
+                        BorderBrush="{StaticResource FrostedEdge}"
+                        CornerRadius="0,0,16,16"
+                        Padding="16,6">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Status Message -->
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding StatusMessage}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"/>
+
+                        <!-- AI Provider Indicator -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="16,0"
+                                    VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="CloudOutline" Width="14" Height="14"
+                                                     Foreground="{StaticResource TextTertiary}"
+                                                     Margin="0,0,4,0" VerticalAlignment="Center"
+                                                     Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Gemini}"/>
+                            <materialDesign:PackIcon Kind="ServerNetwork" Width="14" Height="14"
+                                                     Foreground="{StaticResource TextTertiary}"
+                                                     Margin="0,0,4,0" VerticalAlignment="Center"
+                                                     Visibility="{Binding SelectedAiProvider, Converter={StaticResource AiProviderToVisibilityConverter}, ConverterParameter=Ollama}"/>
+                            <TextBlock Text="{Binding SelectedAiProvider}"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextTertiary}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Mode Indicator -->
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding SessionContext.ModeDisplayName}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextTertiary}"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
     </materialDesign:DialogHost>

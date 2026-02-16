@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -31,7 +32,7 @@ public sealed class GenerateArtifactHandler
         var prompt = CreateArtifactPrompt(command.Type, command.IncludedSources);
         var context = AggregateContext(command.IncludedSources);
         
-        var aiResult = await _aiService.AskQuestionAsync(prompt, context, cancellationToken);
+        var aiResult = await _aiService.AskQuestionAsync(prompt, context, cancellationToken).ConfigureAwait(false);
 
         if (aiResult.IsFailure)
         {
@@ -74,7 +75,9 @@ public sealed class GenerateArtifactHandler
         return sb.ToString();
     }
 
+#pragma warning disable MA0051 // Method length: large switch with string literals for prompts is intentional
     private static string CreateArtifactPrompt(ArtifactType type, SourceDocument[] sources)
+#pragma warning restore MA0051
     {
         var names = string.Join(", ", sources.Select(s => $"[{s.Name}]"));
         return type switch
@@ -202,3 +205,4 @@ public sealed class GenerateArtifactHandler
         _ => "Deep Dive Analysis"
     };
 }
+#pragma warning restore MA0048

@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 
@@ -28,7 +29,7 @@ public sealed class GenerateFollowUpQuestionsHandler
             Each question should explore a different angle or dig deeper into the topic.
             """;
 
-        var aiResult = await _aiService.AskQuestionAsync(prompt, string.Empty, cancellationToken);
+        var aiResult = await _aiService.AskQuestionAsync(prompt, string.Empty, cancellationToken).ConfigureAwait(false);
 
         if (aiResult.IsFailure)
         {
@@ -44,3 +45,4 @@ public sealed class GenerateFollowUpQuestionsHandler
         return Result.Success(questions);
     }
 }
+#pragma warning restore MA0048

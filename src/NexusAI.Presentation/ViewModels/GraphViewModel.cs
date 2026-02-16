@@ -8,10 +8,8 @@ using System.Collections.ObjectModel;
 namespace NexusAI.Presentation.ViewModels;
 
 public sealed partial class GraphViewModel(
-    KnowledgeGraphService graphService,
     GenerateDiagramHandler generateDiagramHandler) : ObservableObject
 {
-    private readonly KnowledgeGraphService _graphService = graphService;
     private readonly GenerateDiagramHandler _generateDiagramHandler = generateDiagramHandler;
 
     [ObservableProperty] private bool _isBusy;
@@ -21,8 +19,8 @@ public sealed partial class GraphViewModel(
     public ObservableCollection<KnowledgeGraphService.GraphNode> Nodes { get; } = [];
     public ObservableCollection<KnowledgeGraphService.GraphEdge> Edges { get; } = [];
 
-    public event EventHandler<string>? StatusChanged;
-    public event EventHandler<string>? ErrorOccurred;
+    public event EventHandler<MessageEventArgs>? StatusChanged;
+    public event EventHandler<MessageEventArgs>? ErrorOccurred;
     public Func<SourceDocument[]>? GetIncludedSources { get; set; }
 
     [RelayCommand]
@@ -30,7 +28,7 @@ public sealed partial class GraphViewModel(
     {
         var documents = GetIncludedSources?.Invoke() ?? [];
 
-        var (nodes, edges) = _graphService.BuildGraph(documents);
+        var (nodes, edges) = KnowledgeGraphService.BuildGraph(documents);
 
         Nodes.Clear();
         Edges.Clear();
@@ -54,7 +52,7 @@ public sealed partial class GraphViewModel(
         {
             var projectContext = BuildProjectContext();
             var command = new GenerateDiagramCommand(projectContext, SelectedDiagramType);
-            var result = await _generateDiagramHandler.HandleAsync(command);
+            var result = await _generateDiagramHandler.HandleAsync(command).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
@@ -89,6 +87,6 @@ public sealed partial class GraphViewModel(
         return "Project: NexusAI - A Clean Architecture WPF application with AI-powered features including document analysis, project planning, code scaffolding, and knowledge graphs. Built with .NET 8, MaterialDesign, EF Core, and Gemini AI.";
     }
 
-    private void OnStatusChanged(string message) => StatusChanged?.Invoke(this, message);
-    private void OnErrorOccurred(string message) => ErrorOccurred?.Invoke(this, message);
+    private void OnStatusChanged(string message) => StatusChanged?.Invoke(this, new MessageEventArgs(message));
+    private void OnErrorOccurred(string message) => ErrorOccurred?.Invoke(this, new MessageEventArgs(message));
 }

@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -15,3 +16,4 @@ public class GetWikiTreeHandler(IWikiService wikiService)
         return await wikiService.GetWikiTreeAsync(ct).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

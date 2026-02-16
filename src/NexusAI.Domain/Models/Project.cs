@@ -1,14 +1,5 @@
 namespace NexusAI.Domain.Models;
 
-public record ProjectId(Guid Value);
-
-public enum ProjectCategory
-{
-    Work,
-    Education,
-    Personal
-}
-
 public record Project
 {
     public required ProjectId Id { get; init; }

@@ -19,28 +19,27 @@ public sealed partial class ArtifactsViewModel(GenerateArtifactHandler generateA
 
     public ObservableCollection<Artifact> Artifacts { get; } = [];
 
-    public event EventHandler<string>? StatusChanged;
-    public event EventHandler<string>? ErrorOccurred;
+    public event EventHandler<MessageEventArgs>? StatusChanged;
     public Func<SourceDocument[]>? GetIncludedSources { get; set; }
     public Func<string>? GetApiKey { get; set; }
 
     [RelayCommand]
-    private async Task GenerateFAQAsync() => await GenerateArtifactAsync(ArtifactType.FAQ);
+    private async Task GenerateFAQAsync() => await GenerateArtifactAsync(ArtifactType.FAQ).ConfigureAwait(true);
 
     [RelayCommand]
-    private async Task GenerateStudyGuideAsync() => await GenerateArtifactAsync(ArtifactType.StudyGuide);
+    private async Task GenerateStudyGuideAsync() => await GenerateArtifactAsync(ArtifactType.StudyGuide).ConfigureAwait(true);
 
     [RelayCommand]
-    private async Task GeneratePodcastScriptAsync() => await GenerateArtifactAsync(ArtifactType.PodcastScript);
+    private async Task GeneratePodcastScriptAsync() => await GenerateArtifactAsync(ArtifactType.PodcastScript).ConfigureAwait(true);
 
     [RelayCommand]
-    private async Task GenerateNotebookGuideAsync() => await GenerateArtifactAsync(ArtifactType.NotebookGuide);
+    private async Task GenerateNotebookGuideAsync() => await GenerateArtifactAsync(ArtifactType.NotebookGuide).ConfigureAwait(true);
 
     [RelayCommand]
-    private async Task GenerateSummaryAsync() => await GenerateArtifactAsync(ArtifactType.Summary);
+    private async Task GenerateSummaryAsync() => await GenerateArtifactAsync(ArtifactType.Summary).ConfigureAwait(true);
 
     [RelayCommand]
-    private async Task GenerateOutlineAsync() => await GenerateArtifactAsync(ArtifactType.Outline);
+    private async Task GenerateOutlineAsync() => await GenerateArtifactAsync(ArtifactType.Outline).ConfigureAwait(true);
 
     private async Task GenerateArtifactAsync(ArtifactType type)
     {
@@ -66,7 +65,7 @@ public sealed partial class ArtifactsViewModel(GenerateArtifactHandler generateA
         try
         {
             var command = new GenerateArtifactCommand(type, includedSources);
-            var result = await _generateArtifactHandler.HandleAsync(command);
+            var result = await _generateArtifactHandler.HandleAsync(command).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
@@ -87,6 +86,5 @@ public sealed partial class ArtifactsViewModel(GenerateArtifactHandler generateA
         }
     }
 
-    private void OnStatusChanged(string message) => StatusChanged?.Invoke(this, message);
-    private void OnErrorOccurred(string message) => ErrorOccurred?.Invoke(this, message);
+    private void OnStatusChanged(string message) => StatusChanged?.Invoke(this, new MessageEventArgs(message));
 }

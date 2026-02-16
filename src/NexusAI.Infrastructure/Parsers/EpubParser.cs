@@ -42,29 +42,23 @@ public sealed class EpubParser : IDocumentParserWithMetadata
         }
     }
 
+    private static readonly System.Text.RegularExpressions.Regex HtmlTagRegex =
+        new(@"<[^>]+>", System.Text.RegularExpressions.RegexOptions.None, TimeSpan.FromSeconds(1));
+
     private static string ExtractTextFromEpub(string filePath)
     {
         var book = EpubReader.ReadBook(filePath);
         var sb = new StringBuilder();
-        foreach (var chapter in book.ReadingOrder)
+        foreach (var htmlContent in book.ReadingOrder.Select(chapter => chapter.Content).Where(c => !string.IsNullOrWhiteSpace(c)))
         {
-            var htmlContent = chapter.Content;
-            
-            if (!string.IsNullOrWhiteSpace(htmlContent))
+            var text = HtmlTagRegex.Replace(htmlContent, string.Empty);
+
+            text = System.Net.WebUtility.HtmlDecode(text);
+
+            if (!string.IsNullOrWhiteSpace(text))
             {
-                var text = System.Text.RegularExpressions.Regex.Replace(
-                    htmlContent, 
-                    @"<[^>]+>", 
-                    string.Empty
-                );
-                
-                text = System.Net.WebUtility.HtmlDecode(text);
-                
-                if (!string.IsNullOrWhiteSpace(text))
-                {
-                    sb.AppendLine(text);
-                    sb.AppendLine();
-                }
+                sb.AppendLine(text);
+                sb.AppendLine();
             }
         }
 

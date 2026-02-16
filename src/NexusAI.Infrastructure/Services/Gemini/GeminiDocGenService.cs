@@ -8,6 +8,7 @@ namespace NexusAI.Infrastructure.Services.Gemini;
 
 internal sealed class GeminiDocGenService(GeminiHttpClient httpClient)
 {
+#pragma warning disable MA0051
     public async Task<Result<WikiStructure[]>> GenerateWikiStructureAsync(
         string topic,
         SourceDocument[] sources,
@@ -107,7 +108,7 @@ Return ONLY valid JSON (no markdown wrapper):
             }
         };
 
-        var result = await httpClient.SendRequestAsync(body, cancellationToken);
+        var result = await httpClient.SendRequestAsync(body, cancellationToken).ConfigureAwait(false);
 
         if (!result.IsSuccess)
             return Result.Failure<WikiStructure[]>(result.Error);
@@ -139,7 +140,9 @@ Return ONLY valid JSON (no markdown wrapper):
             return Result.Failure<WikiStructure[]>($"Failed to parse JSON: {ex.Message}");
         }
     }
+#pragma warning restore MA0051
 
+#pragma warning disable MA0051
     public async Task<Result<SlideContent[]>> GeneratePresentationStructureAsync(
         string topic,
         int slideCount,
@@ -238,7 +241,7 @@ CRITICAL: Return ONLY the JSON array, no markdown code blocks, no explanations.
             }
         };
 
-        var result = await httpClient.SendRequestAsync(requestBody, cancellationToken);
+        var result = await httpClient.SendRequestAsync(requestBody, cancellationToken).ConfigureAwait(false);
 
         if (!result.IsSuccess)
             return Result.Failure<SlideContent[]>(result.Error);
@@ -271,6 +274,7 @@ CRITICAL: Return ONLY the JSON array, no markdown code blocks, no explanations.
             return Result.Failure<SlideContent[]>($"Failed to parse JSON: {ex.Message}");
         }
     }
+#pragma warning restore MA0051
 
     private static string BuildWikiContext(SourceDocument[] sources)
     {

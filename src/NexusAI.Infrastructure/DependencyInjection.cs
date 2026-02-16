@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NexusAI.Application.Interfaces;
 using NexusAI.Infrastructure.Parsers;
 using NexusAI.Infrastructure.Services;
+using System.Runtime.Versioning;
 
 namespace NexusAI.Infrastructure;
 
@@ -9,7 +10,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        Func<IServiceProvider, string> geminiApiKeyFactory)
+        Func<string> geminiApiKeyProvider)
     {
         services.AddHttpClient();
 
@@ -21,9 +22,8 @@ public static class DependencyInjection
             var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
             var httpClient = httpClientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromSeconds(60);
-            var apiKey = geminiApiKeyFactory(sp);
             var sessionContext = sp.GetRequiredService<NexusAI.Application.Services.SessionContext>();
-            return new GeminiAiService(httpClient, apiKey, sessionContext);
+            return new GeminiAiService(httpClient, geminiApiKeyProvider, sessionContext);
         });
 
         services.AddSingleton<OllamaService>(sp =>
@@ -49,8 +49,14 @@ public static class DependencyInjection
 
         // Other Services
         services.AddSingleton<IObsidianService, ObsidianService>();
-        services.AddScoped<IAudioService, SpeechSynthesisService>();
+        if (OperatingSystem.IsWindows())
+        {
+            services.AddScoped<IAudioService, SpeechSynthesisService>();
+        }
         services.AddSingleton<IPresentationService, PresentationService>();
+        services.AddSingleton<IProjectService, InMemoryProjectService>();
+        services.AddSingleton<IWikiService, InMemoryWikiService>();
+        services.AddSingleton<IAuthService, InMemoryAuthService>();
 
         return services;
     }

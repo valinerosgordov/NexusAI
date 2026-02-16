@@ -9,7 +9,7 @@ public static class ResultExtensions
         this Result<TIn> result,
         Func<TIn, Task<TOut>> selector)
         => result.IsSuccess
-            ? Result<TOut>.Success(await selector(result.Value))
+            ? Result<TOut>.Success(await selector(result.Value).ConfigureAwait(false))
             : Result<TOut>.Failure(result.Error);
 
     public static Result<TOut> Select<TIn, TOut>(

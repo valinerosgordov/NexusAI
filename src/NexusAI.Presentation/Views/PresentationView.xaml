@@ -81,7 +81,7 @@
                                     Maximum="20"
                                     TickFrequency="1"
                                     IsSnapToTickEnabled="True"
-                                    Style="{StaticResource MaterialDesignDiscreteSlider}"
+                                    Foreground="#8B5CF6"
                                     VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" 
                                        Text="{Binding SlideCount}"

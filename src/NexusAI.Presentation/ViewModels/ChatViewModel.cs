@@ -22,11 +22,12 @@ public sealed partial class ChatViewModel(
     [ObservableProperty] private bool _isThinking;
     [ObservableProperty] private string[] _followUpQuestions = [];
 
+    public bool HasFollowUpQuestions => FollowUpQuestions.Length > 0;
+
     public string[]? PendingImages { get; set; }
     public ObservableCollection<ChatMessageViewModel> Messages { get; } = [];
 
-    public event EventHandler<string>? StatusChanged;
-    public event EventHandler<string>? ErrorOccurred;
+    public event EventHandler<MessageEventArgs>? StatusChanged;
     public Func<SourceDocument[]>? GetIncludedSources { get; set; }
     public Func<string>? GetApiKey { get; set; }
     public Func<AiProvider>? GetAiProvider { get; set; }
@@ -57,19 +58,26 @@ public sealed partial class ChatViewModel(
                 Role: MessageRole.User,
                 Timestamp: DateTime.UtcNow
             );
-            Messages.Add(new ChatMessageViewModel(userMessage));
+
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Messages.Add(new ChatMessageViewModel(userMessage));
+            }).Task.ConfigureAwait(true);
 
             var command = new AskQuestionCommand(UserQuestion, includedSources, PendingImages);
-            var result = await _askQuestionHandler.HandleAsync(command);
-            
+            var result = await _askQuestionHandler.HandleAsync(command).ConfigureAwait(true);
+
             PendingImages = null;
 
             if (result.IsSuccess)
             {
                 var (message, _, _) = result.Value;
-                Messages.Add(new ChatMessageViewModel(message));
-                
-                await GenerateFollowUpQuestionsAsync(UserQuestion, message.Content);
+                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    Messages.Add(new ChatMessageViewModel(message));
+                }).Task.ConfigureAwait(true);
+
+                await GenerateFollowUpQuestionsAsync(UserQuestion, message.Content).ConfigureAwait(true);
                 UserQuestion = string.Empty;
                 OnStatusChanged("Response received");
             }
@@ -113,7 +121,7 @@ public sealed partial class ChatViewModel(
         try
         {
             var command = new GenerateFollowUpQuestionsCommand(question, answer);
-            var result = await _generateFollowUpQuestionsHandler.HandleAsync(command);
+            var result = await _generateFollowUpQuestionsHandler.HandleAsync(command).ConfigureAwait(true);
             if (result.IsSuccess)
             {
                 FollowUpQuestions = result.Value;
@@ -127,7 +135,7 @@ public sealed partial class ChatViewModel(
 
     partial void OnUserQuestionChanged(string value) => AskQuestionCommand.NotifyCanExecuteChanged();
     partial void OnIsBusyChanged(bool value) => AskQuestionCommand.NotifyCanExecuteChanged();
+    partial void OnFollowUpQuestionsChanged(string[] value) => OnPropertyChanged(nameof(HasFollowUpQuestions));
 
-    private void OnStatusChanged(string message) => StatusChanged?.Invoke(this, message);
-    private void OnErrorOccurred(string message) => ErrorOccurred?.Invoke(this, message);
+    private void OnStatusChanged(string message) => StatusChanged?.Invoke(this, new MessageEventArgs(message));
 }

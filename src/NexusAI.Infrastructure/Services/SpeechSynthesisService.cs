@@ -1,9 +1,11 @@
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
+using System.Runtime.Versioning;
 using System.Speech.Synthesis;
 
 namespace NexusAI.Infrastructure.Services;
 
+[SupportedOSPlatform("windows")]
 public sealed class SpeechSynthesisService : IAudioService, IDisposable
 {
     private readonly SpeechSynthesizer _synthesizer;
@@ -12,7 +14,7 @@ public sealed class SpeechSynthesisService : IAudioService, IDisposable
     public bool IsSpeaking => _synthesizer.State == SynthesizerState.Speaking;
     public bool IsPaused => _isPaused;
 
-    public event EventHandler<int>? PositionChanged;
+    public event EventHandler<SpeakProgressEventArgs>? PositionChanged;
 
     public SpeechSynthesisService()
     {
@@ -33,8 +35,8 @@ public sealed class SpeechSynthesisService : IAudioService, IDisposable
             Stop();
             _isPaused = false;
 
-            await Task.Run(() => _synthesizer.Speak(text), cancellationToken);
-            
+            await Task.Run(() => _synthesizer.Speak(text), cancellationToken).ConfigureAwait(false);
+
             return Result.Success(true);
         }
         catch (Exception ex)
@@ -69,7 +71,7 @@ public sealed class SpeechSynthesisService : IAudioService, IDisposable
 
     private void OnSpeakProgress(object? sender, SpeakProgressEventArgs e)
     {
-        PositionChanged?.Invoke(this, e.CharacterPosition);
+        PositionChanged?.Invoke(this, e);
     }
 
     public void Dispose()

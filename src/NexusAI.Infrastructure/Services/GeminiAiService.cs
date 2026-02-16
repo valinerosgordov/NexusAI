@@ -8,21 +8,22 @@ namespace NexusAI.Infrastructure.Services;
 
 public sealed class GeminiAiService : IAiService
 {
-    private readonly GeminiChatService _chatService;
-    private readonly GeminiCodeGenService _codeGenService;
-    private readonly GeminiDiagramService _diagramService;
-    private readonly GeminiDocGenService _docGenService;
+    private readonly HttpClient _httpClient;
+    private readonly SessionContext _sessionContext;
+    private readonly Func<string> _apiKeyProvider;
 
-    public GeminiAiService(HttpClient httpClient, string apiKey, SessionContext sessionContext)
+    public GeminiAiService(HttpClient httpClient, Func<string> apiKeyProvider, SessionContext sessionContext)
     {
-        // Allow empty API key at startup - validation happens when making actual API calls
-        const string modelName = "gemini-2.0-flash";
-        var geminiHttpClient = new GeminiHttpClient(httpClient, apiKey ?? string.Empty, modelName);
+        _httpClient = httpClient;
+        _apiKeyProvider = apiKeyProvider;
+        _sessionContext = sessionContext;
+    }
 
-        _chatService = new GeminiChatService(geminiHttpClient, sessionContext);
-        _codeGenService = new GeminiCodeGenService(geminiHttpClient);
-        _diagramService = new GeminiDiagramService(geminiHttpClient);
-        _docGenService = new GeminiDocGenService(geminiHttpClient);
+    private GeminiHttpClient CreateClient()
+    {
+        const string modelName = "gemini-2.0-flash";
+        var apiKey = _apiKeyProvider() ?? string.Empty;
+        return new GeminiHttpClient(_httpClient, apiKey, modelName);
     }
 
     public Task<Result<AiResponse>> AskQuestionAsync(
@@ -30,7 +31,9 @@ public sealed class GeminiAiService : IAiService
         string context,
         CancellationToken cancellationToken = default)
     {
-        return _chatService.AskQuestionAsync(question, context, cancellationToken);
+        var client = CreateClient();
+        var chatService = new GeminiChatService(client, _sessionContext);
+        return chatService.AskQuestionAsync(question, context, cancellationToken);
     }
 
     public Task<Result<AiResponse>> AskQuestionWithImagesAsync(
@@ -39,14 +42,18 @@ public sealed class GeminiAiService : IAiService
         string[] base64Images,
         CancellationToken cancellationToken = default)
     {
-        return _chatService.AskQuestionWithImagesAsync(question, context, base64Images, cancellationToken);
+        var client = CreateClient();
+        var chatService = new GeminiChatService(client, _sessionContext);
+        return chatService.AskQuestionWithImagesAsync(question, context, base64Images, cancellationToken);
     }
 
     public Task<Result<ProjectPlanTask[]>> GeneratePlanAsync(
         string idea,
         CancellationToken cancellationToken = default)
     {
-        return _codeGenService.GeneratePlanAsync(idea, cancellationToken);
+        var client = CreateClient();
+        var codeGenService = new GeminiCodeGenService(client);
+        return codeGenService.GeneratePlanAsync(idea, cancellationToken);
     }
 
     public Task<Result<ScaffoldFile[]>> GenerateScaffoldAsync(
@@ -54,7 +61,9 @@ public sealed class GeminiAiService : IAiService
         string[] technologies,
         CancellationToken cancellationToken = default)
     {
-        return _codeGenService.GenerateScaffoldAsync(projectDescription, technologies, cancellationToken);
+        var client = CreateClient();
+        var codeGenService = new GeminiCodeGenService(client);
+        return codeGenService.GenerateScaffoldAsync(projectDescription, technologies, cancellationToken);
     }
 
     public Task<Result<string>> GenerateMermaidDiagramAsync(
@@ -62,7 +71,9 @@ public sealed class GeminiAiService : IAiService
         string diagramType,
         CancellationToken cancellationToken = default)
     {
-        return _diagramService.GenerateMermaidDiagramAsync(projectContext, diagramType, cancellationToken);
+        var client = CreateClient();
+        var diagramService = new GeminiDiagramService(client);
+        return diagramService.GenerateMermaidDiagramAsync(projectContext, diagramType, cancellationToken);
     }
 
     public Task<Result<WikiStructure[]>> GenerateWikiStructureAsync(
@@ -70,7 +81,9 @@ public sealed class GeminiAiService : IAiService
         SourceDocument[] sources,
         CancellationToken cancellationToken = default)
     {
-        return _docGenService.GenerateWikiStructureAsync(topic, sources, cancellationToken);
+        var client = CreateClient();
+        var docGenService = new GeminiDocGenService(client);
+        return docGenService.GenerateWikiStructureAsync(topic, sources, cancellationToken);
     }
 
     public Task<Result<SlideContent[]>> GeneratePresentationStructureAsync(
@@ -79,6 +92,8 @@ public sealed class GeminiAiService : IAiService
         SourceDocument[] sources,
         CancellationToken cancellationToken = default)
     {
-        return _docGenService.GeneratePresentationStructureAsync(topic, slideCount, sources, cancellationToken);
+        var client = CreateClient();
+        var docGenService = new GeminiDocGenService(client);
+        return docGenService.GeneratePresentationStructureAsync(topic, slideCount, sources, cancellationToken);
     }
 }

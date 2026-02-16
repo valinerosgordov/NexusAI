@@ -6,10 +6,3 @@ public record ScaffoldFile(
     string Language = "",
     bool IsDirectory = false
 );
-
-public record ScaffoldResult(
-    string RootPath,
-    ScaffoldFile[] Files,
-    int CreatedFiles,
-    int CreatedDirectories
-);

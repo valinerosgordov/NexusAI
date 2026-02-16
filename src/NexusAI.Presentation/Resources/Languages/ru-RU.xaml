@@ -11,6 +11,13 @@
     <sys:String x:Key="S.Menu.Wiki">Вики</sys:String>
     <sys:String x:Key="S.Menu.Presentation">Презентация</sys:String>
     <sys:String x:Key="S.Menu.Settings">Настройки</sys:String>
+
+    <!-- Navigation Rail -->
+    <sys:String x:Key="S.Nav.Chat">Чат</sys:String>
+    <sys:String x:Key="S.Nav.Projects">Проекты</sys:String>
+    <sys:String x:Key="S.Nav.Wiki">Вики</sys:String>
+    <sys:String x:Key="S.Nav.Presentations">Презентации</sys:String>
+    <sys:String x:Key="S.Nav.Settings">Настройки</sys:String>
     
     <!-- Sidebar -->
     <sys:String x:Key="S.Sidebar.KnowledgeBase">База знаний</sys:String>

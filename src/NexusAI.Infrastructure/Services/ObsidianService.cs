@@ -1,6 +1,7 @@
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
+using System.Globalization;
 using System.Text;
 
 namespace NexusAI.Infrastructure.Services;
@@ -61,7 +62,7 @@ public sealed class ObsidianService : IObsidianService
         }
     }
 
-    public async Task<Result<string>> SaveNoteAsync(string vaultPath, string fileName, string content, string[] sourceLinks, CancellationToken cancellationToken = default)
+    public async Task<Result<string>> SaveNoteAsync(string vaultPath, string title, string content, string[] sourceLinks, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -70,7 +71,7 @@ public sealed class ObsidianService : IObsidianService
             var aiNotebookPath = Path.Combine(vaultPath, "AI_Notebook");
             Directory.CreateDirectory(aiNotebookPath);
 
-            var sanitizedFileName = SanitizeFileName(fileName);
+            var sanitizedFileName = SanitizeFileName(title);
             var fullPath = Path.Combine(aiNotebookPath, $"{sanitizedFileName}.md");
 
             var yamlFrontmatter = CreateYamlFrontmatter(sourceLinks);
@@ -91,8 +92,8 @@ public sealed class ObsidianService : IObsidianService
 
     private static string CreateYamlFrontmatter(string[] sourceLinks)
     {
-        var today = DateTime.UtcNow.ToString("yyyy-MM-dd");
-        var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+        var today = DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
         
         var yaml = new StringBuilder();
         yaml.AppendLine("---");
@@ -100,15 +101,15 @@ public sealed class ObsidianService : IObsidianService
         yaml.AppendLine("tags:");
         yaml.AppendLine("  - ai-generated");
         yaml.AppendLine("  - knowledge-hub");
-        yaml.AppendLine($"date: {today}");
-        yaml.AppendLine($"created: {timestamp}");
+        yaml.AppendLine(CultureInfo.InvariantCulture, $"date: {today}");
+        yaml.AppendLine(CultureInfo.InvariantCulture, $"created: {timestamp}");
         
         if (sourceLinks is { Length: > 0 })
         {
             yaml.AppendLine("sources:");
             foreach (var source in sourceLinks)
             {
-                yaml.AppendLine($"  - {source.Trim('[', ']')}");
+                yaml.AppendLine(CultureInfo.InvariantCulture, $"  - {source.Trim('[', ']')}");
             }
             yaml.AppendLine("source_count: " + sourceLinks.Length);
         }

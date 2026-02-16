@@ -11,22 +11,3 @@ public interface IDocumentParser
 {
     Task<Result<SourceDocument>> ParseAsync(string filePath, CancellationToken cancellationToken = default);
 }
-
-/// <summary>
-/// Metadata provider for document parsers.
-/// Separated from IDocumentParser following Interface Segregation Principle.
-/// Used by factory to route files to correct parser.
-/// </summary>
-public interface IDocumentParserMetadata
-{
-    string[] SupportedExtensions { get; }
-    string DisplayName { get; }
-}
-
-/// <summary>
-/// Combined interface for parsers that need both capabilities.
-/// Most parsers will implement this.
-/// </summary>
-public interface IDocumentParserWithMetadata : IDocumentParser, IDocumentParserMetadata
-{
-}

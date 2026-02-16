@@ -3,6 +3,7 @@ using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Presentation;
+using System.Globalization;
 using System.Text;
 
 namespace NexusAI.Infrastructure.Parsers;
@@ -61,7 +62,7 @@ public sealed class PresentationParser : IDocumentParserWithMetadata
         foreach (var slideId in slideIdList.Elements<SlideId>())
         {
             var slidePart = (SlidePart)presentationPart.GetPartById(slideId.RelationshipId!);
-            sb.AppendLine($"--- Slide {slideNumber} ---");
+            sb.AppendLine(CultureInfo.InvariantCulture, $"--- Slide {slideNumber} ---");
             sb.AppendLine(GetSlideText(slidePart));
             sb.AppendLine();
             slideNumber++;
@@ -79,11 +80,10 @@ public sealed class PresentationParser : IDocumentParserWithMetadata
             return string.Empty;
 
         var textElements = slide.Descendants<DocumentFormat.OpenXml.Drawing.Text>();
-        
-        foreach (var text in textElements)
+
+        foreach (var text in textElements.Where(t => !string.IsNullOrWhiteSpace(t.Text)))
         {
-            if (!string.IsNullOrWhiteSpace(text.Text))
-                sb.AppendLine(text.Text);
+            sb.AppendLine(text.Text);
         }
 
         return sb.ToString();

@@ -1,7 +1,5 @@
 namespace NexusAI.Domain.Models;
 
-public record UserId(Guid Value);
-
 public record User
 {
     public required UserId Id { get; init; }

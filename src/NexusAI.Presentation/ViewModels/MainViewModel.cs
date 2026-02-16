@@ -14,13 +14,21 @@ namespace NexusAI.Presentation.ViewModels;
 public sealed partial class MainViewModel : ObservableObject
 {
     private readonly IAiServiceFactory _aiServiceFactory;
-    private readonly IAudioService _audioService;
     private readonly SessionContext _sessionContext;
 
     public DocumentsViewModel Documents { get; }
     public ChatViewModel Chat { get; }
     public ArtifactsViewModel Artifacts { get; }
     public GraphViewModel Graph { get; }
+
+    // Sub-ViewModels for navigation (set after construction to avoid circular DI)
+    public ProjectViewModel? Project { get; set; }
+    public WikiViewModel? Wiki { get; set; }
+    public PresentationViewModel? Presentation { get; set; }
+    public SettingsViewModel? Settings { get; set; }
+
+    // Navigation
+    [ObservableProperty] private AppView _selectedView = AppView.Chat;
 
     [ObservableProperty] private string _geminiApiKey = string.Empty;
     [ObservableProperty] private bool _isBusy;
@@ -42,7 +50,6 @@ public sealed partial class MainViewModel : ObservableObject
         ChatViewModel chatViewModel,
         ArtifactsViewModel artifactsViewModel,
         GraphViewModel graphViewModel,
-        IAudioService audioService,
         IAiServiceFactory aiServiceFactory,
         SessionContext sessionContext)
     {
@@ -50,10 +57,10 @@ public sealed partial class MainViewModel : ObservableObject
         Chat = chatViewModel;
         Artifacts = artifactsViewModel;
         Graph = graphViewModel;
-        _audioService = audioService;
         _aiServiceFactory = aiServiceFactory;
         _sessionContext = sessionContext;
 
+        LoadSettings();
         WireUpEvents();
         _ = CheckOllamaAvailabilityAsync();
     }
@@ -62,47 +69,45 @@ public sealed partial class MainViewModel : ObservableObject
 
     private void WireUpEvents()
     {
-        Documents.StatusChanged += (_, msg) => StatusMessage = msg;
-        Documents.ErrorOccurred += (_, msg) => ShowError(msg);
+        Documents.StatusChanged += (_, e) => StatusMessage = e.Message;
+        Documents.ErrorOccurred += (_, e) => ShowError(e.Message);
         Documents.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName == nameof(Documents.IsBusy))
+            if (string.Equals(e.PropertyName, nameof(Documents.IsBusy), StringComparison.Ordinal))
                 IsBusy = Documents.IsBusy;
         };
 
-        Chat.StatusChanged += (_, msg) => StatusMessage = msg;
-        Chat.ErrorOccurred += (_, msg) => ShowError(msg);
+        Chat.StatusChanged += (_, e) => StatusMessage = e.Message;
         Chat.GetIncludedSources = () => Documents.GetIncludedSources();
         Chat.GetApiKey = () => GeminiApiKey;
         Chat.GetAiProvider = () => SelectedAiProvider;
         Chat.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName == nameof(Chat.IsBusy))
+            if (string.Equals(e.PropertyName, nameof(Chat.IsBusy), StringComparison.Ordinal))
             {
                 IsBusy = Chat.IsBusy;
                 IsThinking = Chat.IsThinking;
             }
         };
 
-        Artifacts.StatusChanged += (_, msg) => StatusMessage = msg;
-        Artifacts.ErrorOccurred += (_, msg) => ShowError(msg);
+        Artifacts.StatusChanged += (_, e) => StatusMessage = e.Message;
         Artifacts.GetIncludedSources = () => Documents.GetIncludedSources();
         Artifacts.GetApiKey = () => GeminiApiKey;
         Artifacts.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName == nameof(Artifacts.IsBusy))
+            if (string.Equals(e.PropertyName, nameof(Artifacts.IsBusy), StringComparison.Ordinal))
             {
                 IsBusy = Artifacts.IsBusy;
                 IsThinking = Artifacts.IsThinking;
             }
         };
 
-        Graph.StatusChanged += (_, msg) => StatusMessage = msg;
-        Graph.ErrorOccurred += (_, msg) => ShowError(msg);
+        Graph.StatusChanged += (_, e) => StatusMessage = e.Message;
+        Graph.ErrorOccurred += (_, e) => ShowError(e.Message);
         Graph.GetIncludedSources = () => Documents.GetIncludedSources();
         Graph.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName == nameof(Graph.IsBusy))
+            if (string.Equals(e.PropertyName, nameof(Graph.IsBusy), StringComparison.Ordinal))
                 IsBusy = Graph.IsBusy;
         };
     }
@@ -226,6 +231,9 @@ public sealed partial class MainViewModel : ObservableObject
     #region App-Level Commands
 
     [RelayCommand]
+    private void NavigateTo(AppView view) => SelectedView = view;
+
+    [RelayCommand]
     private void SwitchAppMode()
     {
         _sessionContext.SwitchMode();
@@ -242,7 +250,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LoadOllamaModelsAsync()
     {
-        var result = await _aiServiceFactory.GetAvailableModelsAsync(AiProvider.Ollama);
+        var result = await _aiServiceFactory.GetAvailableModelsAsync(AiProvider.Ollama).ConfigureAwait(true);
         
         if (result.IsSuccess)
         {
@@ -271,11 +279,11 @@ public sealed partial class MainViewModel : ObservableObject
 
     private async Task CheckOllamaAvailabilityAsync()
     {
-        IsOllamaAvailable = await _aiServiceFactory.IsServiceAvailableAsync(AiProvider.Ollama);
-        
+        IsOllamaAvailable = await _aiServiceFactory.IsServiceAvailableAsync(AiProvider.Ollama).ConfigureAwait(true);
+
         if (IsOllamaAvailable)
         {
-            await LoadOllamaModelsAsync();
+            await LoadOllamaModelsAsync().ConfigureAwait(true);
         }
     }
 
@@ -288,13 +296,29 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    partial void OnGeminiApiKeyChanged(string value)
+    {
+        if (NexusAI.Presentation.Properties.Settings.Default.GeminiApiKey != value)
+        {
+            NexusAI.Presentation.Properties.Settings.Default.GeminiApiKey = value;
+            NexusAI.Presentation.Properties.Settings.Default.Save();
+        }
+    }
+
+    private void LoadSettings()
+    {
+        var savedApiKey = NexusAI.Presentation.Properties.Settings.Default.GeminiApiKey;
+        if (!string.IsNullOrEmpty(savedApiKey))
+            GeminiApiKey = savedApiKey;
+    }
+
     private void ShowError(string message)
     {
         StatusMessage = $"❌ {message}";
         ErrorMessage = message;
         IsErrorVisible = true;
 
-        Task.Delay(8000).ContinueWith(_ =>
+        _ = Task.Delay(8000).ContinueWith(_ =>
         {
             IsErrorVisible = false;
         }, TaskScheduler.FromCurrentSynchronizationContext());

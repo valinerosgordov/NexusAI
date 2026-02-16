@@ -30,6 +30,7 @@ public sealed class OllamaService : IAiService
         _httpClient.Timeout = TimeSpan.FromMinutes(5);
     }
 
+#pragma warning disable MA0051
     public async Task<Result<AiResponse>> AskQuestionAsync(
         string question,
         string context,
@@ -39,7 +40,7 @@ public sealed class OllamaService : IAiService
         {
             if (string.IsNullOrWhiteSpace(question))
                 return Result.Failure<AiResponse>("Question cannot be empty");
-            if (!await IsOllamaRunningAsync(cancellationToken))
+            if (!await IsOllamaRunningAsync(cancellationToken).ConfigureAwait(false))
                 return Result.Failure<AiResponse>("Ollama is not running. Please start Ollama desktop app.");
 
             var fullPrompt = BuildPrompt(question, context);
@@ -68,11 +69,11 @@ public sealed class OllamaService : IAiService
 
             if (!response.IsSuccessStatusCode)
             {
-                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                 return Result.Failure<AiResponse>($"Ollama API Error ({response.StatusCode}): {errorContent}");
             }
 
-            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             var ollamaResponse = JsonSerializer.Deserialize<OllamaResponse>(responseJson);
 
             if (ollamaResponse?.Message?.Content is null)
@@ -102,6 +103,7 @@ public sealed class OllamaService : IAiService
             return Result.Failure<AiResponse>($"Unexpected error: {ex.Message}");
         }
     }
+#pragma warning restore MA0051
 
     public Task<Result<AiResponse>> AskQuestionWithImagesAsync(
         string question,
@@ -122,7 +124,7 @@ public sealed class OllamaService : IAiService
             if (!response.IsSuccessStatusCode)
                 return Result.Failure<string[]>("Failed to fetch models from Ollama");
 
-            var json = await response.Content.ReadAsStringAsync(cancellationToken);
+            var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             var modelsResponse = JsonSerializer.Deserialize<OllamaModelsResponse>(json);
 
             if (modelsResponse?.Models is null || modelsResponse.Models.Length == 0)
@@ -174,7 +176,7 @@ public sealed class OllamaService : IAiService
             var end = content.IndexOf(']', idx);
             if (end == -1) break;
             var cit = content.Substring(idx + 1, end - idx - 1);
-            if (!string.IsNullOrWhiteSpace(cit) && !list.Contains(cit))
+            if (!string.IsNullOrWhiteSpace(cit) && !list.Contains(cit, StringComparer.Ordinal))
                 list.Add(cit);
             idx = end + 1;
         }

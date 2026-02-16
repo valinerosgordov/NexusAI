@@ -15,10 +15,9 @@ internal sealed class GeminiHttpClient(HttpClient httpClient, string apiKey, str
     {
         try
         {
-            var url = ApiEndpoints.GeminiGenerateContent(modelName);
+            var url = $"{ApiEndpoints.GeminiGenerateContent(modelName)}?key={apiKey}";
             
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
-            request.Headers.Add("x-goog-api-key", apiKey);
             request.Content = JsonContent.Create(body);
 
             var response = await httpClient.SendAsync(request, cancellationToken)
@@ -26,7 +25,7 @@ internal sealed class GeminiHttpClient(HttpClient httpClient, string apiKey, str
 
             if (!response.IsSuccessStatusCode)
             {
-                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                 return Result.Failure<GeminiResponse>($"API Error ({response.StatusCode}): {errorContent}");
             }
 
@@ -44,7 +43,7 @@ internal sealed class GeminiHttpClient(HttpClient httpClient, string apiKey, str
         }
         catch (TaskCanceledException)
         {
-            return Result.Failure<GeminiResponse>("Request timeout");
+            return Result.Failure<GeminiResponse>("Request timeout - check your internet connection or API key");
         }
         catch (Exception ex)
         {

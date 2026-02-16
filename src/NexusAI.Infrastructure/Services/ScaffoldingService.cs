@@ -26,6 +26,7 @@ public class ScaffoldingService : IScaffoldingService
         }
     }
 
+#pragma warning disable MA0051
     public async Task<Result<ScaffoldResult>> CreateStructureAsync(
         string rootPath,
         ScaffoldFile[] files,
@@ -103,4 +104,5 @@ public class ScaffoldingService : IScaffoldingService
             return Result.Failure<ScaffoldResult>($"Unexpected error: {ex.Message}");
         }
     }
+#pragma warning restore MA0051
 }

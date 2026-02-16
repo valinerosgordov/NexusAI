@@ -9,8 +9,8 @@ namespace NexusAI.Presentation.Services;
 public sealed class LocalizationService : ILocalizationService
 {
     private const string DefaultLanguage = "en-US";
-    private const string LanguageResourcePathTemplate = "pack://application:,,,/NexusAI.Presentation;component/Resources/Languages/{0}.xaml";
     private const string SettingsFileName = "settings.json";
+    private static readonly System.Text.Json.JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
     
     private static readonly IReadOnlyList<CultureInfo> _availableLanguages =
     [
@@ -84,7 +84,7 @@ public sealed class LocalizationService : ILocalizationService
         }
     }
 
-    private void RemoveCurrentLanguageDictionary()
+    private static void RemoveCurrentLanguageDictionary()
     {
         try
         {
@@ -109,7 +109,7 @@ public sealed class LocalizationService : ILocalizationService
         }
     }
 
-    private Result<bool> LoadLanguageDictionary(string cultureName)
+    private static Result<bool> LoadLanguageDictionary(string cultureName)
     {
         try
         {
@@ -117,8 +117,8 @@ public sealed class LocalizationService : ILocalizationService
             if (app == null)
                 return Result<bool>.Failure("Application.Current is null");
 
-            var resourcePath = string.Format(LanguageResourcePathTemplate, cultureName);
-            var uri = new Uri(resourcePath, UriKind.Absolute);
+            var relativePath = string.Create(System.Globalization.CultureInfo.InvariantCulture, $"/NexusAI.Presentation;component/Resources/Languages/{cultureName}.xaml");
+            var uri = new Uri(relativePath, UriKind.Relative);
 
             // Try to load the resource dictionary
             var dictionary = new ResourceDictionary { Source = uri };
@@ -147,10 +147,7 @@ public sealed class LocalizationService : ILocalizationService
             var settingsFile = Path.Combine(appDataPath, SettingsFileName);
             var settings = new { PreferredLanguage = cultureName };
             
-            var json = System.Text.Json.JsonSerializer.Serialize(settings, new System.Text.Json.JsonSerializerOptions 
-            { 
-                WriteIndented = true 
-            });
+            var json = System.Text.Json.JsonSerializer.Serialize(settings, _jsonOptions);
             
             File.WriteAllText(settingsFile, json);
         }

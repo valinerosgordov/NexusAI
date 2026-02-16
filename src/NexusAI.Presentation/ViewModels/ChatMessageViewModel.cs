@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NexusAI.Domain.Models;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace NexusAI.Presentation.ViewModels;
 
@@ -12,14 +14,17 @@ public sealed partial class ChatMessageViewModel : ObservableObject
 
     public string Content => Message.Content;
     public string Role => Message.Role;
-    public string TimeDisplay => Message.Timestamp.ToLocalTime().ToString("HH:mm:ss");
-    public bool IsUser => Role == MessageRole.User;
-    public bool IsAssistant => Role == MessageRole.Assistant;
+    public string TimeDisplay => Message.Timestamp.ToLocalTime().ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+    public bool IsUser => string.Equals(Role, MessageRole.User, StringComparison.Ordinal);
+    public bool IsAssistant => string.Equals(Role, MessageRole.Assistant, StringComparison.Ordinal);
     public bool HasThinkingSteps => ThinkingSteps.Count > 0;
 
-    public string? Citations => Message.SourceCitations is { Length: > 0 }
-        ? $"Sources: {string.Join(", ", Message.SourceCitations)}"
+    public string[]? SourceCitations => Message.SourceCitations is { Length: > 0 }
+        ? Message.SourceCitations
         : null;
+
+    [RelayCommand]
+    private void Copy() => System.Windows.Clipboard.SetText(ContentWithoutSteps);
 
     public ObservableCollection<string> ThinkingSteps { get; } = [];
 

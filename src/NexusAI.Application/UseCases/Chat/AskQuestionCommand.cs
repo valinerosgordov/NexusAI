@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -39,17 +40,17 @@ public sealed class AskQuestionHandler
         if (command.Base64Images is not null && command.Base64Images.Length > 0)
         {
             aiResult = await _aiService.AskQuestionWithImagesAsync(
-                command.Question, 
-                context, 
-                command.Base64Images, 
-                cancellationToken);
+                command.Question,
+                context,
+                command.Base64Images,
+                cancellationToken).ConfigureAwait(false);
         }
         else
         {
             aiResult = await _aiService.AskQuestionAsync(
-                command.Question, 
-                context, 
-                cancellationToken);
+                command.Question,
+                context,
+                cancellationToken).ConfigureAwait(false);
         }
 
         if (aiResult.IsFailure)
@@ -96,7 +97,7 @@ public sealed class AskQuestionHandler
 
         if (wasTruncated)
         {
-            sb.AppendLine($"\n⚠️ Context truncated. {sources.Length - added} source(s) omitted due to token limit.");
+            sb.AppendLine(System.Globalization.CultureInfo.InvariantCulture, $"\n⚠️ Context truncated. {sources.Length - added} source(s) omitted due to token limit.");
         }
 
         int tokenCount = totalChars / CharsPerToken;
@@ -104,3 +105,4 @@ public sealed class AskQuestionHandler
         return (sb.ToString(), wasTruncated, tokenCount);
     }
 }
+#pragma warning restore MA0048

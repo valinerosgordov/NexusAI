@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -32,6 +33,7 @@ public class CreateTaskHandler(IProjectService projectService)
             command.Priority,
             command.Assignee,
             command.SourceDocumentId,
-            ct);
+            ct).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

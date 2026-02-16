@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Application.Services;
 using NexusAI.Domain.Common;
@@ -28,7 +29,7 @@ public class GenerateProjectPlanHandler(
             return Result.Failure<(Project, ProjectTask[])>("Project title is required");
 
         // Generate plan using AI
-        var planResult = await aiService.GeneratePlanAsync(command.Idea, ct);
+        var planResult = await aiService.GeneratePlanAsync(command.Idea, ct).ConfigureAwait(false);
         if (!planResult.IsSuccess)
             return Result.Failure<(Project, ProjectTask[])>($"AI generation failed: {planResult.Error}");
 
@@ -43,7 +44,7 @@ public class GenerateProjectPlanHandler(
             command.Idea,
             command.OwnerId,
             category,
-            ct);
+            ct).ConfigureAwait(false);
 
         if (!projectResult.IsSuccess)
             return Result.Failure<(Project, ProjectTask[])>($"Project creation failed: {projectResult.Error}");
@@ -55,7 +56,7 @@ public class GenerateProjectPlanHandler(
         foreach (var taskPlan in planResult.Value)
         {
             // Assign priority based on role (example logic)
-            var priority = taskPlan.Role?.ToLower() switch
+            var priority = taskPlan.Role?.ToLowerInvariant() switch
             {
                 "frontend" or "backend" => TaskPriority.High,
                 "design" or "testing" => TaskPriority.Medium,
@@ -70,7 +71,7 @@ public class GenerateProjectPlanHandler(
                 priority,
                 null, // Assignee (can be set later by user)
                 command.SourceDocumentId, // Link to source document
-                ct);
+                ct).ConfigureAwait(false);
 
             if (taskResult.IsSuccess)
                 tasks.Add(taskResult.Value);
@@ -79,3 +80,4 @@ public class GenerateProjectPlanHandler(
         return Result.Success((project, tasks.ToArray()));
     }
 }
+#pragma warning restore MA0048

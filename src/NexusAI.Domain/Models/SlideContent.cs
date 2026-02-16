@@ -5,8 +5,3 @@ public record SlideContent(
     string[] BodyPoints,
     string? SpeakerNotes = null
 );
-
-public record SlideDeck(
-    string Topic,
-    SlideContent[] Slides
-);

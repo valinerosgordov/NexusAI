@@ -45,7 +45,7 @@ public static class AskQuestionCommandExtensions
 
         logger($"🤔 Processing question: {command.Question.Substring(0, Math.Min(50, command.Question.Length))}...");
 
-        var result = await handler.HandleAsync(command, cancellationToken);
+        var result = await handler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
 
         return result
             .Map(tuple => tuple.Message)

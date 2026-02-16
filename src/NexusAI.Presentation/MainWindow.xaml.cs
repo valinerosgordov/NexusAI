@@ -1,11 +1,6 @@
-using System.ComponentModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
 using NexusAI.Presentation.ViewModels;
-using MessageBox = System.Windows.MessageBox;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using DataFormats = System.Windows.DataFormats;
 using RadioButton = System.Windows.Controls.RadioButton;
 
@@ -20,41 +15,9 @@ public partial class MainWindow : Window
 
     private MainViewModel? ViewModel => DataContext as MainViewModel;
 
-
-    private static string GetEmbeddedMermaidHtml()
-    {
-        return """
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body { margin: 0; padding: 20px; background: #0D0D0D; color: #F5F5F7; }
-        #diagram-container { background: #1C1C1E; border-radius: 12px; padding: 32px; }
-        .mermaid { display: flex; justify-content: center; }
-    </style>
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ 
-            startOnLoad: true, 
-            theme: 'dark',
-            themeVariables: { primaryColor: '#8B5CF6', lineColor: '#10B981' }
-        });
-        window.renderMermaid = function(code) {
-            document.getElementById('diagram-container').innerHTML = `<div class="mermaid">${code}</div>`;
-            mermaid.run({ querySelector: '.mermaid' });
-        };
-    </script>
-</head>
-<body>
-    <div id="diagram-container">⏳ Waiting for diagram...</div>
-</body>
-</html>
-""";
-    }
-
     private void OnDrop(object sender, System.Windows.DragEventArgs e)
     {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop) && 
+        if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
             e.Data.GetData(DataFormats.FileDrop) is string[] files)
         {
             _ = HandleDroppedFilesAsync(files);
@@ -74,8 +37,8 @@ public partial class MainWindow : Window
 
     private void DiagramType_Checked(object sender, RoutedEventArgs e)
     {
-        if (sender is RadioButton rb && 
-            rb.Tag is string diagramType && 
+        if (sender is RadioButton rb &&
+            rb.Tag is string diagramType &&
             ViewModel is not null)
         {
             ViewModel.SelectedDiagramType = diagramType;
@@ -98,104 +61,13 @@ public partial class MainWindow : Window
 
     private void CloseWindow(object sender, RoutedEventArgs e) => Close();
 
-    private void OpenSettings(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            if (App.Services == null)
-            {
-                var errorMsg = TryGetResource("S.Error.ServiceContainerNotInitialized") ?? "Service container not initialized";
-                MessageBox.Show(errorMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            var settingsViewModel = App.Services.GetService<ViewModels.SettingsViewModel>();
-            if (settingsViewModel == null)
-            {
-                var errorMsg = TryGetResource("S.Error.SettingsServiceNotAvailable") ?? "Settings service not available";
-                MessageBox.Show(errorMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            var settingsWindow = new Window
-            {
-                Title = "Settings - Language & Preferences",
-                Width = 900,
-                Height = 700,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = this,
-                Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(5, 5, 5)),
-                WindowStyle = WindowStyle.None,
-                AllowsTransparency = true,
-                ResizeMode = ResizeMode.NoResize
-            };
-
-            // Create content with rounded border
-            var mainGrid = new System.Windows.Controls.Grid();
-            var border = new System.Windows.Controls.Border
-            {
-                Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(13, 13, 13)),
-                CornerRadius = new CornerRadius(24),
-                BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(98, 0, 234)),
-                BorderThickness = new Thickness(2)
-            };
-
-            var contentGrid = new System.Windows.Controls.Grid();
-            contentGrid.RowDefinitions.Add(new System.Windows.Controls.RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-            contentGrid.RowDefinitions.Add(new System.Windows.Controls.RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-            // Header with close button
-            var header = new System.Windows.Controls.Grid
-            {
-                Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(204, 20, 20, 22)),
-                Height = 56
-            };
-            System.Windows.Controls.Grid.SetRow(header, 0);
-
-            var closeBtn = new System.Windows.Controls.Button
-            {
-                Content = "✕",
-                Width = 40,
-                Height = 40,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                Margin = new Thickness(8),
-                Background = System.Windows.Media.Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                Foreground = System.Windows.Media.Brushes.White,
-                FontSize = 20,
-                Cursor = System.Windows.Input.Cursors.Hand
-            };
-            closeBtn.Click += (s, ev) => settingsWindow.Close();
-            header.Children.Add(closeBtn);
-
-            var settingsView = new Views.SettingsView
-            {
-                DataContext = settingsViewModel
-            };
-
-            contentGrid.Children.Add(header);
-            System.Windows.Controls.Grid.SetRow(settingsView, 1);
-            contentGrid.Children.Add(settingsView);
-
-            border.Child = contentGrid;
-            mainGrid.Children.Add(border);
-            settingsWindow.Content = mainGrid;
-
-            settingsWindow.ShowDialog();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error opening settings: {ex.Message}\n\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
     // Drag & Drop handlers
     private void Sidebar_Drop(object sender, System.Windows.DragEventArgs e) => OnDrop(sender, e);
 
     private void Sidebar_DragEnter(object sender, System.Windows.DragEventArgs e)
     {
-        e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) 
-            ? System.Windows.DragDropEffects.Copy 
+        e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop)
+            ? System.Windows.DragDropEffects.Copy
             : System.Windows.DragDropEffects.None;
     }
 
@@ -206,11 +78,11 @@ public partial class MainWindow : Window
 
     private void ChatInput_Drop(object sender, System.Windows.DragEventArgs e)
     {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop) && 
+        if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
             e.Data.GetData(DataFormats.FileDrop) is string[] files &&
             ViewModel is not null)
         {
-            var imageFiles = files.Where(f => 
+            var imageFiles = files.Where(f =>
                 f.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
                 f.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
                 f.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
@@ -223,21 +95,12 @@ public partial class MainWindow : Window
         }
     }
 
-    // Password handler
-    private void ApiKeyBox_PasswordChanged(object sender, RoutedEventArgs e)
-    {
-        if (sender is System.Windows.Controls.PasswordBox pb && ViewModel is not null)
-        {
-            ViewModel.GeminiApiKey = pb.Password;
-        }
-    }
-
     // Tab switching
     private void ShowArtifactsTab(object sender, RoutedEventArgs e)
     {
         var artifactsTab = FindName("ArtifactsTabContent") as System.Windows.UIElement;
         var graphTab = FindName("GraphTabContent") as System.Windows.UIElement;
-        
+
         if (artifactsTab != null) artifactsTab.Visibility = Visibility.Visible;
         if (graphTab != null) graphTab.Visibility = Visibility.Collapsed;
     }
@@ -246,13 +109,8 @@ public partial class MainWindow : Window
     {
         var artifactsTab = FindName("ArtifactsTabContent") as System.Windows.UIElement;
         var graphTab = FindName("GraphTabContent") as System.Windows.UIElement;
-        
+
         if (artifactsTab != null) artifactsTab.Visibility = Visibility.Collapsed;
         if (graphTab != null) graphTab.Visibility = Visibility.Visible;
-    }
-
-    private static string? TryGetResource(string key)
-    {
-        return System.Windows.Application.Current?.TryFindResource(key) as string;
     }
 }

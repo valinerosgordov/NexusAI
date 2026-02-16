@@ -4,6 +4,8 @@ namespace NexusAI.Application.Services;
 
 public sealed class KnowledgeGraphService
 {
+    private static readonly char[] WordSeparators = [' ', '\n', '\r', '\t', '.', ',', ';', ':', '!', '?'];
+
     public record GraphNode(
         SourceDocumentId DocumentId,
         string Name,
@@ -18,7 +20,7 @@ public sealed class KnowledgeGraphService
         int SharedKeywords
     );
 
-    public (GraphNode[] Nodes, GraphEdge[] Edges) BuildGraph(SourceDocument[] documents)
+    public static (GraphNode[] Nodes, GraphEdge[] Edges) BuildGraph(SourceDocument[] documents)
     {
         if (documents.Length == 0)
             return (Array.Empty<GraphNode>(), Array.Empty<GraphEdge>());
@@ -43,7 +45,7 @@ public sealed class KnowledgeGraphService
         {
             for (int j = i + 1; j < nodes.Length; j++)
             {
-                var shared = nodes[i].Keywords.Intersect(nodes[j].Keywords).Count();
+                var shared = nodes[i].Keywords.Intersect(nodes[j].Keywords, StringComparer.OrdinalIgnoreCase).Count();
                 if (shared > 2)
                 {
                     edges.Add(new GraphEdge(
@@ -70,10 +72,9 @@ public sealed class KnowledgeGraphService
         };
 
         var words = text
-            .Split(new[] { ' ', '\n', '\r', '\t', '.', ',', ';', ':', '!', '?' }, 
-                   StringSplitOptions.RemoveEmptyEntries)
+            .Split(WordSeparators, StringSplitOptions.RemoveEmptyEntries)
             .Where(w => w.Length > 4 && !stopwords.Contains(w))
-            .GroupBy(w => w.ToLowerInvariant())
+            .GroupBy(w => w.ToLowerInvariant(), StringComparer.OrdinalIgnoreCase)
             .OrderByDescending(g => g.Count())
             .Take(10)
             .Select(g => g.Key)

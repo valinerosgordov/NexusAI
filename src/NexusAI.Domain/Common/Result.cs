@@ -30,8 +30,10 @@ public readonly record struct Result<T>
         _error = error;
     }
 
+#pragma warning disable CA1000 // Non-generic Result class provides the public type-inferred API; these internal helpers are needed for Map/Bind
     public static Result<T> Success(T value) => new(value);
     public static Result<T> Failure(string error) => new(error);
+#pragma warning restore CA1000
 
     public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<string, TResult> onFailure)
         => IsSuccess ? onSuccess(Value) : onFailure(Error);
@@ -40,13 +42,13 @@ public readonly record struct Result<T>
         => IsSuccess ? Result<TNext>.Success(mapper(Value)) : Result<TNext>.Failure(Error);
 
     public async Task<Result<TNext>> MapAsync<TNext>(Func<T, Task<TNext>> mapper)
-        => IsSuccess ? Result<TNext>.Success(await mapper(Value)) : Result<TNext>.Failure(Error);
+        => IsSuccess ? Result<TNext>.Success(await mapper(Value).ConfigureAwait(false)) : Result<TNext>.Failure(Error);
 
     public Result<TNext> Bind<TNext>(Func<T, Result<TNext>> binder)
         => IsSuccess ? binder(Value) : Result<TNext>.Failure(Error);
 
     public async Task<Result<TNext>> BindAsync<TNext>(Func<T, Task<Result<TNext>>> binder)
-        => IsSuccess ? await binder(Value) : Result<TNext>.Failure(Error);
+        => IsSuccess ? await binder(Value).ConfigureAwait(false) : Result<TNext>.Failure(Error);
 }
 
 public static class Result

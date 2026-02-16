@@ -28,8 +28,8 @@ public sealed partial class DocumentsViewModel(
 
     public ObservableCollection<SourceDocumentViewModel> Sources { get; } = [];
 
-    public event EventHandler<string>? StatusChanged;
-    public event EventHandler<string>? ErrorOccurred;
+    public event EventHandler<MessageEventArgs>? StatusChanged;
+    public event EventHandler<MessageEventArgs>? ErrorOccurred;
 
     [RelayCommand]
     private async Task AddDocumentAsync()
@@ -49,7 +49,7 @@ public sealed partial class DocumentsViewModel(
         try
         {
             var command = new AddDocumentCommand(dialog.FileName);
-            var result = await _addDocumentHandler.HandleAsync(command);
+            var result = await _addDocumentHandler.HandleAsync(command).ConfigureAwait(true);
             
             if (result.IsSuccess)
             {
@@ -89,16 +89,13 @@ public sealed partial class DocumentsViewModel(
         try
         {
             var command = new LoadObsidianVaultCommand(ObsidianVaultPath, subfolder);
-            var result = await _loadObsidianVaultHandler.HandleAsync(command);
+            var result = await _loadObsidianVaultHandler.HandleAsync(command).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
-                foreach (var doc in result.Value)
+                foreach (var doc in result.Value.Where(doc => !Sources.Any(s => s.Id == doc.Id)))
                 {
-                    if (!Sources.Any(s => s.Id == doc.Id))
-                    {
-                        Sources.Add(new SourceDocumentViewModel(doc));
-                    }
+                    Sources.Add(new SourceDocumentViewModel(doc));
                 }
                 var location = subfolder is null ? "vault" : $"'{subfolder}'";
                 OnStatusChanged($"✅ Loaded {result.Value.Length} notes from {location}");
@@ -119,7 +116,9 @@ public sealed partial class DocumentsViewModel(
     }
 
     [RelayCommand]
+#pragma warning disable CA1822 // Member does not access instance data — required by [RelayCommand]
     private void ToggleSourceInclusion(SourceDocumentViewModel source)
+#pragma warning restore CA1822
     {
         source.IsIncluded = !source.IsIncluded;
     }
@@ -158,6 +157,6 @@ public sealed partial class DocumentsViewModel(
     public SourceDocument[] GetIncludedSources() =>
         Sources.Where(s => s.IsIncluded).Select(s => s.Document).ToArray();
 
-    private void OnStatusChanged(string message) => StatusChanged?.Invoke(this, message);
-    private void OnErrorOccurred(string message) => ErrorOccurred?.Invoke(this, message);
+    private void OnStatusChanged(string message) => StatusChanged?.Invoke(this, new MessageEventArgs(message));
+    private void OnErrorOccurred(string message) => ErrorOccurred?.Invoke(this, new MessageEventArgs(message));
 }

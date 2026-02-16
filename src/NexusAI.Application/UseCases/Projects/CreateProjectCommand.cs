@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -23,6 +24,7 @@ public class CreateProjectHandler(IProjectService projectService)
             command.Description,
             command.OwnerId,
             command.Category,
-            ct);
+            ct).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

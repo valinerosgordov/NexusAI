@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -36,7 +37,7 @@ public sealed class GeneratePresentationHandler(
             command.Topic,
             command.SlideCount,
             command.Sources,
-            cancellationToken);
+            cancellationToken).ConfigureAwait(false);
 
         if (aiResult.IsFailure)
             return Result.Failure<string>($"AI generation failed: {aiResult.Error}");
@@ -46,7 +47,7 @@ public sealed class GeneratePresentationHandler(
         var createResult = await presentationService.CreatePresentationAsync(
             deck,
             command.OutputPath,
-            cancellationToken);
+            cancellationToken).ConfigureAwait(false);
 
         if (createResult.IsFailure)
             return Result.Failure<string>($"Failed to create presentation: {createResult.Error}");
@@ -54,3 +55,4 @@ public sealed class GeneratePresentationHandler(
         return Result.Success(createResult.Value);
     }
 }
+#pragma warning restore MA0048

@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 
@@ -28,6 +29,7 @@ public sealed class ExportToObsidianHandler
             command.Title,
             command.Content,
             command.SourceLinks,
-            cancellationToken);
+            cancellationToken).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

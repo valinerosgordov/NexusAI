@@ -11,6 +11,13 @@
     <sys:String x:Key="S.Menu.Wiki">Wiki</sys:String>
     <sys:String x:Key="S.Menu.Presentation">Presentation</sys:String>
     <sys:String x:Key="S.Menu.Settings">Settings</sys:String>
+
+    <!-- Navigation Rail -->
+    <sys:String x:Key="S.Nav.Chat">Chat</sys:String>
+    <sys:String x:Key="S.Nav.Projects">Projects</sys:String>
+    <sys:String x:Key="S.Nav.Wiki">Wiki</sys:String>
+    <sys:String x:Key="S.Nav.Presentations">Presentations</sys:String>
+    <sys:String x:Key="S.Nav.Settings">Settings</sys:String>
     
     <!-- Sidebar -->
     <sys:String x:Key="S.Sidebar.KnowledgeBase">Knowledge Base</sys:String>

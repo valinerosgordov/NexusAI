@@ -51,7 +51,7 @@ public sealed partial class WikiViewModel : ObservableObject
         try
         {
             var command = new GenerateWikiCommand(topic, sources);
-            var result = await _generateWikiHandler.HandleAsync(command);
+            var result = await _generateWikiHandler.HandleAsync(command).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
@@ -87,7 +87,7 @@ public sealed partial class WikiViewModel : ObservableObject
         try
         {
             var query = new GetWikiTreeQuery();
-            var result = await _getWikiTreeHandler.HandleAsync(query);
+            var result = await _getWikiTreeHandler.HandleAsync(query).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
@@ -133,7 +133,7 @@ public sealed partial class WikiViewModel : ObservableObject
                 CurrentPageContent,
                 SelectedNode.Page.Tags);
 
-            var result = await _updateWikiPageHandler.HandleAsync(command);
+            var result = await _updateWikiPageHandler.HandleAsync(command).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
@@ -167,11 +167,11 @@ public sealed partial class WikiViewModel : ObservableObject
         try
         {
             var command = new DeleteWikiPageCommand(SelectedNode.Page.Id);
-            var result = await _deleteWikiPageHandler.HandleAsync(command);
+            var result = await _deleteWikiPageHandler.HandleAsync(command).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
-                await LoadWikiTreeAsync();
+                await LoadWikiTreeAsync().ConfigureAwait(true);
                 SelectedNode = null;
                 StatusMessage = "✅ Page deleted";
             }
@@ -218,11 +218,4 @@ public sealed partial class WikiViewModel : ObservableObject
 
         return treeNode;
     }
-}
-
-public sealed partial class WikiPageTreeNode : ObservableObject
-{
-    [ObservableProperty] private WikiPage _page = null!;
-
-    public ObservableCollection<WikiPageTreeNode> Children { get; } = [];
 }

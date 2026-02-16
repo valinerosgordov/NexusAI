@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -24,3 +25,4 @@ public class UpdateWikiPageHandler(IWikiService wikiService)
             ct).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -27,6 +28,7 @@ public sealed class AddDocumentHandler
             return Result.Failure<SourceDocument>($"Unsupported file type: {extension}");
         }
 
-        return await parser.ParseAsync(command.FilePath, cancellationToken);
+        return await parser.ParseAsync(command.FilePath, cancellationToken).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

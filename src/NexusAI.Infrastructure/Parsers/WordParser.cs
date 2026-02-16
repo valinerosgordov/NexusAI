@@ -45,18 +45,14 @@ public sealed class WordParser : IDocumentParserWithMetadata
     private static string ExtractTextFromDocx(string filePath)
     {
         using var doc = WordprocessingDocument.Open(filePath, false);
-        var body = doc.MainDocumentPart?.Document.Body;
-        
+        var body = doc.MainDocumentPart?.Document?.Body;
         if (body is null)
             return string.Empty;
 
         var sb = new StringBuilder();
-        
-        foreach (var paragraph in body.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>())
+        foreach (var text in body.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().Select(paragraph => paragraph.InnerText).Where(t => !string.IsNullOrWhiteSpace(t)))
         {
-            var text = paragraph.InnerText;
-            if (!string.IsNullOrWhiteSpace(text))
-                sb.AppendLine(text);
+            sb.AppendLine(text);
         }
 
         return sb.ToString();

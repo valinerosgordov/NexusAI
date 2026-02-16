@@ -1,22 +1,5 @@
 namespace NexusAI.Domain.Models;
 
-public record ProjectTaskId(Guid Value);
-
-public enum TaskStatus
-{
-    Pending,
-    InProgress,
-    Completed,
-    Cancelled
-}
-
-public enum TaskPriority
-{
-    Low,
-    Medium,
-    High
-}
-
 public record ProjectTask
 {
     public required ProjectTaskId Id { get; init; }

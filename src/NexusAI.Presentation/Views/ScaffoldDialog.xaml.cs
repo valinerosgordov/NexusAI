@@ -71,9 +71,5 @@ public partial class ScaffoldDialog : Window
         Close();
     }
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
-    {
-        DialogResult = false;
-        Close();
-    }
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => CancelButton_Click(sender, e);
 }

@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -10,6 +11,7 @@ public class GetUserProjectsHandler(IProjectService projectService)
 {
     public async Task<Result<IEnumerable<Project>>> HandleAsync(GetUserProjectsQuery query, CancellationToken ct = default)
     {
-        return await projectService.GetUserProjectsAsync(query.UserId, ct);
+        return await projectService.GetUserProjectsAsync(query.UserId, ct).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

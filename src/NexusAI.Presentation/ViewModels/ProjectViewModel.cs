@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NexusAI.Application.Interfaces;
 using NexusAI.Application.Services;
 using NexusAI.Application.UseCases.Projects;
 using NexusAI.Application.UseCases.Scaffold;
@@ -14,14 +13,12 @@ public sealed partial class ProjectViewModel(
     GetUserProjectsHandler getProjectsHandler,
     UpdateTaskStatusHandler updateTaskStatusHandler,
     GenerateScaffoldHandler generateScaffoldHandler,
-    IAiServiceFactory aiServiceFactory,
     SessionContext sessionContext) : ObservableObject
 {
     private readonly GenerateProjectPlanHandler _generatePlanHandler = generatePlanHandler;
     private readonly GetUserProjectsHandler _getProjectsHandler = getProjectsHandler;
     private readonly UpdateTaskStatusHandler _updateTaskStatusHandler = updateTaskStatusHandler;
     private readonly GenerateScaffoldHandler _generateScaffoldHandler = generateScaffoldHandler;
-    private readonly IAiServiceFactory _aiServiceFactory = aiServiceFactory;
     private readonly SessionContext _sessionContext = sessionContext;
     private List<Project> _allProjects = [];
 
@@ -45,7 +42,7 @@ public sealed partial class ProjectViewModel(
     {
         _sessionContext.PropertyChanged += (s, e) =>
         {
-            if (e.PropertyName == nameof(SessionContext.CurrentMode))
+            if (string.Equals(e.PropertyName, nameof(SessionContext.CurrentMode), StringComparison.Ordinal))
             {
                 ApplyProjectFilter();
             }
@@ -71,7 +68,7 @@ public sealed partial class ProjectViewModel(
             var title = ExtractTitleFromIdea(idea);
             var command = new GenerateProjectPlanCommand(idea, title, CurrentUserId);
             
-            var result = await _generatePlanHandler.HandleAsync(command);
+            var result = await _generatePlanHandler.HandleAsync(command).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
@@ -105,7 +102,7 @@ public sealed partial class ProjectViewModel(
         try
         {
             var query = new GetUserProjectsQuery(CurrentUserId);
-            var result = await _getProjectsHandler.HandleAsync(query);
+            var result = await _getProjectsHandler.HandleAsync(query).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
@@ -163,7 +160,7 @@ public sealed partial class ProjectViewModel(
         var (task, newStatus) = parameters;
 
         var command = new UpdateTaskStatusCommand(task.Id, newStatus);
-        var result = await _updateTaskStatusHandler.HandleAsync(command);
+        var result = await _updateTaskStatusHandler.HandleAsync(command).ConfigureAwait(true);
 
         if (result.IsSuccess)
         {
@@ -195,17 +192,17 @@ public sealed partial class ProjectViewModel(
     {
         if (value is not null)
         {
-            _ = LoadProjectTasksAsync(value.Id);
+            _ = LoadProjectTasksAsync();
         }
     }
 
-    private async Task LoadProjectTasksAsync(ProjectId projectId)
+    private async Task LoadProjectTasksAsync()
     {
         IsBusy = true;
 
         try
         {
-            await Task.CompletedTask;
+            await Task.CompletedTask.ConfigureAwait(true);
         }
         finally
         {
@@ -247,7 +244,7 @@ public sealed partial class ProjectViewModel(
         RoleDistribution.Clear();
         var roleGroups = allTasks
             .Where(t => !string.IsNullOrWhiteSpace(t.Role))
-            .GroupBy(t => t.Role!)
+            .GroupBy(t => t.Role!, StringComparer.Ordinal)
             .Select(g => new TaskRoleDistribution
             {
                 Role = g.Key,
@@ -274,7 +271,7 @@ public sealed partial class ProjectViewModel(
         try
         {
             var command = new GenerateScaffoldCommand(description, technologies, targetPath);
-            var result = await _generateScaffoldHandler.HandleAsync(command);
+            var result = await _generateScaffoldHandler.HandleAsync(command).ConfigureAwait(true);
 
             if (result.IsSuccess)
             {
@@ -304,75 +301,4 @@ public sealed partial class ProjectViewModel(
         var firstLine = idea.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? idea;
         return firstLine.Length > 50 ? firstLine[..47] + "..." : firstLine;
     }
-}
-
-public sealed partial class ProjectTaskViewModel : ObservableObject
-{
-    public ProjectTaskId Id { get; }
-    
-    [ObservableProperty] private string _title;
-    [ObservableProperty] private string? _role;
-    [ObservableProperty] private decimal _hours;
-    [ObservableProperty] private Domain.Models.TaskStatus _status;
-    [ObservableProperty] private TaskPriority _priority;
-    [ObservableProperty] private string? _assignee;
-    [ObservableProperty] private Guid? _sourceDocumentId;
-
-    public string Initials => GetInitials(Assignee);
-    public string PriorityColor => Priority switch
-    {
-        TaskPriority.High => "#FF3B30",
-        TaskPriority.Medium => "#00D9FF",
-        TaskPriority.Low => "#34C759",
-        _ => "#98989D"
-    };
-    public string RoleBadgeColor => Role?.ToLower() switch
-    {
-        "backend" or "frontend" => "#007AFF",
-        "design" or "ui/ux" => "#AF52DE",
-        "testing" or "qa" => "#00D9FF",
-        "devops" or "infrastructure" => "#5856D6",
-        "marketing" or "content" => "#FF2D55",
-        _ => "#8E8E93"
-    };
-
-    public ProjectTaskViewModel(ProjectTask task)
-    {
-        Id = task.Id;
-        _title = task.Title;
-        _role = task.Role;
-        _hours = task.Hours;
-        _status = task.Status;
-        _priority = task.Priority;
-        _assignee = task.Assignee;
-        _sourceDocumentId = task.SourceDocumentId;
-    }
-
-    public void UpdateStatus(Domain.Models.TaskStatus newStatus)
-    {
-        Status = newStatus;
-    }
-
-    private static string GetInitials(string? name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            return "AI";
-
-        var parts = name.Split([' ', '.'], StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length >= 2)
-            return $"{parts[0][0]}{parts[1][0]}".ToUpper();
-        
-        return parts.Length == 1 && parts[0].Length >= 2
-            ? parts[0][..2].ToUpper()
-            : parts[0][0].ToString().ToUpper();
-    }
-}
-
-public sealed partial class TaskRoleDistribution : ObservableObject
-{
-    [ObservableProperty] private string _role = string.Empty;
-    [ObservableProperty] private int _count;
-    [ObservableProperty] private string _color = "#8E8E93";
-    
-    public double Percentage { get; set; }
 }

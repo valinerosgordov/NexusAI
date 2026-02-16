@@ -33,24 +33,12 @@ public sealed partial class PresentationViewModel : ObservableObject
     [RelayCommand]
     private async Task GeneratePresentationAsync()
     {
-        if (string.IsNullOrWhiteSpace(Topic))
-        {
-            StatusMessage = "❌ Please enter a topic";
+        if (!ValidateInput(out var sources))
             return;
-        }
 
-        if (SlideCount < 3 || SlideCount > 20)
-        {
-            StatusMessage = "❌ Slide count must be between 3 and 20";
+        var outputPath = PromptSaveLocation();
+        if (outputPath is null)
             return;
-        }
-
-        var sources = _getSourceDocumentsFunc();
-        if (sources.Length == 0)
-        {
-            StatusMessage = "❌ Please add and include at least one document";
-            return;
-        }
 
         IsBusy = true;
         StatusMessage = "🧠 AI is analyzing documents and generating presentation structure...";
@@ -59,28 +47,9 @@ public sealed partial class PresentationViewModel : ObservableObject
 
         try
         {
-            var dialog = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "PowerPoint Presentation|*.pptx",
-                FileName = $"{SanitizeFileName(Topic)}.pptx",
-                Title = "Save Presentation"
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                StatusMessage = "❌ Cancelled";
-                return;
-            }
-
-            var command = new GeneratePresentationCommand(
-                Topic,
-                SlideCount,
-                sources,
-                dialog.FileName
-            );
-
             StatusMessage = "📊 Creating PowerPoint file...";
 
+            var command = new GeneratePresentationCommand(Topic, SlideCount, sources, outputPath);
             var result = await _handler.HandleAsync(command, CancellationToken.None)
                 .ConfigureAwait(true);
 
@@ -92,13 +61,10 @@ public sealed partial class PresentationViewModel : ObservableObject
             }
 
             GeneratedFilePath = result.Value;
-            StatusMessage = $"✅ Presentation created successfully!";
-
+            StatusMessage = "✅ Presentation created successfully!";
             MessageBox.Show(
                 $"Presentation created successfully!\n\nFile: {result.Value}\n\nThe file is now ready to open in PowerPoint.",
-                "Success",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
@@ -109,6 +75,44 @@ public sealed partial class PresentationViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    private bool ValidateInput(out SourceDocument[] sources)
+    {
+        sources = [];
+
+        if (string.IsNullOrWhiteSpace(Topic))
+        {
+            StatusMessage = "❌ Please enter a topic";
+            return false;
+        }
+
+        if (SlideCount is < 3 or > 20)
+        {
+            StatusMessage = "❌ Slide count must be between 3 and 20";
+            return false;
+        }
+
+        sources = _getSourceDocumentsFunc();
+        if (sources.Length == 0)
+        {
+            StatusMessage = "❌ Please add and include at least one document";
+            return false;
+        }
+
+        return true;
+    }
+
+    private string? PromptSaveLocation()
+    {
+        var dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter = "PowerPoint Presentation|*.pptx",
+            FileName = $"{SanitizeFileName(Topic)}.pptx",
+            Title = "Save Presentation"
+        };
+
+        return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 
     [RelayCommand(CanExecute = nameof(CanOpenFile))]
@@ -145,11 +149,4 @@ public sealed partial class PresentationViewModel : ObservableObject
         var sanitized = string.Join("_", fileName.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
         return string.IsNullOrWhiteSpace(sanitized) ? "presentation" : sanitized;
     }
-}
-
-public sealed partial class SlidePreview : ObservableObject
-{
-    [ObservableProperty] private string _title = string.Empty;
-    [ObservableProperty] private string _preview = string.Empty;
-    [ObservableProperty] private int _number;
 }

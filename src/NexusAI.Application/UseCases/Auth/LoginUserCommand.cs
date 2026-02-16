@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -16,6 +17,7 @@ public class LoginUserHandler(IAuthService authService)
         if (string.IsNullOrWhiteSpace(command.Password))
             return Result<User>.Failure("Password is required");
 
-        return await authService.LoginAsync(command.Name, command.Password, ct);
+        return await authService.LoginAsync(command.Name, command.Password, ct).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

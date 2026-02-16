@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -78,3 +79,4 @@ public class GenerateWikiHandler(
         public int GetNext() => _order++;
     }
 }
+#pragma warning restore MA0048

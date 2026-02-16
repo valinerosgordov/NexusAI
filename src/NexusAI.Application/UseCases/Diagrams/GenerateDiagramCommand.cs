@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 
@@ -20,8 +21,9 @@ public class GenerateDiagramHandler(IAiService aiService)
         var result = await aiService.GenerateMermaidDiagramAsync(
             command.ProjectContext,
             command.DiagramType,
-            ct);
+            ct).ConfigureAwait(false);
 
         return result;
     }
 }
+#pragma warning restore MA0048

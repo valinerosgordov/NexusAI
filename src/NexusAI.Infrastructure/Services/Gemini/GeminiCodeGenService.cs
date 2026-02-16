@@ -8,6 +8,7 @@ namespace NexusAI.Infrastructure.Services.Gemini;
 
 internal sealed class GeminiCodeGenService(GeminiHttpClient httpClient)
 {
+#pragma warning disable MA0051
     public async Task<Result<ProjectPlanTask[]>> GeneratePlanAsync(
         string idea,
         CancellationToken cancellationToken = default)
@@ -67,7 +68,7 @@ internal sealed class GeminiCodeGenService(GeminiHttpClient httpClient)
             }
         };
 
-        var result = await httpClient.SendRequestAsync(body, cancellationToken);
+        var result = await httpClient.SendRequestAsync(body, cancellationToken).ConfigureAwait(false);
 
         if (!result.IsSuccess)
             return Result.Failure<ProjectPlanTask[]>(result.Error);
@@ -102,7 +103,9 @@ internal sealed class GeminiCodeGenService(GeminiHttpClient httpClient)
             return Result.Failure<ProjectPlanTask[]>($"Failed to parse JSON: {ex.Message}");
         }
     }
+#pragma warning restore MA0051
 
+#pragma warning disable MA0051
     public async Task<Result<ScaffoldFile[]>> GenerateScaffoldAsync(
         string projectDescription,
         string[] technologies,
@@ -178,7 +181,7 @@ internal sealed class GeminiCodeGenService(GeminiHttpClient httpClient)
             }
         };
 
-        var result = await httpClient.SendRequestAsync(body, cancellationToken);
+        var result = await httpClient.SendRequestAsync(body, cancellationToken).ConfigureAwait(false);
 
         if (!result.IsSuccess)
             return Result.Failure<ScaffoldFile[]>(result.Error);
@@ -213,6 +216,7 @@ internal sealed class GeminiCodeGenService(GeminiHttpClient httpClient)
             return Result.Failure<ScaffoldFile[]>($"Failed to parse JSON: {ex.Message}");
         }
     }
+#pragma warning restore MA0051
 
     private sealed record PlanJsonResponse(
         [property: JsonPropertyName("tasks")] PlanTaskJson[] Tasks

@@ -13,7 +13,7 @@ internal sealed class GeminiChatService(
         string context,
         CancellationToken cancellationToken = default)
     {
-        return await AskQuestionWithImagesAsync(question, context, [], cancellationToken);
+        return await AskQuestionWithImagesAsync(question, context, [], cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Result<AiResponse>> AskQuestionWithImagesAsync(
@@ -26,7 +26,7 @@ internal sealed class GeminiChatService(
             return Result.Failure<AiResponse>("Question cannot be empty");
 
         var body = CreateRequestBody(question, context, base64Images);
-        var result = await httpClient.SendRequestAsync(body, cancellationToken);
+        var result = await httpClient.SendRequestAsync(body, cancellationToken).ConfigureAwait(false);
 
         if (!result.IsSuccess)
             return Result.Failure<AiResponse>(result.Error);
@@ -162,7 +162,7 @@ internal sealed class GeminiChatService(
             var end = content.IndexOf(']', idx);
             if (end == -1) break;
             var cit = content.Substring(idx + 1, end - idx - 1);
-            if (!string.IsNullOrWhiteSpace(cit) && !list.Contains(cit))
+            if (!string.IsNullOrWhiteSpace(cit) && !list.Contains(cit, StringComparer.Ordinal))
                 list.Add(cit);
             idx = end + 1;
         }

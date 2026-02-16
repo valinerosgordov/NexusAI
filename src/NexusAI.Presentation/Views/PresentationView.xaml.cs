@@ -1,5 +1,3 @@
-using NexusAI.Presentation.ViewModels;
-
 namespace NexusAI.Presentation.Views;
 
 public partial class PresentationView : System.Windows.Controls.UserControl
@@ -8,6 +6,4 @@ public partial class PresentationView : System.Windows.Controls.UserControl
     {
         InitializeComponent();
     }
-
-    private PresentationViewModel? ViewModel => DataContext as PresentationViewModel;
 }

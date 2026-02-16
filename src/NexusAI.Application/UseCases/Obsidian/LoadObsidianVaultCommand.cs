@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -20,8 +21,9 @@ public sealed class LoadObsidianVaultHandler
         CancellationToken cancellationToken = default)
     {
         return await _obsidianService.LoadNotesAsync(
-            command.VaultPath, 
-            command.Subfolder, 
-            cancellationToken);
+            command.VaultPath,
+            command.Subfolder,
+            cancellationToken).ConfigureAwait(false);
     }
 }
+#pragma warning restore MA0048

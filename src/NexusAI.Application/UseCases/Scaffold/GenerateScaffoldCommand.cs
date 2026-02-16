@@ -1,3 +1,4 @@
+#pragma warning disable MA0048
 using NexusAI.Application.Interfaces;
 using NexusAI.Domain.Common;
 using NexusAI.Domain.Models;
@@ -33,7 +34,7 @@ public class GenerateScaffoldHandler(
         var scaffoldResult = await aiService.GenerateScaffoldAsync(
             command.ProjectDescription,
             command.Technologies,
-            ct);
+            ct).ConfigureAwait(false);
 
         if (!scaffoldResult.IsSuccess)
             return Result.Failure<ScaffoldResult>($"AI generation failed: {scaffoldResult.Error}");
@@ -42,8 +43,9 @@ public class GenerateScaffoldHandler(
         var createResult = await scaffoldingService.CreateStructureAsync(
             command.TargetPath,
             scaffoldResult.Value,
-            ct);
+            ct).ConfigureAwait(false);
 
         return createResult;
     }
 }
+#pragma warning restore MA0048

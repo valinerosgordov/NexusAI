@@ -9,5 +9,5 @@ public sealed class NullToVisibilityInverseConverter : IValueConverter
         => value is null ? Visibility.Visible : Visibility.Collapsed;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => throw new NotImplementedException();
+        => throw new NotSupportedException();
 }
